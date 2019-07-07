@@ -93,12 +93,8 @@ class SideBar extends React.PureComponent<Props> {
             vertical
           >
             <div className='apps-SideBar-Scroll'>
-              {this.renderJoystreamLogo()}
+              {this.renderSubSocialLogo()}
               {this.renderRoutes()}
-              <Menu.Divider hidden />
-
-              <OuterLink url='https://testnet.joystream.org/faucet' title='Free Tokens' />
-              <OuterLink url='https://blog.joystream.org/athens-incentives/' title='Earn Monero' />
               <Menu.Divider hidden />
               {
                 isCollapsed
@@ -146,19 +142,9 @@ class SideBar extends React.PureComponent<Props> {
     );
   }
 
-  private renderJoystreamLogo () {
+  private renderSubSocialLogo () {
     const { isCollapsed } = this.props;
-    const logo = isCollapsed
-      ? 'images/logo-j.svg'
-      : 'images/logo-joytream.svg';
-
-    return (
-      <img
-        alt='Joystream'
-        className='apps--SideBar-logo'
-        src={logo}
-      />
-    );
+    return <span className='DfSidebarLogo'>{isCollapsed ? 'S.' : 'SubSocial'}</span>;
   }
 
   private renderRoutes () {

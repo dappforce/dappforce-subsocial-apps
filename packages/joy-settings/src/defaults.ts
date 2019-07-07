@@ -7,8 +7,8 @@ import { Options } from './types';
 const WSS_JOYSTREAM = 'wss://testnet.joystream.org/athens/rpc/';
 
 const ENDPOINTS: Options = [
-  { text: 'Joystream Testnet (hosted by joystream.org)', value: WSS_JOYSTREAM },
-  { text: 'Local Node (127.0.0.1:9944)', value: 'ws://127.0.0.1:9944/' }
+  { text: 'Local Node (127.0.0.1:9944)', value: 'ws://127.0.0.1:9944/' },
+  { text: 'Joystream Testnet (hosted by joystream.org)', value: WSS_JOYSTREAM }
 ];
 
 const LANGUAGE_DEFAULT = 'default';
