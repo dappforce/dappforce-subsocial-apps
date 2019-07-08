@@ -1,10 +1,10 @@
-# Joystream webapp
+# SubSocial Web UI by [DappForce](https://github.com/dappforce)
 
-A Portal into the Joystream network. Provides a view and interaction layer from a browser.
+SubSocial is a set of Substrate runtime modules (SRML) with UI that would allow anyone to launch their own decentralized censorship-resistant social network aka community. We are planning to follow a topology of Polkadot Network where every community will be running on its own Substrate chain and all these decentralized communities will be connected to our own Polkadot relay. This social networking relay could be connected to the official Polkadot Network.
 
-This can be accessed as a hosted application via [https://sparta.joystream.org/apps/](https://sparta.joystream.org/apps/).
+You can think of this as decentralized versions of Reddit, Stack Exchange or Medium, where subreddits or communities of Stack Exchange or blogs on Medium run on their own chain. At the same time, users of these decentralized communities should be able to transfer or share their reputation, coins and other values from one community to another via Polkadot relay.
 
-## overview
+## Overview
 
 The repo is split into a number of packages, each representing an application. These are -
 
@@ -27,7 +27,7 @@ In addition the following libraries are also included in the repo. These are to 
 - [ui-signer](packages/ui-signer/) Signer implementation for apps.
 - [ui-react-rx](packages/ui-react-rx) Base components that use the RxJS Observable APIs
 
-## development
+## Development
 
 Contributions are welcome!
 
@@ -35,7 +35,7 @@ To start off, this repo (along with others in the [@polkadot](https://github.com
 
 To get started -
 
-1. Clone the repo locally, via `git clone https://github.com/joystream/apps <optional local path>`
+1. Clone the repo locally, via `git clone git@github.com:dappforce/dappforce-subsocial-ui.git`
 2. Ensure that you have a recent LTS version of Node.js, for development purposes [Node >=10.13.0](https://nodejs.org/en/) is recommended.
 3. Ensure that you have a recent version of Yarn, for development purposes [Yarn >=1.10.1](https://yarnpkg.com/docs/install) is required.
 4. Install the dependencies by running `yarn`
