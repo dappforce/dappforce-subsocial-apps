@@ -148,9 +148,13 @@ export function ViewComment (props: ViewCommentProps) {
         />
         <div>
           <SuiComment.Metadata>
-            <AddressMini value={account} isShort={false} isPadded={false} withName/>
+            <AddressMini
+              value={account}
+              isShort={true}
+              isPadded={false}
+              extraDetails={`Commented on ${time.toLocaleString()} at block #${block.toNumber()}`}
+            />
             {renderButtonEditForm()}
-            <div>{time.toLocaleString()} at block #{block.toNumber()}</div>
           </SuiComment.Metadata>
           <SuiComment.Content>
             {showEditForm
@@ -178,7 +182,7 @@ export function ViewComment (props: ViewCommentProps) {
           </SuiComment.Content>
         </div>
       </div>
-      {renderLevelOfComments(parentComments, childrenComments)}
+        {renderLevelOfComments(parentComments, childrenComments)}
     </SuiComment>
   </SuiComment.Group>
 </div>;

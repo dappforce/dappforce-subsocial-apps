@@ -76,12 +76,12 @@ const InnerForm = (props: FormProps) => {
     setSubmitting(false);
   };
 
-  const isNew = struct === undefined;
+  const isNewRoot = !hasParent && !struct;
 
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
 
-    if (!hasParent && !struct) {
+    if (isNewRoot) {
       resetForm();
     }
     if (onSuccess) {
@@ -118,7 +118,7 @@ const InnerForm = (props: FormProps) => {
       <LabelledField {...props}>
         <TxButton
           type='submit'
-          label={isNew
+          label={!struct
             ? `Comment`
             : `Update my comment`
           }
@@ -133,11 +133,11 @@ const InnerForm = (props: FormProps) => {
           txFailedCb={onTxFailed}
           txSuccessCb={onTxSuccess}
         />
-          {!isNew ? <Button
+          {!isNewRoot && <Button
             type='button'
             onClick={onSuccess}
             content='Cancel'
-          /> : <></>}
+          />}
       </LabelledField>
     </Form>);
 

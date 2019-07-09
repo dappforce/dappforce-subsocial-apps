@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Icon } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 
 import TxButton from '@polkadot/joy-utils/TxButton';
 import { api } from '@polkadot/ui-api';
@@ -59,7 +59,6 @@ export const Voter = (props: VoterProps) => {
         }
         const reaction = x.unwrap() as Reaction;
         setReactionState(reaction);
-        console.log(reaction.kind);
       }).catch(err => console.log(err));
     }).catch(err => console.log(err));
 
@@ -78,33 +77,34 @@ export const Voter = (props: VoterProps) => {
   const VoterRender = () => {
 
     const orientation = isComment ? 'vertical' : '';
+    const count = (state.upvotes_count.toNumber() - state.downvotes_count.toNumber()).toString();
+    const colorCount = count > '0' ? 'green' : count < '0' ? 'red' : '';
 
     const renderTxButton = (isUpvote: boolean) => {
 
       const reactionName = isUpvote ? 'Upvote' : 'Downvote';
       const color = isUpvote ? 'green' : 'red';
+      const isActive = (reactionKind === reactionName) && 'active';
       const icon = isUpvote ? 'up' : 'down';
-      const count = isUpvote ? state.upvotes_count.toNumber() : state.downvotes_count.toNumber();
       const struct = isComment ? 'Comment' : 'Post';
 
       return (<TxButton
         type='submit'
         compact
-        className={color}
+        icon={`thumbs ${icon} outline`}
+        className={`${color} ${isActive}`}
         params={buildTxParams(reactionName)}
         tx={reactionIsNone
           ? `blogs.create${struct}Reaction`
           : (reactionKind !== `${reactionName}`)
           ? `blogs.update${struct}Reaction`
           : `blogs.delete${struct}Reaction`}
-      >
-        <Icon className={`thumbs ${icon} outline`}/>
-        {count}
-      </TxButton>);
+      />);
     };
 
-    return <Button.Group basic className={`DfVoter ${orientation}`}>
+    return <Button.Group className={`DfVoter ${orientation}`}>
         {renderTxButton(true)}
+        <Button content={count} disabled variant='primary' className={`${colorCount} active`}/>
         {renderTxButton(false)}
     </Button.Group>;
   };
