@@ -61,6 +61,7 @@
 .DfCommentBox {
   display: flex !important;
   align-items: start;
+  margin-top: 2rem;
 }
 .DfVoter.vertical {
   margin-right: 1rem;

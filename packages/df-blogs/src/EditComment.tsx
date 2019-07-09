@@ -133,11 +133,11 @@ const InnerForm = (props: FormProps) => {
           txFailedCb={onTxFailed}
           txSuccessCb={onTxSuccess}
         />
-          <Button
+          {!isNew ? <Button
             type='button'
             onClick={onSuccess}
             content='Cancel'
-          />
+          /> : <></>}
       </LabelledField>
     </Form>);
 

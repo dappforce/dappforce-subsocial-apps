@@ -68,9 +68,7 @@ function InnerCommentsByPost (props: Props) {
 
   return (
       <Section title={`Comments (${commentsCount})`} className='DfCommentsByPost'>
-        <div style={{ marginBottom: '2rem' }}>
-          <NewComment postId={postId} />
-        </div>
+        <NewComment postId={postId} />
         {renderComments()}
       </Section>);
 }
@@ -142,7 +140,7 @@ export function ViewComment (props: ViewCommentProps) {
     />);
 
   return <div>
-  <SuiComment.Group threaded>
+  <SuiComment.Group threaded >
     <SuiComment>
       <div className='DfCommentBox'>
         <Voter

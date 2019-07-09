@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
-import { Form, Field, withFormik, FormikProps, FormikErrors, FormikTouched } from 'formik';
+import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
 
@@ -155,7 +155,7 @@ const InnerForm = (props: FormProps) => {
       <LabelledText name='name' label='Blog name' placeholder='Name of your blog.' {...props} />
 
       <LabelledText name='slug' label='URL slug' placeholder={`You can use a-z, 0-9, dashes and underscores.`} style={{ maxWidth: '30rem' }} {...props} />
-
+      NewAccount
       <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
 
       <LabelledField name='desc' label='Description' {...props}>

@@ -118,7 +118,7 @@ export const Voter = (props: VoterProps) => {
             ? `blogs.update${struct}Reaction`
             : `blogs.delete${struct}Reaction`}
         >
-          <Icon className='thumbs up outlin`e'/>
+          <Icon className='thumbs up outline'/>
           {state.upvotes_count.toNumber()}
         </TxButton>
       <TxButton
