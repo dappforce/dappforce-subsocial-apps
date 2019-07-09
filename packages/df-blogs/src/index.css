@@ -63,6 +63,14 @@
   align-items: start;
   margin-top: 2rem;
 }
+.DfVoter {
+  .ui.primary.button.red{
+    background: #ff000082 !important;
+  }
+  .ui.primary.button.green{
+    background: #00ff3c96 !important;
+  }
+}
 .DfVoter.vertical {
   margin-right: 1rem;
 }

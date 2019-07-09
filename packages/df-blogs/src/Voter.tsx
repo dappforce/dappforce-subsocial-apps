@@ -65,7 +65,7 @@ export const Voter = (props: VoterProps) => {
 
   }, [ reactionKind ]);
 
-  const buildTxParams = (param: string) => {
+  const buildTxParams = (param: 'Downvote' | 'Upvote') => {
     if (reactionIsNone) {
       return [ id, new ReactionKind(param) ];
     } else if (reactionKind !== param) {
@@ -79,62 +79,33 @@ export const Voter = (props: VoterProps) => {
 
     const orientation = isComment ? 'vertical' : '';
 
-    // type ValueButton = {
-    //   isUpvote: boolean;
-    // };
+    const renderTxButton = (isUpvote: boolean) => {
 
-    // const RenderTxButton = (props: ValueButton) => {
+      const reactionName = isUpvote ? 'Upvote' : 'Downvote';
+      const color = isUpvote ? 'green' : 'red';
+      const icon = isUpvote ? 'up' : 'down';
+      const count = isUpvote ? state.upvotes_count.toNumber() : state.downvotes_count.toNumber();
+      const struct = isComment ? 'Comment' : 'Post';
 
-    //   const { isUpvote } = props;
-    //   const reactionName = isUpvote ? 'Uptove' : 'Downvote';
-    //   const icon = isUpvote ? 'up' : 'down';
-    //   const count = isUpvote ? state.upvotes_count.toNumber() : state.downvotes_count.toNumber();
-    //   const struct = isComment ? 'Comment' : 'Post';
-
-    //   return (<TxButton
-    //     type='submit'
-    //     compact
-    //     params={buildTxParams(reactionName)}
-    //     tx={reactionIsNone
-    //       ? `blogs.create${struct}Reaction`
-    //       : (reactionKind !== reactionName)
-    //       ? `blogs.update${struct}Reaction`
-    //       : `blogs.delete${struct}Reaction`}
-    //   >
-    //     <Icon className={`thumbs ${icon} outline`}/>
-    //     {count}
-    //   </TxButton>);
-    // };
-    const struct = isComment ? 'Comment' : 'Post';
-
-    return <Button.Group basic className={`DfVoter ${orientation}`}>
-        <TxButton
-          type='submit'
-          compact
-          params={buildTxParams('Upvote')}
-          tx={reactionIsNone
-            ? `blogs.create${struct}Reaction`
-            : (reactionKind !== 'Upvote')
-            ? `blogs.update${struct}Reaction`
-            : `blogs.delete${struct}Reaction`}
-        >
-          <Icon className='thumbs up outline'/>
-          {state.upvotes_count.toNumber()}
-        </TxButton>
-      <TxButton
+      return (<TxButton
         type='submit'
-        circular
         compact
-        params={buildTxParams('Downvote')}
+        className={color}
+        params={buildTxParams(reactionName)}
         tx={reactionIsNone
           ? `blogs.create${struct}Reaction`
-          : (reactionKind !== 'Downvote')
+          : (reactionKind !== `${reactionName}`)
           ? `blogs.update${struct}Reaction`
           : `blogs.delete${struct}Reaction`}
       >
-        <Icon className='thumbs down outline'/>
-        {state.downvotes_count.toNumber()}
-      </TxButton>
+        <Icon className={`thumbs ${icon} outline`}/>
+        {count}
+      </TxButton>);
+    };
+
+    return <Button.Group basic className={`DfVoter ${orientation}`}>
+        {renderTxButton(true)}
+        {renderTxButton(false)}
     </Button.Group>;
   };
 
