@@ -14,7 +14,7 @@ import { withCalls } from '@polkadot/ui-api/index';
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
-import { queryBlogsToProp, UrlHasIdProps } from './utils';
+import { queryBlogsToProp, UrlHasIdProps, getIdWithEvent } from './utils';
 
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -82,6 +82,7 @@ const LabelledText = JoyForms.LabelledText<FormValues>();
 const InnerForm = (props: FormProps) => {
   const {
     history,
+    id,
     struct,
     values,
     dirty,
@@ -111,14 +112,26 @@ const InnerForm = (props: FormProps) => {
     setSubmitting(false);
   };
 
+  const goToView = (id: BlogId) => {
+    if (history) {
+      history.push('/blogs/' + id.toString());
+    }
+  };
+  console.log(history);
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
+    console.log('here');
+    console.log(history);
+    if (!history) return;
 
-    // TODO get id of newly created post and redirect.
-    // goToView(id);
+    let _id = id;
+    console.log(_id);
+    if (!_id) {
+      _id = getIdWithEvent(_txResult,id);
+    }
+    console.log(_id);
+    _id && goToView(_id);
   };
-
-  const isNew = struct === undefined;
 
   const buildTxParams = () => {
     if (!isValid) return [];
@@ -140,12 +153,6 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  const goToView = (id: BlogId) => {
-    if (history) {
-      history.push('/blogs/' + id.toString());
-    }
-  };
-
   const title = struct ? `Edit blog` : `New my blog`;
 
   return (
@@ -155,8 +162,8 @@ const InnerForm = (props: FormProps) => {
       <LabelledText name='name' label='Blog name' placeholder='Name of your blog.' {...props} />
 
       <LabelledText name='slug' label='URL slug' placeholder={`You can use a-z, 0-9, dashes and underscores.`} style={{ maxWidth: '30rem' }} {...props} />
-      NewAccount
-      <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
+
+      <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image ${history}`} {...props} />
 
       <LabelledField name='desc' label='Description' {...props}>
         <Field component='textarea' id='desc' name='desc' disabled={isSubmitting} rows={3} placeholder='Tell others what is your blog about. You can use Markdown.' />
@@ -227,6 +234,7 @@ const EditForm = withFormik<OuterProps, FormValues>({
 })(InnerForm);
 
 type BlogByIdProps = MyAccountProps & {
+  history?: History;
   id: BlogId,
   blogById?: Option<Blog>
 };
@@ -234,7 +242,7 @@ type BlogByIdProps = MyAccountProps & {
 function BlogByIdInner (p: BlogByIdProps) {
   if (p.blogById) {
     const struct = p.blogById.unwrapOr(undefined);
-    return <EditForm struct={struct} />;
+    return <EditForm struct={struct} {...p}/>;
   } else return <em>Loading...</em>;
 }
 
@@ -247,8 +255,8 @@ const BlogById = withMyAccount(
 function ExtractIdFromUrl (props: UrlHasIdProps) {
   const { match: { params: { id } } } = props;
   return nonEmptyStr(id)
-    ? <BlogById id={new BlogId(id)} />
-    : <EditForm />;
+    ? <BlogById id={new BlogId(id)} {...props}/>
+    : <EditForm {...props}/>;
 }
 
 export default ExtractIdFromUrl;

@@ -3,7 +3,6 @@ import { Button } from 'semantic-ui-react';
 import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
-
 import TxButton from '@polkadot/joy-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
@@ -14,7 +13,7 @@ import { Option } from '@polkadot/types/codec';
 import { PostId, Post, PostData, PostUpdate, BlogId } from './types';
 import Section from '@polkadot/joy-utils/Section';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-import { queryBlogsToProp, UrlHasIdProps } from './utils';
+import { queryBlogsToProp, UrlHasIdProps, getIdWithEvent } from './utils';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()
@@ -58,6 +57,8 @@ const LabelledText = JoyForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
+    history,
+    id,
     blogId,
     struct,
     values,
@@ -84,6 +85,12 @@ const InnerForm = (props: FormProps) => {
     setSubmitting(false);
   };
 
+  const goToView = (id: PostId) => {
+    if (history) {
+      history.push('/blogs/posts/' + id.toString());
+    }
+  };
+
   const onTxFailed = (_txResult: SubmittableResult) => {
     setSubmitting(false);
   };
@@ -91,8 +98,13 @@ const InnerForm = (props: FormProps) => {
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
 
-    // TODO get id of newly created post and redirect.
-    // goToView(id);
+    if (!history) return;
+
+    let _id = id;
+    if (!_id) {
+      _id = getIdWithEvent(_txResult,id);
+    }
+    _id && goToView(_id);
   };
 
   const isNew = struct === undefined;
@@ -116,12 +128,6 @@ const InnerForm = (props: FormProps) => {
       return [ struct.id, update ];
     }
   };
-
-  // const goToView = (id: PostId) => {
-  //   if (history) {
-  //     history.push('/blogs/posts/' + id.toString());
-  //   }
-  // };
 
   const form =
     <Form className='ui form JoyForm EditEntityForm'>
@@ -213,7 +219,7 @@ function withIdFromUrl (Component: React.ComponentType<OuterProps>) {
   return function (props: UrlHasIdProps) {
     const { match: { params: { id } } } = props;
     try {
-      return <Component id={new PostId(id)} />;
+      return <Component id={new PostId(id)} {...props}/>;
     } catch (err) {
       return <em>Invalid post ID: {id}</em>;
     }
@@ -224,7 +230,7 @@ function withBlogIdFromUrl (Component: React.ComponentType<OuterProps>) {
   return function (props: UrlHasIdProps) {
     const { match: { params: { id } } } = props;
     try {
-      return <Component blogId={new BlogId(id)} />;
+      return <Component blogId={new BlogId(id)} {...props} />;
     } catch (err) {
       return <em>Invalid blog ID: {id}</em>;
     }

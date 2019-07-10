@@ -59,6 +59,7 @@ export const Voter = (props: VoterProps) => {
         }
         const reaction = x.unwrap() as Reaction;
         setReactionState(reaction);
+        console.log(reaction.kind.toString());
       }).catch(err => console.log(err));
     }).catch(err => console.log(err));
 
