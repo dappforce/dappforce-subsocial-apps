@@ -99,18 +99,18 @@ const InnerForm = (props: FormProps) => {
     tags
   } = values;
 
+  const goToView = (id: BlogId) => {
+    if (history) {
+      history.push('/blogs/' + id.toString());
+    }
+  };
+
   const onSubmit = (sendTx: () => void) => {
     if (isValid) sendTx();
   };
 
   const onTxCancelled = () => {
     setSubmitting(false);
-  };
-
-  const goToView = (id: BlogId) => {
-    if (history) {
-      history.push('/blogs/' + id.toString());
-    }
   };
 
   const onTxFailed = (_txResult: SubmittableResult) => {
@@ -121,7 +121,9 @@ const InnerForm = (props: FormProps) => {
     setSubmitting(false);
 
     if (!history) return;
+
     let _id = id;
+
     if (!_id) {
       _id = getIdWithEvent(_txResult,id);
     }
@@ -159,7 +161,7 @@ const InnerForm = (props: FormProps) => {
 
       <LabelledText name='slug' label='URL slug' placeholder={`You can use a-z, 0-9, dashes and underscores.`} style={{ maxWidth: '30rem' }} {...props} />
 
-      <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image ${history}`} {...props} />
+      <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
 
       <LabelledField name='desc' label='Description' {...props}>
         <Field component='textarea' id='desc' name='desc' disabled={isSubmitting} rows={3} placeholder='Tell others what is your blog about. You can use Markdown.' />

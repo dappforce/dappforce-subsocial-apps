@@ -77,18 +77,18 @@ const InnerForm = (props: FormProps) => {
     tags
   } = values;
 
+  const goToView = (id: PostId) => {
+    if (history) {
+      history.push('/blogs/posts/' + id.toString());
+    }
+  };
+
   const onSubmit = (sendTx: () => void) => {
     if (isValid) sendTx();
   };
 
   const onTxCancelled = () => {
     setSubmitting(false);
-  };
-
-  const goToView = (id: PostId) => {
-    if (history) {
-      history.push('/blogs/posts/' + id.toString());
-    }
   };
 
   const onTxFailed = (_txResult: SubmittableResult) => {
@@ -101,13 +101,12 @@ const InnerForm = (props: FormProps) => {
     if (!history) return;
 
     let _id = id;
+
     if (!_id) {
       _id = getIdWithEvent(_txResult,id);
     }
     _id && goToView(_id);
   };
-
-  const isNew = struct === undefined;
 
   const buildTxParams = () => {
     if (!isValid) return [];
@@ -150,7 +149,7 @@ const InnerForm = (props: FormProps) => {
         <TxButton
           type='submit'
           size='large'
-          label={isNew
+          label={!struct
             ? `Create a post`
             : `Update a post`
           }
@@ -175,7 +174,7 @@ const InnerForm = (props: FormProps) => {
       </LabelledField>
     </Form>;
 
-  const sectionTitle = isNew ? `New post` : `Edit my post`;
+  const sectionTitle = !struct ? `New post` : `Edit my post`;
 
   return <>
     <Section className='EditEntityBox' title={sectionTitle}>

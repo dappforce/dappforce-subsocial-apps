@@ -47,13 +47,15 @@ export const Pagination = (p: PaginationProps) => {
 export function getIdWithEvent<T> (_txResult: SubmittableResult, id: T): T {
 
   let _id = id;
+
   _txResult.events.find(event => {
     const { event: { data, method } } = event;
-    console.log('Method: ' + method);
+
     if (method.indexOf(`Created`) !== -1) {
       _id = data.toArray()[1] as T; // What do this, because ts error?
     }
   });
+
   return _id;
 }
 // It's used in such routes as:
