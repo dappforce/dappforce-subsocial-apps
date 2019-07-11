@@ -24,7 +24,7 @@ type ViewPostProps = MyAccountProps & {
 function ViewPostInternal (props: ViewPostProps) {
   const { postById } = props;
 
-  if (postById.isEmpty) return <em>Loading...</em>;
+  if (postById === undefined) return <em>Loading...</em>;
   else if (postById.isNone) return <em>Post not found</em>;
 
   const {
