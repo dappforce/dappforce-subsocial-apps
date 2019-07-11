@@ -301,6 +301,7 @@ export class ReactionKind extends Enum {
 export type ReactionType = {
   id: ReactionId,
   created: Change,
+  updated: OptionChange,
   kind: ReactionKind
 };
 
@@ -320,6 +321,10 @@ export class Reaction extends Struct {
 
   get created (): Change {
     return this.get('created') as Change;
+  }
+
+  get updated (): OptionChange {
+    return this.get('updated') as OptionChange;
   }
 
   get kind (): ReactionKind {
