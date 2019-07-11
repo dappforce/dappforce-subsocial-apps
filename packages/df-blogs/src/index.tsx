@@ -13,7 +13,7 @@ import './index.css';
 import { queryBlogsToProp } from './utils';
 import translate from './translate';
 import ListBlogs from './ListBlogs';
-import EditBlog from './EditBlog';
+import { EditBlog, NewBlog } from './EditBlog';
 import ViewBlogById from './ViewBlogById';
 import { NewPost, EditPost } from './EditPost';
 import { ViewPostById } from './ViewPost';
@@ -48,7 +48,7 @@ class App extends React.PureComponent<Props> {
           <Tabs basePath={basePath} items={tabs} />
         </header>
         <Switch>
-          <Route path={`${basePath}/new`} component={EditBlog} />
+          <Route path={`${basePath}/new`} component={NewBlog} />
           <Route path={`${basePath}/posts/:id/edit`} component={EditPost} />
           <Route path={`${basePath}/posts/:id`} component={ViewPostById} />
           <Route path={`${basePath}/:id/edit`} component={EditBlog} />

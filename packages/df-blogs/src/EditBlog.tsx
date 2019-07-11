@@ -7,14 +7,13 @@ import { History } from 'history';
 import { Option, Text } from '@polkadot/types';
 import Section from '@polkadot/joy-utils/Section';
 import TxButton from '@polkadot/joy-utils/TxButton';
-import { nonEmptyStr } from '@polkadot/joy-utils/index';
 import { SubmittableResult } from '@polkadot/api';
-import { withCalls } from '@polkadot/ui-api/index';
+import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import * as JoyForms from '@polkadot/joy-utils/forms';
-import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
 import { queryBlogsToProp, UrlHasIdProps, getIdWithEvent } from './utils';
+import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -108,28 +107,25 @@ const InnerForm = (props: FormProps) => {
     setSubmitting(false);
   };
 
-  const onTxFailed = (_txResult: SubmittableResult) => {
-    setSubmitting(false);
-  };
-
   const goToView = (id: BlogId) => {
     if (history) {
       history.push('/blogs/' + id.toString());
     }
   };
-  console.log(history);
+
+  const onTxFailed = (_txResult: SubmittableResult) => {
+    setSubmitting(false);
+  };
+
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
-    console.log('here');
-    console.log(history);
-    if (!history) return;
 
+    if (!history) return;
     let _id = id;
-    console.log(_id);
     if (!_id) {
       _id = getIdWithEvent(_txResult,id);
     }
-    console.log(_id);
+
     _id && goToView(_id);
   };
 
@@ -186,9 +182,9 @@ const InnerForm = (props: FormProps) => {
             : 'blogs.createBlog'
           }
           onClick={onSubmit}
-          onTxCancelled={onTxCancelled}
-          onTxFailed={onTxFailed}
-          onTxSuccess={onTxSuccess}
+          txCancelledCb={onTxCancelled}
+          txFailedCb={onTxFailed}
+          txSuccessCb={onTxSuccess}
         />
         <Button
           type='button'
@@ -233,30 +229,48 @@ const EditForm = withFormik<OuterProps, FormValues>({
   }
 })(InnerForm);
 
-type BlogByIdProps = MyAccountProps & {
-  history?: History;
-  id: BlogId,
-  blogById?: Option<Blog>
+function withIdFromUrl (Component: React.ComponentType<OuterProps>) {
+  return function (props: UrlHasIdProps) {
+    const { match: { params: { id } } } = props;
+    try {
+      return <Component id={new BlogId(id)} {...props}/>;
+    } catch (err) {
+      return <em>Invalid post ID: {id}</em>;
+    }
+  };
+}
+
+type LoadStructProps = OuterProps & {
+  structOpt: Option<Blog>
 };
 
-function BlogByIdInner (p: BlogByIdProps) {
-  if (p.blogById) {
-    const struct = p.blogById.unwrapOr(undefined);
-    return <EditForm struct={struct} {...p}/>;
-  } else return <em>Loading...</em>;
+function LoadStruct (props: LoadStructProps) {
+  const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
+  const { structOpt } = props;
+
+  if (!myAddress || !structOpt) {
+    return <em>Loading post...</em>;
+  }
+
+  if (structOpt.isNone) {
+    return <em>Blog not found</em>;
+  }
+
+  const struct = structOpt.unwrap();
+
+  return <EditForm {...props} struct={struct}/>;// TODO
 }
 
-const BlogById = withMyAccount(
-  withCalls<BlogByIdProps>(
-    queryBlogsToProp('blogById', 'id')
-  )(BlogByIdInner)
+export const NewBlog = withMulti(
+  EditForm
+  // , withOnlyMembers
 );
 
-function ExtractIdFromUrl (props: UrlHasIdProps) {
-  const { match: { params: { id } } } = props;
-  return nonEmptyStr(id)
-    ? <BlogById id={new BlogId(id)} {...props}/>
-    : <EditForm {...props}/>;
-}
-
-export default ExtractIdFromUrl;
+export const EditBlog = withMulti(
+  LoadStruct,
+  withIdFromUrl,
+  withCalls<OuterProps>(
+    queryBlogsToProp('blogById',
+      { paramName: 'id', propName: 'structOpt' })
+  )
+);
