@@ -107,12 +107,14 @@ export function ViewComment (props: ViewCommentProps) {
 
     console.log('Comment reload');
 
-    api.query.blogs.commentById(id, (x => {
-      if (x.isNone) return;
-      const comment = x.unwrap() as Comment;
+    const loadComment = async () => {
+      const result = await api.query.blogs.commentById(id) as OptionComment;
+      if (result.isNone) return;
+      const comment = result.unwrap() as Comment;
       setStruct(comment);
       setDoReloadComment(false);
-    })).catch(err => console.log(err));
+    };
+    loadComment().catch(err => console.log(err));
 
   },[ doReloadComment ]); // TODO use reactionKind
 

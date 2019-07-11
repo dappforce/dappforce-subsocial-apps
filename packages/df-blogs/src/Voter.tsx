@@ -3,7 +3,7 @@ import { Button } from 'semantic-ui-react';
 
 import TxButton from '@polkadot/joy-utils/TxButton';
 import { api } from '@polkadot/ui-api';
-import { AccountId } from '@polkadot/types';
+import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { PostId, Comment, Post, ReactionKind, Reaction, CommentId } from './types';
@@ -38,19 +38,25 @@ export const Voter = (props: VoterProps) => {
   useEffect(() => {
 
     const struct = isComment ? 'comment' : 'post';
+    const loadComment = async () => {
+      const result = await api.query.blogs.commentById(id) as Option<Comment>;
+      if (result.isNone) return;
+      const comment = result.unwrap() as Comment;
+      setState(comment);
+    };
+    const loadPost = async () => {
+      const result = await api.query.blogs.postById(id) as Option<Post>;
+      if (result.isNone) return;
+      console.log(result);
+      const post = result.unwrap() as Post;
+      setState(post);
+    };
 
     isComment
-    ? api.query.blogs.commentById(id, (x => {
-      if (x.isNone) return;
-      const comment = x.unwrap() as Comment;
-      setState(comment);
-    })).catch(err => console.log(err))
-    : api.query.blogs.postById(id, (x => {
-      if (x.isNone) return;
-      const post = x.unwrap() as Post;
-      setState(post);
-    })).catch(err => console.log(err));
+    ? loadComment().catch(err => console.log(err))
+    : loadPost().catch(err => console.log(err));
 
+    // TODO not use callback
     api.query.blogs[`${struct}ReactionIdByAccount`](dataForQuery, reactionId => {
       api.query.blogs.reactionById(reactionId, x => {
         if (x.isNone) {

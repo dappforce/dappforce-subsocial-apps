@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { Option } from '@polkadot/types';
+import { Option, AccountId, Bool } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { nonEmptyStr } from '@polkadot/joy-utils/index';
 import { BlogId, Blog, PostId } from './types';
+import { Tuple } from '@polkadot/types/codec';
 import { queryBlogsToProp } from './utils';
 import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 import Section from '@polkadot/joy-utils/Section';
-import { ViewPost } from './ViewPost'; 
+import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
+import TxButton from '@polkadot/joy-utils/TxButton';
+import { api } from '@polkadot/ui-api';
 
 type Props = MyAccountProps & {
   preview?: boolean,
@@ -39,6 +42,18 @@ function Component (props: Props) {
     created: { account },
     json: { name, desc, image }
   } = blog;
+
+  const dataForQuery = new Tuple([AccountId, BlogId], [new AccountId(myAddress), id]);
+  const [ isFollow, setIsFollow ] = useState(false);
+  const [ triggerReload, setTriggerReload ] = useState(false);
+  useEffect(() => {
+    const load = async () => {
+      const _isFollow = await (api.query.blogs[`blogFollowedByAccount`](dataForQuery)) as Bool;
+      setIsFollow(_isFollow.valueOf());
+    };
+    load().catch(err => console.log(err));
+
+  }, [ triggerReload ]);
 
   const isMyBlog = myAddress && account && myAddress === account.toString();
   const hasImage = image && nonEmptyStr(image.toString());
@@ -91,11 +106,29 @@ function Component (props: Props) {
     </>;
   };
 
+  const buildTxParams = () => {
+    return [ id ];
+  };
+
   return <>
     <div className='ui massive relaxed middle aligned list FullProfile'>
       {renderPreview()}
     </div>
     <CreatedBy created={blog.created} />
+    <TxButton
+      type='submit'
+      compact
+      isPrimary={!isFollow}
+      isBasic={isFollow}
+      label={isFollow
+        ? 'Unfollow blog'
+        : 'Follow blog'}
+      params={buildTxParams()}
+      tx={isFollow
+        ? `blogs.unfollowBlog`
+        : `blogs.followBlog`}
+      txSuccessCb={() => setTriggerReload(!triggerReload) }
+    />
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>
