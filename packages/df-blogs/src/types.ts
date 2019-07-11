@@ -309,6 +309,7 @@ export class Reaction extends Struct {
     super({
       id: ReactionId,
       created: Change,
+      updated: OptionChange,
       kind: ReactionKind
     }, value);
   }
