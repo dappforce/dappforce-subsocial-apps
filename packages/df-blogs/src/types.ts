@@ -342,8 +342,8 @@ export class SocialAccount extends Struct {
   constructor (value?: SocialAccountType) {
     super({
       followers_count: u32,
-      following_accounts_count: u32,
-      following_blogs_count: u32
+      following_accounts_count: u16,
+      following_blogs_count: u16
     }, value);
   }
 
@@ -351,12 +351,12 @@ export class SocialAccount extends Struct {
     return this.get('followers_count') as u32;
   }
 
-  get following_accounts_count (): u32 {
-    return this.get('following_accounts_count') as u32;
+  get following_accounts_count (): u16 {
+    return this.get('following_accounts_count') as u16;
   }
 
-  get following_blogs_count (): u32 {
-    return this.get('following_blogs_count') as u32;
+  get following_blogs_count (): u16 {
+    return this.get('following_blogs_count') as u16;
   }
 }
 
