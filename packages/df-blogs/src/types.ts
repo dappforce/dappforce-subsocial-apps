@@ -1,5 +1,5 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
-import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u64, Text, Vector } from '@polkadot/types';
+import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector } from '@polkadot/types';
 
 export class BlogId extends u64 {}
 export class PostId extends u64 {}
@@ -332,6 +332,34 @@ export class Reaction extends Struct {
   }
 }
 
+export type SocialAccountType = {
+  followers_count: u32,
+  following_accounts_count: u32,
+  following_blogs_count: u32
+};
+
+export class SocialAccount extends Struct {
+  constructor (value?: SocialAccountType) {
+    super({
+      followers_count: u32,
+      following_accounts_count: u32,
+      following_blogs_count: u32
+    }, value);
+  }
+
+  get followers_count (): u32 {
+    return this.get('followers_count') as u32;
+  }
+
+  get following_accounts_count (): u32 {
+    return this.get('following_accounts_count') as u32;
+  }
+
+  get following_blogs_count (): u32 {
+    return this.get('following_blogs_count') as u32;
+  }
+}
+
 export function registerBlogsTypes () {
   try {
     const typeRegistry = getTypeRegistry();
@@ -348,7 +376,8 @@ export function registerBlogsTypes () {
       Comment,
       CommentUpdate,
       ReactionKind,
-      Reaction
+      Reaction,
+      SocialAccount
     });
   } catch (err) {
     console.error('Failed to register custom types of blogs module', err);
