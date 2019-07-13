@@ -37,27 +37,20 @@ export const Voter = (props: VoterProps) => {
 
   useEffect(() => {
 
-    const struct = isComment ? 'comment' : 'post';
-    const loadComment = async () => {
-      const result = await api.query.blogs.commentById(id) as Option<Comment>;
-      if (result.isNone) return;
-      const comment = result.unwrap() as Comment;
-      setState(comment);
-    };
-    const loadPost = async () => {
-      const result = await api.query.blogs.postById(id) as Option<Post>;
-      if (result.isNone) return;
-      console.log(result);
-      const post = result.unwrap() as Post;
-      setState(post);
-    };
+    const structQuery = isComment ? 'comment' : 'post';
 
-    isComment
-    ? loadComment().catch(err => console.log(err))
-    : loadPost().catch(err => console.log(err));
+    async function loadStruct<T extends Comment | Post> (struct: T) {
+      const result = await api.query.blogs[`${structQuery}ById`](id) as Option<T>;
+
+      if (result.isNone) return;
+
+      const _struct = result.unwrap() as T;
+      setState(_struct);
+    }
+    loadStruct(state).catch(err => console.log(err));
 
     // TODO not use callback
-    api.query.blogs[`${struct}ReactionIdByAccount`](dataForQuery, reactionId => {
+    api.query.blogs[`${structQuery}ReactionIdByAccount`](dataForQuery, reactionId => {
       api.query.blogs.reactionById(reactionId, x => {
         if (x.isNone) {
           setReactionState('None');

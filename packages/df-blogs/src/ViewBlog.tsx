@@ -16,12 +16,16 @@ import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
 import TxButton from '@polkadot/joy-utils/TxButton';
 import { api } from '@polkadot/ui-api';
+import { Modal, Button } from 'semantic-ui-react';
+import _ from 'lodash';
+import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 
 type Props = MyAccountProps & {
   preview?: boolean,
   id: BlogId,
   blogById?: Option<Blog>,
-  postIds?: PostId[]
+  postIds?: PostId[],
+  followers?: AccountId[]
 };
 
 function Component (props: Props) {
@@ -33,7 +37,8 @@ function Component (props: Props) {
   const {
     preview = false,
     myAddress,
-    postIds = []
+    postIds = [],
+    followers = []
   } = props;
 
   const blog = blogById.unwrap();
@@ -46,6 +51,7 @@ function Component (props: Props) {
   const dataForQuery = new Tuple([AccountId, BlogId], [new AccountId(myAddress), id]);
   const [ isFollow, setIsFollow ] = useState(false);
   const [ triggerReload, setTriggerReload ] = useState(false);
+
   useEffect(() => {
     const load = async () => {
       const _isFollow = await (api.query.blogs[`blogFollowedByAccount`](dataForQuery)) as Bool;
@@ -106,15 +112,7 @@ function Component (props: Props) {
     </>;
   };
 
-  const buildTxParams = () => {
-    return [ id ];
-  };
-
-  return <>
-    <div className='ui massive relaxed middle aligned list FullProfile'>
-      {renderPreview()}
-    </div>
-    <CreatedBy created={blog.created} />
+  const FollowButton = () => (
     <TxButton
       type='submit'
       compact
@@ -129,6 +127,56 @@ function Component (props: Props) {
         : `blogs.followBlog`}
       txSuccessCb={() => setTriggerReload(!triggerReload) }
     />
+  );
+
+  const ModalViewFollower = () => {
+
+    const [open, setOpen] = useState(false);
+
+    const viewFollowers = () => {
+      return followers.map(account => <div style={ { textAlign: 'left', margin: '1rem' } }><AddressMini
+        value={account}
+        isShort={false}
+        isPadded={false}
+        size={48}
+        withName
+        withBalance
+      /></div>);
+    };
+
+    return (
+    <Modal
+        open={open}
+        dimmer='blurring'
+        trigger={<Button basic onClick={() => setOpen(true)}>Followers</Button>}
+        centered={true}
+        style={{ marginTop: '3rem' }}
+    >
+      <Modal.Header><h1>Users who follow to this blog</h1></Modal.Header>
+      <Modal.Content scrolling>
+          {viewFollowers()}
+      </Modal.Content>
+      <Modal.Actions>
+        <Button
+          content='Ok'
+          onClick={() => setOpen(false)}
+        />
+      </Modal.Actions>
+    </Modal>
+    );
+  };
+
+  const buildTxParams = () => {
+    return [ id ];
+  };
+
+  return <>
+    <ModalViewFollower />
+    <div className='ui massive relaxed middle aligned list FullProfile'>
+      {renderPreview()}
+    </div>
+    <CreatedBy created={blog.created} />
+    <FollowButton />
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>
@@ -140,6 +188,7 @@ export default withMulti(
   withMyAccount,
   withCalls<Props>(
     queryBlogsToProp('blogById', 'id'),
+    queryBlogsToProp('blogFollowers', { paramName: 'id', propName: 'followers' }),
     queryBlogsToProp('postIdsByBlogId', { paramName: 'id', propName: 'postIds' })
   )
 );
