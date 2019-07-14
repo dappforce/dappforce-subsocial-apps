@@ -334,8 +334,8 @@ export class Reaction extends Struct {
 
 export type SocialAccountType = {
   followers_count: u32,
-  following_accounts_count: u32,
-  following_blogs_count: u32
+  following_accounts_count: u16,
+  following_blogs_count: u16
 };
 
 export class SocialAccount extends Struct {
