@@ -129,40 +129,41 @@ function Component (props: Props) {
     />
   );
 
-  const ModalViewFollower = () => {
-
+  const BlogFollowersModal = () => {
     const [open, setOpen] = useState(false);
+    const followersCount = blog.followers_count.toNumber();
 
-    const viewFollowers = () => {
-      return followers.map(account => <div style={ { textAlign: 'left', margin: '1rem' } }><AddressMini
-        value={account}
-        isShort={false}
-        isPadded={false}
-        size={48}
-        withName
-        withBalance
-      /></div>);
+    const renderFollowers = () => {
+      return followers.map(account =>
+        <div style={{ textAlign: 'left', margin: '1rem' }}>
+          <AddressMini
+            value={account}
+            isShort={false}
+            isPadded={false}
+            size={48}
+            withName
+            withBalance
+          />
+        </div>
+      );
     };
 
     return (
-    <Modal
+      <Modal
         open={open}
         dimmer='blurring'
-        trigger={<Button basic onClick={() => setOpen(true)}>Followers</Button>}
+        trigger={<Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>}
         centered={true}
         style={{ marginTop: '3rem' }}
-    >
-      <Modal.Header><h1>Blog followers</h1></Modal.Header>
-      <Modal.Content scrolling>
-          {viewFollowers()}
-      </Modal.Content>
-      <Modal.Actions>
-        <Button
-          content='Ok'
-          onClick={() => setOpen(false)}
-        />
-      </Modal.Actions>
-    </Modal>
+      >
+        <Modal.Header><h1>Blog followers ({followersCount})</h1></Modal.Header>
+        <Modal.Content scrolling>
+          {renderFollowers()}
+        </Modal.Content>
+        <Modal.Actions>
+          <Button content='Close' onClick={() => setOpen(false)} />
+        </Modal.Actions>
+      </Modal>
     );
   };
 
@@ -171,12 +172,12 @@ function Component (props: Props) {
   };
 
   return <>
-    <ModalViewFollower />
     <div className='ui massive relaxed middle aligned list FullProfile'>
       {renderPreview()}
     </div>
     <CreatedBy created={blog.created} />
     <FollowButton />
+    <BlogFollowersModal />
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>
