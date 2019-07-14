@@ -68,6 +68,9 @@
 }
 
 .DfVoter {
+  &.vertical {
+    margin-right: .5rem;
+  }
   .ui.button {
     background-color: transparent !important;
     color: #2d2d2d;
@@ -85,9 +88,6 @@
       }
     }
   }
-}
-.DfVoter.vertical {
-  margin-right: 1rem;
 }
 
 .DfCommentsByPost {
