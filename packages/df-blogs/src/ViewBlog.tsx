@@ -152,7 +152,7 @@ function Component (props: Props) {
         centered={true}
         style={{ marginTop: '3rem' }}
     >
-      <Modal.Header><h1>Users who follow to this blog</h1></Modal.Header>
+      <Modal.Header><h1>Blog followers</h1></Modal.Header>
       <Modal.Content scrolling>
           {viewFollowers()}
       </Modal.Content>
