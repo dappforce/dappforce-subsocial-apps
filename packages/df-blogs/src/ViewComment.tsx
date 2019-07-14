@@ -126,6 +126,7 @@ export function ViewComment (props: ViewCommentProps) {
     return <Button
       type='button'
       basic
+      size='tiny'
       onClick={() => setShowEditForm(true)}
     >
         <Icon name='pencil'/>
@@ -137,6 +138,7 @@ export function ViewComment (props: ViewCommentProps) {
     <Button
       type='button'
       basic
+      size='tiny'
       onClick={() => setShowReplyForm(true)}
       content='Reply'
     />);
