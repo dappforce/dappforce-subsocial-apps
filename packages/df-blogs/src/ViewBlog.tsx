@@ -76,7 +76,7 @@ function Component (props: Props) {
           <div className='header'>
             <Link to={`/blogs/${id}`} className='handle'>{name.toString()}</Link>
             {isMyBlog &&
-              <Link to={`/blogs/${id}/edit`} className='ui tiny button'>
+              <Link to={`/blogs/${id}/edit`} className='ui tiny basic button'>
                 <i className='pencil alternate icon' />
                 Edit my blog
               </Link>

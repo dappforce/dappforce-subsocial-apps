@@ -47,7 +47,7 @@ function ViewPostInternal (props: ViewPostProps) {
   const editPostBtn = () => (
     isMyStruct && <Link
       to={`/blogs/posts/${id.toString()}/edit`}
-      className='ui small button'
+      className='ui tiny basic button'
       style={{ marginLeft: '.5rem' }}
     >
       <i className='pencil alternate icon' />

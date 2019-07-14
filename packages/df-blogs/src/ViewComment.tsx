@@ -156,7 +156,8 @@ export function ViewComment (props: ViewCommentProps) {
               value={account}
               isShort={true}
               isPadded={false}
-              extraDetails={`Commented on ${time.toLocaleString()} at block #${block.toNumber()}`}
+              size={28}
+              extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}`}
             />
             {renderButtonEditForm()}
           </SuiComment.Metadata>
