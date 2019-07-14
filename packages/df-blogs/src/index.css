@@ -57,10 +57,33 @@
     margin-right: .5rem;
   }
 }
-
+.ui.threaded.comments .comment .comments{
+  padding: 1rem 0 0 1.2rem;
+  margin: -1rem 0 0 1.25rem;
+}
 .DfCommentBox {
   display: flex !important;
-  align-items: start;
+  align-items: flex-start;
+  margin-top: 2rem;
+}
+
+.DfVoter {
+  .ui.button{
+    background-color: #fafafa !important;
+    color: #2d2d2d;
+  }
+  .ui.button.red:hover{
+    color: #ff0000 !important;
+  }
+  .ui.button.green:hover{
+    color: #00ff3c !important;
+  }
+  .ui.button.red.active{
+    color: #ff0000 !important;
+  }
+  .ui.button.green.active{
+    color: #00ff3c !important;
+  }
 }
 .DfVoter.vertical {
   margin-right: 1rem;

@@ -13,8 +13,8 @@ class Component extends React.PureComponent<Props> {
   render () {
     const { match: { params: { id } } } = this.props;
     return id
-     ? <ViewBlog id={new BlogId(id)} />
-     : null;
+    ? <ViewBlog id={new BlogId(id)} />
+    : null;
   }
 }
 

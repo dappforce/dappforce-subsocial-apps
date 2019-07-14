@@ -15,6 +15,7 @@ type InjectedProps = {
 type Props = BareProps & ApiProps & MyAccountProps & PartialQueueTx$Extrinsic & {
   accountId?: string,
   type?: 'submit' | 'button',
+  isBasic?: boolean,
   isPrimary?: boolean,
   isDisabled?: boolean,
   label: React.ReactNode,
@@ -25,13 +26,14 @@ type Props = BareProps & ApiProps & MyAccountProps & PartialQueueTx$Extrinsic & 
 
 class TxButtonInner extends React.PureComponent<Props & InjectedProps> {
   render () {
-    const { myAddress, accountId, isPrimary = true, isDisabled, label, onClick } = this.props;
+    const { myAddress, accountId, isPrimary = true, isBasic, isDisabled, label, onClick } = this.props;
     const origin = accountId || myAddress;
 
     return (
       <Button
         {...this.props}
         isDisabled={isDisabled || !origin}
+        isBasic={isBasic}
         isPrimary={isPrimary}
         label={label}
         onClick={() => {
@@ -45,7 +47,7 @@ class TxButtonInner extends React.PureComponent<Props & InjectedProps> {
   private send = (): void => {
     const {
       myAddress, accountId, api, params, queueExtrinsic, tx,
-      txFailedCb, txSuccessCb, txSentCb, txCancelledCb,
+      txFailedCb, txSuccessCb, txSentCb, txCancelledCb
     } = this.props;
     const origin = accountId || myAddress;
     const [section, method] = tx.split('.');
@@ -58,7 +60,7 @@ class TxButtonInner extends React.PureComponent<Props & InjectedProps> {
       txFailedCb,
       txSuccessCb,
       txSentCb,
-      txCancelledCb,
+      txCancelledCb
     });
   }
 }

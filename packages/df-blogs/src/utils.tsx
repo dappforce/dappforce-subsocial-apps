@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Pagination as SuiPagination } from 'semantic-ui-react';
 
 import { AccountId, AccountIndex, Address } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { Options } from '@polkadot/ui-api/with/types';
 import { queryToProp } from '@polkadot/joy-utils/index';
+import { SubmittableResult } from '@polkadot/api';
 
 export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
   return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
@@ -44,6 +44,20 @@ export const Pagination = (p: PaginationProps) => {
   );
 };
 
+export function getIdWithEvent<T> (_txResult: SubmittableResult, id: T): T {
+
+  let _id = id;
+
+  _txResult.events.find(event => {
+    const { event: { data, method } } = event;
+
+    if (method.indexOf(`Created`) !== -1) {
+      _id = data.toArray()[1] as T; // What do this, because ts error?
+    }
+  });
+
+  return _id;
+}
 // It's used in such routes as:
 //   /blogs/:id
 //   /blogs/:id/edit

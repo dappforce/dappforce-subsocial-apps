@@ -206,7 +206,6 @@ export class PostUpdate extends Struct {
   }
 }
 
-
 export type CommentData = {
   body: string
 };
