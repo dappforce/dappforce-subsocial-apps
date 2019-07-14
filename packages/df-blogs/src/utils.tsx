@@ -6,6 +6,7 @@ import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { Options } from '@polkadot/ui-api/with/types';
 import { queryToProp } from '@polkadot/joy-utils/index';
 import { SubmittableResult } from '@polkadot/api';
+import { CommentId, PostId, BlogId } from './types';
 
 export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
   return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
@@ -44,20 +45,24 @@ export const Pagination = (p: PaginationProps) => {
   );
 };
 
-export function getIdWithEvent<T> (_txResult: SubmittableResult, id: T): T {
+export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId>
+  (_txResult: SubmittableResult): IdType | undefined {
 
-  let _id = id;
+  let id: IdType | undefined;
 
   _txResult.events.find(event => {
     const { event: { data, method } } = event;
-
-    if (method.indexOf(`Created`) !== -1) {
-      _id = data.toArray()[1] as T; // What do this, because ts error?
+    if (method.indexOf(`Created`) >= 0) {
+      const [/* owner */, newId ] = data.toArray();
+      id = newId as IdType;
+      return true;
     }
+    return false;
   });
 
-  return _id;
+  return id;
 }
+
 // It's used in such routes as:
 //   /blogs/:id
 //   /blogs/:id/edit

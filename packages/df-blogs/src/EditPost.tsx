@@ -13,7 +13,7 @@ import { Option } from '@polkadot/types/codec';
 import { PostId, Post, PostData, PostUpdate, BlogId } from './types';
 import Section from '@polkadot/joy-utils/Section';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-import { queryBlogsToProp, UrlHasIdProps, getIdWithEvent } from './utils';
+import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()
@@ -100,11 +100,7 @@ const InnerForm = (props: FormProps) => {
 
     if (!history) return;
 
-    let _id = id;
-
-    if (!_id) {
-      _id = getIdWithEvent(_txResult,id);
-    }
+    const _id = id ? id : getNewIdFromEvent<PostId>(_txResult);
     _id && goToView(_id);
   };
 

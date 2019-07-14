@@ -12,7 +12,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
-import { queryBlogsToProp, UrlHasIdProps, getIdWithEvent } from './utils';
+import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 
 // TODO get next settings from Substrate:
@@ -122,12 +122,7 @@ const InnerForm = (props: FormProps) => {
 
     if (!history) return;
 
-    let _id = id;
-
-    if (!_id) {
-      _id = getIdWithEvent(_txResult,id);
-    }
-
+    const _id = id ? id : getNewIdFromEvent<BlogId>(_txResult);
     _id && goToView(_id);
   };
 
