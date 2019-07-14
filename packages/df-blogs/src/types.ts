@@ -56,7 +56,8 @@ export type BlogType = {
   writers: AccountId[],
   slug: Text,
   json: Text,
-  posts_count: u16
+  posts_count: u16,
+  followers_count: u32
 };
 
 export class Blog extends Struct {
@@ -68,7 +69,8 @@ export class Blog extends Struct {
       writers: VecAccountId,
       slug: Text,
       json: Text,
-      posts_count: u16
+      posts_count: u16,
+      followers_count: u32
     }, value);
   }
 
@@ -99,6 +101,10 @@ export class Blog extends Struct {
 
   get posts_count (): u16 {
     return this.get('posts_count') as u16;
+  }
+
+  get followers_count (): u32 {
+    return this.get('followers_count') as u32;
   }
 }
 
