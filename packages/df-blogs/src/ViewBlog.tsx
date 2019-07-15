@@ -16,9 +16,8 @@ import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
 import TxButton from '@polkadot/joy-utils/TxButton';
 import { api } from '@polkadot/ui-api';
-import { Modal, Button } from 'semantic-ui-react';
 import _ from 'lodash';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
+import { BlogFollowersModal } from './FollowerUtils';
 
 type Props = MyAccountProps & {
   preview?: boolean,
@@ -37,8 +36,7 @@ function Component (props: Props) {
   const {
     preview = false,
     myAddress,
-    postIds = [],
-    followers = []
+    postIds = []
   } = props;
 
   const blog = blogById.unwrap();
@@ -129,44 +127,6 @@ function Component (props: Props) {
     />
   );
 
-  const BlogFollowersModal = () => {
-    const [open, setOpen] = useState(false);
-    const followersCount = blog.followers_count.toNumber();
-
-    const renderFollowers = () => {
-      return followers.map(account =>
-        <div style={{ textAlign: 'left', margin: '1rem' }}>
-          <AddressMini
-            value={account}
-            isShort={false}
-            isPadded={false}
-            size={48}
-            withName
-            withBalance
-          />
-        </div>
-      );
-    };
-
-    return (
-      <Modal
-        open={open}
-        dimmer='blurring'
-        trigger={<Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>}
-        centered={true}
-        style={{ marginTop: '3rem' }}
-      >
-        <Modal.Header><h1>Blog followers ({followersCount})</h1></Modal.Header>
-        <Modal.Content scrolling>
-          {renderFollowers()}
-        </Modal.Content>
-        <Modal.Actions>
-          <Button content='Close' onClick={() => setOpen(false)} />
-        </Modal.Actions>
-      </Modal>
-    );
-  };
-
   const buildTxParams = () => {
     return [ id ];
   };
@@ -177,7 +137,7 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowButton />
-    <BlogFollowersModal />
+    <BlogFollowersModal followersCount={blog.followers_count.toNumber()}/>
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>
@@ -189,7 +149,6 @@ export default withMulti(
   withMyAccount,
   withCalls<Props>(
     queryBlogsToProp('blogById', 'id'),
-    queryBlogsToProp('blogFollowers', { paramName: 'id', propName: 'followers' }),
     queryBlogsToProp('postIdsByBlogId', { paramName: 'id', propName: 'postIds' })
   )
 );
