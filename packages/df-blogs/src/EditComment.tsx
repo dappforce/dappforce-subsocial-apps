@@ -33,7 +33,8 @@ type OuterProps = ValidationProps & {
   parentId?: CommentId,
   id?: CommentId,
   struct?: Comment,
-  onSuccess: () => void
+  onSuccess: () => void,
+  isFocus: boolean
 };
 
 type FormValues = CommentData;
@@ -55,7 +56,8 @@ const InnerForm = (props: FormProps) => {
     isSubmitting,
     setSubmitting,
     resetForm,
-    onSuccess
+    onSuccess,
+    isFocus = false
   } = props;
 
   const hasParent = parentId !== undefined;
@@ -63,7 +65,6 @@ const InnerForm = (props: FormProps) => {
   const {
     body
   } = values;
-
   const onSubmit = (sendTx: () => void) => {
     if (isValid) sendTx();
   };
@@ -112,7 +113,7 @@ const InnerForm = (props: FormProps) => {
     <Form className='ui form JoyForm EditEntityForm'>
 
       <LabelledField name='body' {...props}>
-        <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write a comment...`} style={{ minWidth: '40rem' }} />
+        <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write a comment...`} style={{ minWidth: '40rem' }} autoFocus={isFocus}/>
       </LabelledField>
 
       <LabelledField {...props}>

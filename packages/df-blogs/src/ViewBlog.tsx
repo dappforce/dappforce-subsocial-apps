@@ -17,7 +17,7 @@ import { CreatedBy } from './CreatedBy';
 import TxButton from '@polkadot/joy-utils/TxButton';
 import { api } from '@polkadot/ui-api';
 import _ from 'lodash';
-import { BlogFollowersModal } from './FollowerUtils';
+import { BlogFollowersModal } from './BlogFollowers';
 
 type Props = MyAccountProps & {
   preview?: boolean,

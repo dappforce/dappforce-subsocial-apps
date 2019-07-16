@@ -7,7 +7,7 @@ import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { PostId, Comment, Post, ReactionKind, Reaction, CommentId } from './types';
-import { VotersModal } from './FollowerUtils';
+import { VotersModal } from './ViewModalVoters';
 
 type VoterValue = {
   struct: Comment | Post
