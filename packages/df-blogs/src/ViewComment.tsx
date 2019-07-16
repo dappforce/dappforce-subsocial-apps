@@ -144,7 +144,7 @@ export function ViewComment (props: ViewCommentProps) {
     />);
 
   return <div>
-  <SuiComment.Group threaded >
+    <SuiComment.Group threaded >
     <SuiComment>
       <div className='DfCommentBox'>
         <Voter
@@ -164,9 +164,9 @@ export function ViewComment (props: ViewCommentProps) {
           <SuiComment.Content>
             {showEditForm
               ? <NewComment
-                struct={comment}
-                id={comment.id}
-                postId={comment.post_id}
+                struct={struct}
+                id={struct.id}
+                postId={struct.post_id}
                 onSuccess={() => { setShowEditForm(false); setDoReloadComment(true); }}
               />
               : <>
@@ -175,9 +175,10 @@ export function ViewComment (props: ViewCommentProps) {
                   <SuiComment.Action>
                     {showReplyForm
                       ? <NewComment
-                          postId={comment.post_id}
-                          parentId={comment.id}
+                          postId={struct.post_id}
+                          parentId={struct.id}
                           onSuccess={() => setShowReplyForm(false)}
+                          isFocus={true}
                       />
                       : replyButton()
                     }
