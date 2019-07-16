@@ -4,19 +4,19 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { queryBlogsToProp } from './utils';
 import { Modal, Button, Tab } from 'semantic-ui-react';
 import _ from 'lodash';
+import { Option } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
-import { ReactionId, Post, Reaction } from './types';
+import { ReactionId, Reaction, CommentId, PostId } from './types';
 import { api } from '@polkadot/ui-api/Api';
 
-
-type PropsVoters = {
-  id: Comment | Post,
+type VotersProps = {
+  id: CommentId | PostId,
   reactions?: ReactionId[],
   open: boolean,
   close: () => void
 };
 
-const InnerVotersModal = (props: PropsVoters) => {
+const InnerModalVoters = (props: VotersProps) => {
 
   const { reactions, open, close } = props;
   const votersCount = reactions && reactions.length;
@@ -24,17 +24,19 @@ const InnerVotersModal = (props: PropsVoters) => {
 
   useEffect(() => {
 
-    const loadVoters = () => {
-      let arrReaction: Array<Reaction> = [];
-      reactions && reactions.forEach(reactionId => {
-        api.query.blogs.reactionById(reactionId, reaction => {
-          arrReaction.push(reaction.unwrap() as Reaction);
-        }).catch(err => console.log(err));
-      });
-      setReactionView(arrReaction);
+    if (!open) return;
+
+    const loadVoters = async () => {
+
+      if (!reactions) return;
+
+      const apiCalls: Promise<Option<Reaction>>[] = reactions.map(async reactionId =>
+        await api.query.blogs.reactionById(reactionId) as Option<Reaction>);
+      const loadedReaction = (await Promise.all<Option<Reaction>>(apiCalls)).map(x => x.unwrap() as Reaction);
+      setReactionView(loadedReaction);
     };
-    loadVoters();
-  });
+    loadVoters().catch(err => console.log(err));
+  }, [ open ]);
 
   const renderVoters = (state: Array<Reaction>) => {
     return state.map(reaction => {
@@ -48,16 +50,16 @@ const InnerVotersModal = (props: PropsVoters) => {
     </div>;
     });
   };
+
+  const filterVoters = (type: 'Upvote' | 'Downvote') => {
+    const reactionWithVoters = reactionView.filter(reaction => reaction.kind.toString() === type);
+    return <Tab.Pane>{renderVoters(reactionWithVoters)}</Tab.Pane>;
+  };
+
   const panes = [
   { key: 'all', menuItem: 'All', render: () => <Tab.Pane>{renderVoters(reactionView)}</Tab.Pane> },
-    { key: 'upvote', menuItem: 'Upvoters', render: () => {
-      const reactionWithUpVoters = reactionView.filter(reaction => reaction.kind.toString() === 'Upvote');
-      return <Tab.Pane>{renderVoters(reactionWithUpVoters)}</Tab.Pane>;
-    }},
-    { key: 'downvote', menuItem: 'Downvoters', render: () => {
-      const reactionWithDownVoters = reactionView.filter(reaction => reaction.kind.toString() === 'Downvote');
-      return <Tab.Pane>{renderVoters(reactionWithDownVoters)}</Tab.Pane>;
-    }}
+    { key: 'upvote', menuItem: 'Upvoters', render: () => filterVoters('Upvote') },
+    { key: 'downvote', menuItem: 'Downvoters', render: () => filterVoters('Downvote') }
   ];
 
   return (
@@ -78,9 +80,15 @@ const InnerVotersModal = (props: PropsVoters) => {
   );
 };
 
-export const VotersModal = withMulti(
-  InnerVotersModal,
-  withCalls<PropsVoters>(
-    queryBlogsToProp('reactionIdsByCommentId', { paramName: 'id', propName: 'reactions' })
+export const PostVoters = withMulti(
+  InnerModalVoters,
+  withCalls<VotersProps>(
+    queryBlogsToProp(`reactionIdsByPostId`, { paramName: 'id', propName: 'reactions' })
+  )
+);
+export const CommentVoters = withMulti(
+  InnerModalVoters,
+  withCalls<VotersProps>(
+    queryBlogsToProp(`reactionIdsByCommentId`, { paramName: 'id', propName: 'reactions' })
   )
 );

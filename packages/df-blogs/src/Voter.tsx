@@ -7,7 +7,7 @@ import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { PostId, Comment, Post, ReactionKind, Reaction, CommentId } from './types';
-import { VotersModal } from './ViewModalVoters';
+import { CommentVoters, PostVoters } from './ListVoters';
 
 type VoterValue = {
   struct: Comment | Post
@@ -109,7 +109,10 @@ export const Voter = (props: VoterProps) => {
         <Button content={count} variant='primary' className={`${colorCount} active`} onClick={() => setOpen(true)}/>
         {renderTxButton(false)}
     </Button.Group>
-    <VotersModal id={id} open={open} close={close}/></>;
+  {isComment
+  ? <CommentVoters id={id} open={open} close={close}/>
+  : <PostVoters id={id} open={open} close={close}/>}
+  </>;
   };
 
   return VoterRender();
