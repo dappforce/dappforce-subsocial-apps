@@ -178,7 +178,7 @@ export function ViewComment (props: ViewCommentProps) {
                           postId={struct.post_id}
                           parentId={struct.id}
                           onSuccess={() => setShowReplyForm(false)}
-                          isFocus={true}
+                          autoFocus={true}
                       />
                       : replyButton()
                     }
