@@ -86,6 +86,7 @@ export const PostVoters = withMulti(
     queryBlogsToProp(`reactionIdsByPostId`, { paramName: 'id', propName: 'reactions' })
   )
 );
+
 export const CommentVoters = withMulti(
   InnerModalVoters,
   withCalls<VotersProps>(
