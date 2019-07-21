@@ -6,7 +6,12 @@ import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { Options } from '@polkadot/ui-api/with/types';
 import { queryToProp } from '@polkadot/joy-utils/index';
 import { SubmittableResult } from '@polkadot/api';
-import { CommentId, PostId, BlogId } from './types';
+import { CommentId, PostId, BlogId, CommentData, PostData, BlogData } from './types';
+
+import * as IPFS from "typestub-ipfs";
+const ipfsClient = require('ipfs-http-client');
+const { Buffer } = require('ipfs-http-client');
+const CID = require('cids');
 
 export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
   return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
@@ -75,3 +80,17 @@ export type UrlHasIdProps = {
     }
   }
 };
+
+// connect to ipfs daemon API server
+const ipfs = ipfsClient('localhost', '5002', { protocol: 'http' });
+
+export const addJsonToIpfs = async (json: any) => {
+  const results = await ipfs.add(json);
+  const cid = new CID(results[0].hash);
+  return cid.multihash;
+};
+
+export async function getJsonFromIpfs<T extends CommentData | PostData | BlogData> (cid: IPFS.CID) {
+  const results = await ipfs.cat(cid);
+  return results.toString('utf8') as T;
+}

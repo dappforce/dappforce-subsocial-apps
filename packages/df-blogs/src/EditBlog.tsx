@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'semantic-ui-react';
 import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
@@ -12,8 +12,11 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
-import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
+import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent, addJsonToIpfs, getJsonFromIpfs } from './utils';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+const ipfsClient = require('ipfs-http-client');
+const { Buffer } = require('ipfs-http-client');
+
 
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -102,6 +105,9 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
+  const [ cid, setCid ] = useState({});
+  const [ jsonCid, setJsonCid ] = useState({} as BlogData);
+
   const onSubmit = (sendTx: () => void) => {
     if (isValid) sendTx();
   };
@@ -116,7 +122,10 @@ const InnerForm = (props: FormProps) => {
 
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
-
+    console.log(cid);
+    getJsonFromIpfs<BlogData>(cid).then(json => {setJsonCid(json);
+      confirm.log(json)}).catch(err => console.log(err));
+    console.log(jsonCid);
     if (!history) return;
 
     const _id = id ? id : getNewIdFromEvent<BlogId>(_txResult);
@@ -128,6 +137,10 @@ const InnerForm = (props: FormProps) => {
 
     const json = JSON.stringify(
       { name, desc, image, tags });
+
+    addJsonToIpfs(Buffer.from(json)).then(cid => {
+      setCid(cid);
+    }).catch(err => console.log(err));
 
     if (!struct) {
       return [ slug, json ];
