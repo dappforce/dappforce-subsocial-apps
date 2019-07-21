@@ -1,25 +1,16 @@
-FROM ubuntu:18.04 as builder
+FROM node as builder
 
-# Install any needed packages
-RUN apt-get update && apt-get install -y curl git gnupg
+RUN git clone https://github.com/dappforce/dappforce-subsocial-ui.git
 
-# install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get install -y nodejs
-
-WORKDIR /app
-RUN git clone https://github.com/polkadot-js/apps
-
-WORKDIR /app/apps
-RUN npm install yarn -g
+WORKDIR /dappforce-subsocial-ui
 RUN yarn
-RUN NODE_ENV=production yarn build
+RUN NODE_ENV=production yarn start
 
-FROM ubuntu:18.04
+FROM node
 
 RUN apt-get update && apt-get -y install nginx
 
-COPY --from=builder /app/apps/packages/apps/build /var/www/html
+COPY --from=builder /dappforce-subsocial-ui/packages/apps/build /var/www/html
 
 EXPOSE 80
 
