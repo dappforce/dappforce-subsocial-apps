@@ -68,9 +68,7 @@ function InnerCommentsByPost (props: Props) {
 
   return (
       <Section title={`Comments (${commentsCount})`} className='DfCommentsByPost'>
-        <div style={{ marginBottom: '2rem' }}>
-          <NewComment postId={postId} />
-        </div>
+        <NewComment postId={postId} />
         {renderComments()}
       </Section>);
 }
@@ -91,34 +89,34 @@ type ViewCommentProps = {
 
 export function ViewComment (props: ViewCommentProps) {
 
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [showReplyForm, setShowReplyForm] = useState(false);
-  const [commentIdForUpdate, setCommentIdForUpdate] = useState(new CommentId(0));
-
   const { api, comment, commentsWithParentId } = props;
   const { state: { address: myAddress } } = useMyAccount();
   const [parentComments, childrenComments] = partition(commentsWithParentId, (e) => e.parent_id.eq(comment.id));
 
   const { id, created: { account, block, time } } = comment;
-  const [ text , setText ] = useState(comment.json.body);
-
+  const [ struct , setStruct ] = useState(comment);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const [doReloadComment, setDoReloadComment] = useState(false);
+  // const reactionKind = reactionState ? reactionState.kind.toString() : 'None';
   if (!comment || comment.isEmpty) {
     return null;
   }
-
   useEffect(() => {
-    if (!commentIdForUpdate.eq(id)) return;
+    if (!doReloadComment) return;
 
     console.log('Comment reload');
 
-    api.query.blogs.commentById(commentIdForUpdate, (x => {
-      if (x.isNone) return;
-      const comment = x.unwrap() as Comment;
-      setText(comment.json.body);
-      setCommentIdForUpdate(new CommentId(0));
-    })).catch(err => console.log(err));
+    const loadComment = async () => {
+      const result = await api.query.blogs.commentById(id) as OptionComment;
+      if (result.isNone) return;
+      const comment = result.unwrap() as Comment;
+      setStruct(comment);
+      setDoReloadComment(false);
+    };
+    loadComment().catch(err => console.log(err));
 
-  },[ commentIdForUpdate.toString() && !commentIdForUpdate.eqn(0) ]);
+  },[ doReloadComment ]); // TODO use reactionKind
 
   const isMyStruct = myAddress === account.toString();
 
@@ -128,6 +126,7 @@ export function ViewComment (props: ViewCommentProps) {
     return <Button
       type='button'
       basic
+      size='tiny'
       onClick={() => setShowEditForm(true)}
     >
         <Icon name='pencil'/>
@@ -139,20 +138,28 @@ export function ViewComment (props: ViewCommentProps) {
     <Button
       type='button'
       basic
+      size='tiny'
       onClick={() => setShowReplyForm(true)}
       content='Reply'
     />);
 
   return <div>
-  <SuiComment.Group threaded>
+  <SuiComment.Group threaded >
     <SuiComment>
       <div className='DfCommentBox'>
-        <Voter struct={comment} />
+        <Voter
+          struct={struct}
+        />
         <div>
           <SuiComment.Metadata>
-            <AddressMini value={account} isShort={false} isPadded={false} withName/>
+            <AddressMini
+              value={account}
+              isShort={true}
+              isPadded={false}
+              size={28}
+              extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}`}
+            />
             {renderButtonEditForm()}
-            <div>{time.toLocaleString()} at block #{block.toNumber()}</div>
           </SuiComment.Metadata>
           <SuiComment.Content>
             {showEditForm
@@ -160,10 +167,10 @@ export function ViewComment (props: ViewCommentProps) {
                 struct={comment}
                 id={comment.id}
                 postId={comment.post_id}
-                onSuccess={() => { setShowEditForm(false); setCommentIdForUpdate(id); }}
+                onSuccess={() => { setShowEditForm(false); setDoReloadComment(true); }}
               />
               : <>
-                <SuiComment.Text>{text}</SuiComment.Text>
+                <SuiComment.Text>{struct.json.body}</SuiComment.Text>
                 <SuiComment.Actions>
                   <SuiComment.Action>
                     {showReplyForm
@@ -180,7 +187,7 @@ export function ViewComment (props: ViewCommentProps) {
           </SuiComment.Content>
         </div>
       </div>
-      {renderLevelOfComments(parentComments, childrenComments)}
+        {renderLevelOfComments(parentComments, childrenComments)}
     </SuiComment>
   </SuiComment.Group>
 </div>;

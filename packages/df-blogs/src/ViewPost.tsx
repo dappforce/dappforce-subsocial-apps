@@ -10,7 +10,7 @@ import { PostId, Post, CommentId } from './types';
 import { queryBlogsToProp, UrlHasIdProps, AuthorPreview } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
 import { CommentsByPost } from './ViewComment';
-import { CreatedBy } from './CreatedBy'
+import { CreatedBy } from './CreatedBy';
 import { MutedSpan } from '@polkadot/joy-utils/MutedText';
 import { Voter } from './Voter';
 
@@ -47,7 +47,7 @@ function ViewPostInternal (props: ViewPostProps) {
   const editPostBtn = () => (
     isMyStruct && <Link
       to={`/blogs/posts/${id.toString()}/edit`}
-      className='ui small button'
+      className='ui tiny basic button'
       style={{ marginLeft: '.5rem' }}
     >
       <i className='pencil alternate icon' />
@@ -99,7 +99,7 @@ function ViewPostInternal (props: ViewPostProps) {
 
 export const ViewPost = withMulti(
   ViewPostInternal,
-  withMyAccount,//TODO replese with useMyAccount
+  withMyAccount,// TODO replese with useMyAccount
   withCalls<ViewPostProps>(
     queryBlogsToProp('postById', 'id')
   )
@@ -108,7 +108,7 @@ export const ViewPost = withMulti(
 export function ViewPostById (props: UrlHasIdProps) {
   const { match: { params: { id } } } = props;
   try {
-    return <ViewPost id={new PostId(id)} />;
+    return <ViewPost id={new PostId(id)}/>;
   } catch (err) {
     return <em>Invalid post ID: {id}</em>;
   }

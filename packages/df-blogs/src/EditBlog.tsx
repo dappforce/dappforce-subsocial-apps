@@ -1,20 +1,19 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
-import { Form, Field, withFormik, FormikProps, FormikErrors, FormikTouched } from 'formik';
+import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
 
 import { Option, Text } from '@polkadot/types';
 import Section from '@polkadot/joy-utils/Section';
 import TxButton from '@polkadot/joy-utils/TxButton';
-import { nonEmptyStr } from '@polkadot/joy-utils/index';
 import { SubmittableResult } from '@polkadot/api';
-import { withCalls } from '@polkadot/ui-api/index';
+import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import * as JoyForms from '@polkadot/joy-utils/forms';
-import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
-import { queryBlogsToProp, UrlHasIdProps } from './utils';
+import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
+import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -81,6 +80,8 @@ const LabelledText = JoyForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
+    history,
+    id,
     struct,
     values,
     dirty,
@@ -98,6 +99,12 @@ const InnerForm = (props: FormProps) => {
     tags
   } = values;
 
+  const goToView = (id: BlogId) => {
+    if (history) {
+      history.push('/blogs/' + id.toString());
+    }
+  };
+
   const onSubmit = (sendTx: () => void) => {
     if (isValid) sendTx();
   };
@@ -113,11 +120,11 @@ const InnerForm = (props: FormProps) => {
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
 
-    // TODO get id of newly created post and redirect.
-    // goToView(id);
-  };
+    if (!history) return;
 
-  const isNew = struct === undefined;
+    const _id = id ? id : getNewIdFromEvent<BlogId>(_txResult);
+    _id && goToView(_id);
+  };
 
   const buildTxParams = () => {
     if (!isValid) return [];
@@ -136,12 +143,6 @@ const InnerForm = (props: FormProps) => {
         json: new Option(Text, json)
       });
       return [ struct.id, update ];
-    }
-  };
-
-  const goToView = (id: BlogId) => {
-    if (history) {
-      history.push('/blogs/' + id.toString());
     }
   };
 
@@ -178,9 +179,9 @@ const InnerForm = (props: FormProps) => {
             : 'blogs.createBlog'
           }
           onClick={onSubmit}
-          onTxCancelled={onTxCancelled}
-          onTxFailed={onTxFailed}
-          onTxSuccess={onTxSuccess}
+          txCancelledCb={onTxCancelled}
+          txFailedCb={onTxFailed}
+          txSuccessCb={onTxSuccess}
         />
         <Button
           type='button'
@@ -225,29 +226,48 @@ const EditForm = withFormik<OuterProps, FormValues>({
   }
 })(InnerForm);
 
-type BlogByIdProps = MyAccountProps & {
-  id: BlogId,
-  blogById?: Option<Blog>
+function withIdFromUrl (Component: React.ComponentType<OuterProps>) {
+  return function (props: UrlHasIdProps) {
+    const { match: { params: { id } } } = props;
+    try {
+      return <Component id={new BlogId(id)} {...props}/>;
+    } catch (err) {
+      return <em>Invalid post ID: {id}</em>;
+    }
+  };
+}
+
+type LoadStructProps = OuterProps & {
+  structOpt: Option<Blog>
 };
 
-function BlogByIdInner (p: BlogByIdProps) {
-  if (p.blogById) {
-    const struct = p.blogById.unwrapOr(undefined);
-    return <EditForm struct={struct} />;
-  } else return <em>Loading...</em>;
+function LoadStruct (props: LoadStructProps) {
+  const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
+  const { structOpt } = props;
+
+  if (!myAddress || !structOpt) {
+    return <em>Loading post...</em>;
+  }
+
+  if (structOpt.isNone) {
+    return <em>Blog not found</em>;
+  }
+
+  const struct = structOpt.unwrap();
+
+  return <EditForm {...props} struct={struct}/>;// TODO
 }
 
-const BlogById = withMyAccount(
-  withCalls<BlogByIdProps>(
-    queryBlogsToProp('blogById', 'id')
-  )(BlogByIdInner)
+export const NewBlog = withMulti(
+  EditForm
+  // , withOnlyMembers
 );
 
-function ExtractIdFromUrl (props: UrlHasIdProps) {
-  const { match: { params: { id } } } = props;
-  return nonEmptyStr(id)
-    ? <BlogById id={new BlogId(id)} />
-    : <EditForm />;
-}
-
-export default ExtractIdFromUrl;
+export const EditBlog = withMulti(
+  LoadStruct,
+  withIdFromUrl,
+  withCalls<OuterProps>(
+    queryBlogsToProp('blogById',
+      { paramName: 'id', propName: 'structOpt' })
+  )
+);

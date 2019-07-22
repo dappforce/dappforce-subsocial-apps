@@ -20,6 +20,7 @@ type Props = BareProps & {
   balance?: Balance | Array<Balance> | BN,
   children?: React.ReactNode,
   isPadded?: boolean,
+  extraDetails?: React.ReactNode,
   isShort?: boolean,
   session_validators?: Array<AccountId>,
   value?: AccountId | AccountIndex | Address | string,
@@ -33,7 +34,7 @@ type Props = BareProps & {
 
 class AddressMini extends React.PureComponent<Props> {
   render () {
-    const { children, className, isPadded = true, session_validators, style, size, value } = this.props;
+    const { children, className, isPadded = true, extraDetails, session_validators, style, size, value } = this.props;
 
     if (!value) {
       return null;
@@ -59,6 +60,7 @@ class AddressMini extends React.PureComponent<Props> {
             {this.renderAddress(address)}
             <div className='ui--AddressMini-details'>
               {this.renderName(address)}
+              {extraDetails}
               {this.renderBalance()}
               {this.renderMemo(address)}
             </div>

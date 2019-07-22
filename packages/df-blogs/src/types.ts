@@ -1,5 +1,5 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
-import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u64, Text, Vector } from '@polkadot/types';
+import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector } from '@polkadot/types';
 
 export class BlogId extends u64 {}
 export class PostId extends u64 {}
@@ -56,7 +56,8 @@ export type BlogType = {
   writers: AccountId[],
   slug: Text,
   json: Text,
-  posts_count: u16
+  posts_count: u16,
+  followers_count: u32
 };
 
 export class Blog extends Struct {
@@ -68,7 +69,8 @@ export class Blog extends Struct {
       writers: VecAccountId,
       slug: Text,
       json: Text,
-      posts_count: u16
+      posts_count: u16,
+      followers_count: u32
     }, value);
   }
 
@@ -99,6 +101,10 @@ export class Blog extends Struct {
 
   get posts_count (): u16 {
     return this.get('posts_count') as u16;
+  }
+
+  get followers_count (): u32 {
+    return this.get('followers_count') as u32;
   }
 }
 
@@ -206,7 +212,6 @@ export class PostUpdate extends Struct {
   }
 }
 
-
 export type CommentData = {
   body: string
 };
@@ -301,6 +306,7 @@ export class ReactionKind extends Enum {
 export type ReactionType = {
   id: ReactionId,
   created: Change,
+  updated: OptionChange,
   kind: ReactionKind
 };
 
@@ -309,6 +315,7 @@ export class Reaction extends Struct {
     super({
       id: ReactionId,
       created: Change,
+      updated: OptionChange,
       kind: ReactionKind
     }, value);
   }
@@ -321,8 +328,40 @@ export class Reaction extends Struct {
     return this.get('created') as Change;
   }
 
+  get updated (): OptionChange {
+    return this.get('updated') as OptionChange;
+  }
+
   get kind (): ReactionKind {
     return this.get('kind') as ReactionKind;
+  }
+}
+
+export type SocialAccountType = {
+  followers_count: u32,
+  following_accounts_count: u16,
+  following_blogs_count: u16
+};
+
+export class SocialAccount extends Struct {
+  constructor (value?: SocialAccountType) {
+    super({
+      followers_count: u32,
+      following_accounts_count: u16,
+      following_blogs_count: u16
+    }, value);
+  }
+
+  get followers_count (): u32 {
+    return this.get('followers_count') as u32;
+  }
+
+  get following_accounts_count (): u16 {
+    return this.get('following_accounts_count') as u16;
+  }
+
+  get following_blogs_count (): u16 {
+    return this.get('following_blogs_count') as u16;
   }
 }
 
@@ -342,7 +381,8 @@ export function registerBlogsTypes () {
       Comment,
       CommentUpdate,
       ReactionKind,
-      Reaction
+      Reaction,
+      SocialAccount
     });
   } catch (err) {
     console.error('Failed to register custom types of blogs module', err);

@@ -57,13 +57,37 @@
     margin-right: .5rem;
   }
 }
-
+.ui.threaded.comments .comment .comments{
+  padding: 1rem 0 0 1.2rem;
+  margin: -1rem 0 0 1.25rem;
+}
 .DfCommentBox {
   display: flex !important;
-  align-items: start;
+  align-items: flex-start;
+  margin-top: 2rem;
 }
-.DfVoter.vertical {
-  margin-right: 1rem;
+
+.DfVoter {
+  &.vertical {
+    margin-right: .5rem;
+  }
+  .ui.button {
+    background-color: transparent !important;
+    color: #2d2d2d;
+
+    &.red {
+      &:hover,
+      &.active {
+        color: red !important;
+      }
+    }
+    &.green {
+      &:hover,
+      &.active {
+        color: green !important;
+      }
+    }
+  }
 }
 
 .DfCommentsByPost {
