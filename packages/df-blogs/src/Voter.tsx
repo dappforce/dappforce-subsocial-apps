@@ -82,6 +82,7 @@ export const Voter = (props: VoterProps) => {
     const colorCount = count > '0' ? 'green' : count < '0' ? 'red' : '';
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
+
     const renderTxButton = (isUpvote: boolean) => {
 
       const reactionName = isUpvote ? 'Upvote' : 'Downvote';

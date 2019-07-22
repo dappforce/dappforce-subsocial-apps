@@ -14,9 +14,6 @@ import * as JoyForms from '@polkadot/joy-utils/forms';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
 import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent, addJsonToIpfs, getJsonFromIpfs } from './utils';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-const ipfsClient = require('ipfs-http-client');
-const { Buffer } = require('ipfs-http-client');
-
 
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -65,7 +62,8 @@ type ValidationProps = {
 type OuterProps = ValidationProps & {
   history?: History,
   id?: BlogId,
-  struct?: Blog
+  struct?: Blog,
+  json?: BlogData
 };
 
 type FormValues = BlogData & {
@@ -91,6 +89,9 @@ const InnerForm = (props: FormProps) => {
     resetForm
   } = props;
 
+  // const [ content , setContent ] = useState({} as BlogData & {slug: string});
+
+  // values.then((res: BlogData & {slug: string}) => setContent(res));
   const {
     slug,
     name,
@@ -105,11 +106,17 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  const [ cid, setCid ] = useState({});
-  const [ jsonCid, setJsonCid ] = useState({} as BlogData);
+  const [ ipfsCid, setIpfsCid ] = useState('');
 
   const onSubmit = (sendTx: () => void) => {
-    if (isValid) sendTx();
+    if (isValid) {
+      const json = { name, desc, image, tags };
+      console.log(json);
+      addJsonToIpfs(json).then(cid => {
+        setIpfsCid(cid);
+        sendTx();
+      }).catch(err => new Error(err));
+    }
   };
 
   const onTxCancelled = () => {
@@ -122,10 +129,7 @@ const InnerForm = (props: FormProps) => {
 
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
-    console.log(cid);
-    getJsonFromIpfs<BlogData>(cid).then(json => {setJsonCid(json);
-      confirm.log(json)}).catch(err => console.log(err));
-    console.log(jsonCid);
+
     if (!history) return;
 
     const _id = id ? id : getNewIdFromEvent<BlogId>(_txResult);
@@ -134,23 +138,15 @@ const InnerForm = (props: FormProps) => {
 
   const buildTxParams = () => {
     if (!isValid) return [];
-
-    const json = JSON.stringify(
-      { name, desc, image, tags });
-
-    addJsonToIpfs(Buffer.from(json)).then(cid => {
-      setCid(cid);
-    }).catch(err => console.log(err));
-
     if (!struct) {
-      return [ slug, json ];
+      return [ slug, ipfsCid ];
     } else {
       // TODO update only dirty values.
       const update = new BlogUpdate({
         // TODO get updated writers from the form
         writers: new Option(VecAccountId,(struct.writers)),
         slug: new Option(Text, slug),
-        json: new Option(Text, json)
+        ipfs_cid: new Option(Text, ipfsCid)
       });
       return [ struct.id, update ];
     }
@@ -166,7 +162,7 @@ const InnerForm = (props: FormProps) => {
 
       <LabelledText name='slug' label='URL slug' placeholder={`You can use a-z, 0-9, dashes and underscores.`} style={{ maxWidth: '30rem' }} {...props} />
 
-      <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
+      <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image Url.`} {...props} />
 
       <LabelledField name='desc' label='Description' {...props}>
         <Field component='textarea' id='desc' name='desc' disabled={isSubmitting} rows={3} placeholder='Tell others what is your blog about. You can use Markdown.' />
@@ -210,9 +206,8 @@ const EditForm = withFormik<OuterProps, FormValues>({
 
   // Transform outer props into form values
   mapPropsToValues: (props): FormValues => {
-    const { struct } = props;
-    if (struct) {
-      const { json } = struct;
+    const { struct, json } = props;
+    if (struct && json) {
       const slug = struct.slug.toString();
       return {
         slug,
@@ -251,21 +246,41 @@ type LoadStructProps = OuterProps & {
   structOpt: Option<Blog>
 };
 
+type StructJson = BlogData | undefined;
+
+type Struct = Blog | undefined;
+
 function LoadStruct (props: LoadStructProps) {
+
   const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
   const { structOpt } = props;
+  const [ json, setJson ] = useState(undefined as StructJson);
+  const [ struct, setStruct ] = useState(undefined as Struct);
+  const jsonIsNone = json === undefined;
 
-  if (!myAddress || !structOpt) {
-    return <em>Loading post...</em>;
+  useEffect(() => {
+
+    if (!myAddress || !structOpt || structOpt.isNone) return;
+
+    setStruct(structOpt.unwrap());
+
+    if (struct === undefined) return;
+
+    getJsonFromIpfs<BlogData>(struct.ipfs_cid).then(json => {
+      const content = json;
+      setJson(content);
+    }).catch(err => console.log(err));
+  });
+
+  if (!myAddress || !structOpt || jsonIsNone) {
+    return <em>Loading blog...</em>;
   }
 
   if (structOpt.isNone) {
-    return <em>Blog not found</em>;
+    return <em>Blog not found...</em>;
   }
 
-  const struct = structOpt.unwrap();
-
-  return <EditForm {...props} struct={struct}/>;// TODO
+  return <EditForm {...props} struct={struct} json={json} />;
 }
 
 export const NewBlog = withMulti(

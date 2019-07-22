@@ -10,9 +10,9 @@ import { ApiPromise } from '@polkadot/api';
 import { api } from '@polkadot/ui-api';
 
 import { partition } from 'lodash';
-import { PostId, CommentId, Comment, OptionComment, Post } from './types';
+import { PostId, CommentId, Comment, OptionComment, Post, CommentData } from './types';
 import { NewComment } from './EditComment';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp, getJsonFromIpfs } from './utils';
 import { Voter } from './Voter';
 
 type Props = ApiProps & {
@@ -95,6 +95,7 @@ export function ViewComment (props: ViewCommentProps) {
 
   const { id, created: { account, block, time } } = comment;
   const [ struct , setStruct ] = useState(comment);
+  const [ content , setContent ] = useState({} as CommentData);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [doReloadComment, setDoReloadComment] = useState(false);
@@ -103,6 +104,12 @@ export function ViewComment (props: ViewCommentProps) {
     return null;
   }
   useEffect(() => {
+
+    getJsonFromIpfs<CommentData>(struct.ipfs_cid).then(json => {
+      console.log(json);
+      setContent(json);
+    }).catch(err => console.log(err));
+
     if (!doReloadComment) return;
 
     console.log('Comment reload');
@@ -112,6 +119,7 @@ export function ViewComment (props: ViewCommentProps) {
       if (result.isNone) return;
       const comment = result.unwrap() as Comment;
       setStruct(comment);
+
       setDoReloadComment(false);
     };
     loadComment().catch(err => console.log(err));
@@ -170,7 +178,7 @@ export function ViewComment (props: ViewCommentProps) {
                 onSuccess={() => { setShowEditForm(false); setDoReloadComment(true); }}
               />
               : <>
-                <SuiComment.Text>{struct.json.body}</SuiComment.Text>
+                <SuiComment.Text>{content.body}</SuiComment.Text>
                 <SuiComment.Actions>
                   <SuiComment.Action>
                     {showReplyForm
