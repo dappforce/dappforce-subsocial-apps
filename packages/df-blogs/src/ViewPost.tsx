@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Segment } from 'semantic-ui-react';
@@ -6,8 +6,8 @@ import { Segment } from 'semantic-ui-react';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { Option } from '@polkadot/types';
 
-import { PostId, Post, CommentId } from './types';
-import { queryBlogsToProp, UrlHasIdProps, AuthorPreview } from './utils';
+import { PostId, Post, CommentId, BlogData, PostData } from './types';
+import { queryBlogsToProp, UrlHasIdProps, AuthorPreview, getJsonFromIpfs } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
 import { CommentsByPost } from './ViewComment';
 import { CreatedBy } from './CreatedBy';
@@ -36,11 +36,22 @@ function ViewPostInternal (props: ViewPostProps) {
   const post = postById.unwrap();
   const {
     created: { account },
-    json: { title, body, image },
     comments_count,
     upvotes_count,
-    downvotes_count
+    downvotes_count,
+    ipfs_cid
   } = post;
+
+  const [ content , setContent ] = useState({} as PostData);
+  const { title, body, image, tags } = content;
+  useEffect(() => {
+    if (!ipfs_cid) return;
+    getJsonFromIpfs<PostData>(ipfs_cid).then(json => {
+      const content = json;
+      setContent(content);
+      console.log(content);
+    }).catch(err => console.log(err));
+  }, [ false ]);
 
   const isMyStruct = myAddress === account.toString();
 

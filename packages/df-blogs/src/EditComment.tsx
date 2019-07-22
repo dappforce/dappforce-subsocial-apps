@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'semantic-ui-react';
 import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
@@ -12,7 +12,7 @@ import { Option } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
 
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp, addJsonToIpfs, getJsonFromIpfs } from './utils';
 import { PostId, CommentId, Comment, CommentUpdate, CommentData } from './types';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
@@ -34,7 +34,8 @@ type OuterProps = ValidationProps & {
   id?: CommentId,
   struct?: Comment,
   onSuccess: () => void,
-  autoFocus: boolean
+  autoFocus: boolean,
+  json: CommentData
 };
 
 type FormValues = CommentData;
@@ -65,8 +66,18 @@ const InnerForm = (props: FormProps) => {
   const {
     body
   } = values;
+
+  const [ ipfsCid, setIpfsCid ] = useState('');
+
   const onSubmit = (sendTx: () => void) => {
-    if (isValid) sendTx();
+    if (isValid) {
+      const json = { body };
+      console.log(json);
+      addJsonToIpfs(json).then(cid => {
+        setIpfsCid(cid);
+        sendTx();
+      }).catch(err => new Error(err));
+    }
   };
 
   const onTxCancelled = () => {
@@ -93,14 +104,12 @@ const InnerForm = (props: FormProps) => {
   const buildTxParams = () => {
     if (!isValid) return [];
 
-    const json = JSON.stringify({ body });
-
     if (!struct) {
       const parentCommentId = new Option(CommentId, parentId);
-      return [ postId, parentCommentId, json ];
+      return [ postId, parentCommentId, ipfsCid ];
     } else if (dirty) {
       const update = new CommentUpdate({
-        json: new Text(json)
+        ipfs_cid: new Text(ipfsCid)
       });
       return [ struct.id, update ];
     } else {
@@ -149,10 +158,9 @@ const EditForm = withFormik<OuterProps, FormValues>({
 
   // Transform outer props into form values
   mapPropsToValues: (props): FormValues => {
-    const { struct } = props;
+    const { struct, json } = props;
 
     if (struct) {
-      const { json } = struct;
       return {
         ...json
       };
@@ -174,11 +182,32 @@ type LoadStructProps = OuterProps & {
   structOpt: Option<Comment>
 };
 
+type StructJson = CommentData | undefined;
+
+type Struct = Comment | undefined;
+
 function LoadStruct (props: LoadStructProps) {
   const { state: { address: myAddress } } = useMyAccount();
   const { structOpt } = props;
+  const [ json, setJson ] = useState(undefined as StructJson);
+  const [ struct, setStruct ] = useState(undefined as Struct);
+  const jsonIsNone = json === undefined;
 
-  if (!myAddress || !structOpt) {
+  useEffect(() => {
+
+    if (!myAddress || !structOpt || structOpt.isNone) return;
+
+    setStruct(structOpt.unwrap());
+
+    if (struct === undefined) return;
+
+    getJsonFromIpfs<CommentData>(struct.ipfs_cid).then(json => {
+      const content = json;
+      setJson(content);
+    }).catch(err => console.log(err));
+  });
+
+  if (!myAddress || !structOpt || jsonIsNone) {
     return <em>Loading comment...</em>;
   }
 
@@ -186,9 +215,7 @@ function LoadStruct (props: LoadStructProps) {
     return <em>Comment not found</em>;
   }
 
-  const struct = structOpt.unwrap();
-
-  return <EditForm {...props} struct={struct} />;
+  return <EditForm {...props} struct={struct} json={json as CommentData} />;
 
 }
 

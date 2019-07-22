@@ -1,5 +1,8 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector } from '@polkadot/types';
+import * as IPFS from 'typestub-ipfs';
+const ipfsClient = require('ipfs-http-client');
+const CID = require('cids');
 
 export class BlogId extends u64 {}
 export class PostId extends u64 {}
@@ -11,7 +14,6 @@ export type ChangeType = {
   block: BlockNumber,
   time: Moment
 };
-
 export class Change extends Struct {
   constructor (value?: ChangeType) {
     super({
@@ -49,13 +51,19 @@ export type BlogData = {
   tags: string[]
 };
 
+export type Cid = {
+  codec: string,
+  hash: object,
+  version: Number
+};
+
 export type BlogType = {
   id: BlogId,
   created: ChangeType,
   updated: OptionChange,
   writers: AccountId[],
   slug: Text,
-  json: Text,
+  ipfs_cid: Text,
   posts_count: u16,
   followers_count: u32
 };
@@ -68,7 +76,7 @@ export class Blog extends Struct {
       updated: OptionChange,
       writers: VecAccountId,
       slug: Text,
-      json: Text,
+      ipfs_cid: Text,
       posts_count: u16,
       followers_count: u32
     }, value);
@@ -94,10 +102,15 @@ export class Blog extends Struct {
     return this.get('slug') as Text;
   }
 
-  get json (): BlogData {
-    const json = this.get('json') as Text;
-    return JSON.parse(json.toString());
+  get ipfs_cid (): Cid {
+    const ipfsCid = this.get('ipfs_cid') as Text;
+    return new CID(ipfsCid.toString());
   }
+
+  // get ipfs_cid (): BlogData {
+  //   const IpfsCid = this.get('ipfs_cid') as Text;
+  //   return JSON.parse(IpfsCid.toString());
+  // }
 
   get posts_count (): u16 {
     return this.get('posts_count') as u16;
@@ -111,7 +124,7 @@ export class Blog extends Struct {
 export type BlogUpdateType = {
   writers: OptionVecAccountId,
   slug: OptionText,
-  json: OptionText
+  ipfs_cid: OptionText
 };
 
 export class BlogUpdate extends Struct {
@@ -119,7 +132,7 @@ export class BlogUpdate extends Struct {
     super({
       writers: OptionVecAccountId,
       slug: OptionText,
-      json: OptionText
+      ipfs_cid: OptionText
     }, value);
   }
 }
@@ -137,7 +150,7 @@ export type PostType = {
   created: ChangeType,
   updated: OptionChange,
   slug: Text,
-  json: Text,
+  ipfs_cid: Text,
   comments_count: u16,
   upvotes_count: u16,
   downvotes_count: u16
@@ -151,7 +164,7 @@ export class Post extends Struct {
       created: Change,
       updated: OptionChange,
       slug: Text,
-      json: Text,
+      ipfs_cid: Text,
       comments_count: u16,
       upvotes_count: u16,
       downvotes_count: u16
@@ -178,9 +191,9 @@ export class Post extends Struct {
     return this.get('slug') as Text;
   }
 
-  get json (): PostData {
-    const json = this.get('json') as Text;
-    return JSON.parse(json.toString());
+  get ipfs_cid (): Cid {
+    const ipfsCid = this.get('ipfs_cid') as Text;
+    return new CID(ipfsCid.toString());
   }
 
   get comments_count (): u16 {
@@ -199,7 +212,7 @@ export class Post extends Struct {
 export type PostUpdateType = {
   blog_id: OptionBlogId,
   slug: OptionText,
-  json: OptionText
+  ipfs_cid: OptionText
 };
 
 export class PostUpdate extends Struct {
@@ -207,7 +220,7 @@ export class PostUpdate extends Struct {
     super({
       blog_id: OptionBlogId,
       slug: OptionText,
-      json: OptionText
+      ipfs_cid: OptionText
     }, value);
   }
 }
@@ -222,7 +235,7 @@ export type CommentType = {
   post_id: PostId,
   created: Change,
   updated: OptionChange,
-  json: Text,
+  ipfs_cid: Text,
   upvotes_count: u16,
   downvotes_count: u16
 };
@@ -235,7 +248,7 @@ export class Comment extends Struct {
       post_id: PostId,
       created: Change,
       updated: OptionChange,
-      json: Text,
+      ipfs_cid: Text,
       upvotes_count: u16,
       downvotes_count: u16
     }, value);
@@ -261,9 +274,9 @@ export class Comment extends Struct {
     return this.get('updated') as OptionChange;
   }
 
-  get json (): CommentData {
-    const json = this.get('json') as Text;
-    return JSON.parse(json.toString());
+  get ipfs_cid (): Cid {
+    const ipfsCid = this.get('ipfs_cid') as Text;
+    return new CID(ipfsCid.toString());
   }
 
   get upvotes_count (): u16 {
@@ -276,13 +289,13 @@ export class Comment extends Struct {
 }
 
 export type CommentUpdateType = {
-  json: Text
+  ipfs_cid: Text
 };
 
 export class CommentUpdate extends Struct {
   constructor (value?: CommentUpdateType) {
     super({
-      json: Text
+      ipfs_cid: Text
     }, value);
   }
 }

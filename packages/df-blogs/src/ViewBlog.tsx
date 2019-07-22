@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { Option, AccountId, Bool } from '@polkadot/types';
+import { Option, AccountId, Bool, Json } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { nonEmptyStr } from '@polkadot/joy-utils/index';
-import { BlogId, Blog, PostId } from './types';
+import { BlogId, Blog, PostId, BlogData } from './types';
 import { Tuple } from '@polkadot/types/codec';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp, getJsonFromIpfs } from './utils';
 import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 import Section from '@polkadot/joy-utils/Section';
 import { ViewPost } from './ViewPost';
@@ -43,8 +43,20 @@ function Component (props: Props) {
   const {
     id,
     created: { account },
-    json: { name, desc, image }
+    ipfs_cid
   } = blog;
+
+  const [ content , setContent ] = useState({} as BlogData);
+  const { desc, name, image } = content;
+
+  useEffect(() => {
+    if (!ipfs_cid) return;
+    getJsonFromIpfs<BlogData>(ipfs_cid).then(json => {
+      const content = json;
+      setContent(content);
+      console.log(content);
+    }).catch(err => console.log(err));
+  }, [ false ]);
 
   const dataForQuery = new Tuple([AccountId, BlogId], [new AccountId(myAddress), id]);
   const [ isFollow, setIsFollow ] = useState(false);
@@ -60,19 +72,19 @@ function Component (props: Props) {
   }, [ triggerReload ]);
 
   const isMyBlog = myAddress && account && myAddress === account.toString();
-  const hasImage = image && nonEmptyStr(image.toString());
+  const hasImage = image && nonEmptyStr(image);
   const postsCount = postIds ? postIds.length : 0;
 
   const renderPreview = () => {
     return <>
       <div className={`item ProfileDetails ${isMyBlog && 'MyProfile'}`}>
         {hasImage
-          ? <img className='ui avatar image' src={image.toString()} />
+          ? <img className='ui avatar image' src={image} />
           : <IdentityIcon className='image' value={account} size={40} />
         }
         <div className='content'>
           <div className='header'>
-            <Link to={`/blogs/${id}`} className='handle'>{name.toString()}</Link>
+            <Link to={`/blogs/${id}`} className='handle'>{name}</Link>
             {isMyBlog &&
               <Link to={`/blogs/${id}/edit`} className='ui tiny basic button'>
                 <i className='pencil alternate icon' />
@@ -81,7 +93,7 @@ function Component (props: Props) {
             }
           </div>
           <div className='description'>
-            <ReactMarkdown className='JoyMemo--full' source={desc.toString()} linkTarget='_blank' />
+            <ReactMarkdown className='JoyMemo--full' source={desc} linkTarget='_blank' />
           </div>
         </div>
       </div>

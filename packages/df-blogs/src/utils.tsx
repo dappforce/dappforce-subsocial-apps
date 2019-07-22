@@ -10,8 +10,6 @@ import { CommentId, PostId, BlogId, CommentData, PostData, BlogData } from './ty
 
 import * as IPFS from "typestub-ipfs";
 const ipfsClient = require('ipfs-http-client');
-const { Buffer } = require('ipfs-http-client');
-const CID = require('cids');
 
 export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
   return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
@@ -84,13 +82,16 @@ export type UrlHasIdProps = {
 // connect to ipfs daemon API server
 const ipfs = ipfsClient('localhost', '5002', { protocol: 'http' });
 
-export const addJsonToIpfs = async (json: any) => {
-  const results = await ipfs.add(json);
-  const cid = new CID(results[0].hash);
-  return cid.multihash;
-};
+type IpfsData = CommentData | PostData | BlogData;
 
-export async function getJsonFromIpfs<T extends CommentData | PostData | BlogData> (cid: IPFS.CID) {
+export async function addJsonToIpfs<T extends IpfsData> (data: IpfsData): Promise<string> {
+  const json = Buffer.from(JSON.stringify(data));
+  const results = await ipfs.add(json);
+  console.log(results);
+  return results[0].hash;
+}
+
+export async function getJsonFromIpfs<T extends IpfsData> (cid: IPFS.CID): Promise<T> {
   const results = await ipfs.cat(cid);
-  return results.toString('utf8') as T;
+  return JSON.parse(results.toString('utf8')) as T;
 }
