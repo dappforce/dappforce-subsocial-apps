@@ -175,6 +175,7 @@ export function ViewComment (props: ViewCommentProps) {
                 struct={struct}
                 id={struct.id}
                 postId={struct.post_id}
+                json={content.body}
                 onSuccess={() => { setShowEditForm(false); setDoReloadComment(true); }}
               />
               : <>

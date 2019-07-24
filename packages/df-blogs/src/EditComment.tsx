@@ -164,7 +164,7 @@ const EditForm = withFormik<OuterProps, FormValues>({
 
     if (struct) {
       return {
-        ...json
+        body: json.toString()
       };
     } else {
       return {
