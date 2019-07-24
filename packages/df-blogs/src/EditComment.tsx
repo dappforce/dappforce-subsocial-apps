@@ -116,6 +116,7 @@ const InnerForm = (props: FormProps) => {
       </LabelledField>
 
       <LabelledField {...props}>
+        <>
         <TxButton
           type='submit'
           label={!struct
@@ -138,6 +139,7 @@ const InnerForm = (props: FormProps) => {
           onClick={onSuccess}
           content='Cancel'
         />}
+        </>
       </LabelledField>
     </Form>);
 

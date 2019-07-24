@@ -20,9 +20,6 @@ const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
 
 const URL_MAX_LEN = 2000;
 
-const TAG_MIN_LEN = 2;
-const TAG_MAX_LEN = 50;
-
 const SLUG_MIN_LEN = 5;
 const SLUG_MAX_LEN = 50;
 

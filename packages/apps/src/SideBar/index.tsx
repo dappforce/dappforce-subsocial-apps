@@ -10,7 +10,7 @@ import './SideBar.css';
 import React from 'react';
 import styled from 'styled-components';
 import { Responsive } from 'semantic-ui-react';
-import { Button, Icon, Menu, media } from '@polkadot/ui-app';
+import { Button, Menu, media } from '@polkadot/ui-app';
 import { classes } from '@polkadot/ui-app/util';
 import { logoBackground, logoPadding } from '@polkadot/ui-app/styles/theme';
 
@@ -19,24 +19,6 @@ import translate from '../translate';
 import Item from './Item';
 import NodeInfo from './NodeInfo';
 import getLogo from './logos';
-import { SemanticICONS } from 'semantic-ui-react/dist/commonjs';
-
-type OuterLinkProps = {
-  url: string,
-  title: string,
-  icon?: SemanticICONS
-};
-
-function OuterLink ({ url, title, icon = 'external alternate' }: OuterLinkProps) {
-  return (
-    <Menu.Item className='apps--SideBar-Item'>
-      <a className='apps--SideBar-Item-NavLink' href={url} target='_blank'>
-        <Icon name={icon} />
-        <span className='text'>{title}</span>
-      </a>
-    </Menu.Item>
-  );
-}
 
 type Props = I18nProps & {
   collapse: () => void,
