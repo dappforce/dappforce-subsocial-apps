@@ -12,7 +12,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
-import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent, addJsonToIpfs, getJsonFromIpfs } from './utils';
+import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent, addJsonToIpfs, getJsonFromIpfs, removeIpfsContent } from './utils';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 
 // TODO get next settings from Substrate:
@@ -120,6 +120,7 @@ const InnerForm = (props: FormProps) => {
   };
 
   const onTxCancelled = () => {
+   // removeFromIpfs(ipfsCid).catch(err => new Error(err));
     setSubmitting(false);
   };
 

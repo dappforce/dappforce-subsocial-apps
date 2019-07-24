@@ -80,18 +80,32 @@ export type UrlHasIdProps = {
 };
 
 // connect to ipfs daemon API server
-const ipfs = ipfsClient('localhost', '5002', { protocol: 'http' });
+const ipfs = ipfsClient('localhost', '5002', { protocol: 'http' }) as IPFS.FilesAPI;
+
+// const ipfsConfig = { host: 'localhost', port:'5002', protocol: 'http' };
+// new IPFS({ config: ipfsConfig });
 
 type IpfsData = CommentData | PostData | BlogData;
 
-export async function addJsonToIpfs<T extends IpfsData> (data: IpfsData): Promise<string> {
+export async function addJsonToIpfs (data: IpfsData): Promise<string> {
+  // const path = `subsocial/${pathDir}`;
+  // console.log(path);
+  // const json = { path: path, content: Buffer.from(JSON.stringify(data)) };
   const json = Buffer.from(JSON.stringify(data));
+  console.log(ipfs);
   const results = await ipfs.add(json);
   console.log(results);
-  return results[0].hash;
+  return results[results.length - 1].hash;
 }
+
+// export async function removeFromIpfs (hash: string) {
+//   const remove = await ipfs.pin.rm(hash);
+//   console.log(remove);
+//   // await ipfs.repo.gc(); // TODO fixed gc;
+// }
 
 export async function getJsonFromIpfs<T extends IpfsData> (cid: IPFS.CID): Promise<T> {
   const results = await ipfs.cat(cid);
-  return JSON.parse(results.toString('utf8')) as T;
+  console.log(results);
+  return JSON.parse(results.toString()) as T;
 }

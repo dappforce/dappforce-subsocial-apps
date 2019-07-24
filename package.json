@@ -28,7 +28,7 @@
     "postinstall": "polkadot-dev-yarn-only",
     "test": "echo \"skipping tests\"",
     "vanitygen": "node packages/app-accounts/scripts/vanitygen.js",
-    "start": "cd packages/apps && webpack --config webpack.config.js"
+    "start": "cd packages/apps && webpack --config webpack.config.js && jsipfs daemon"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -50,11 +50,11 @@
     "postcss-simple-vars": "^5.0.0",
     "precss": "^4.0.0",
     "source-map-explorer": "^1.7.0",
-    "ipfs-http-client": "^33.1.0"
   },
   "dependencies": {
     "cids": "^0.7.1",
     "ipfs-http-client": "^33.1.0",
+    "js-ipfs": "0.0.301",
     "typestub-ipfs": "^0.23.14"
   }
 }
