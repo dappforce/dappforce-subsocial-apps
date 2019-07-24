@@ -1,6 +1,6 @@
 FROM node:10.13 as builder
 
-RUN git clone https://github.com/dappforce/dappforce-subsocial-ui.git
+RUN git clone -b df-pre-ipfs https://github.com/dappforce/dappforce-subsocial-ui.git
 
 WORKDIR /dappforce-subsocial-ui
 RUN yarn
