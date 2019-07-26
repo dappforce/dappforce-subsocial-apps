@@ -147,7 +147,7 @@ const InnerForm = (props: FormProps) => {
         // TODO get updated writers from the form
         writers: new Option(VecAccountId,(struct.writers)),
         slug: new Option(Text, slug),
-        ipfs_cid: new Option(Text, ipfsCid)
+        ipfs_hash: new Option(Text, ipfsCid)
       });
       return [ struct.id, update ];
     }
@@ -267,7 +267,7 @@ function LoadStruct (props: LoadStructProps) {
 
     if (struct === undefined) return;
 
-    getJsonFromIpfs<BlogData>(struct.ipfs_cid).then(json => {
+    getJsonFromIpfs<BlogData>(struct.ipfs_hash).then(json => {
       const content = json;
       setJson(content);
     }).catch(err => console.log(err));

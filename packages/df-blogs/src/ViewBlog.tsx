@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { Option, AccountId, Bool, Json } from '@polkadot/types';
+import { Option, AccountId, Bool } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { nonEmptyStr } from '@polkadot/joy-utils/index';
@@ -43,15 +43,15 @@ function Component (props: Props) {
   const {
     id,
     created: { account },
-    ipfs_cid
+    ipfs_hash
   } = blog;
 
   const [ content , setContent ] = useState({} as BlogData);
   const { desc, name, image } = content;
 
   useEffect(() => {
-    if (!ipfs_cid) return;
-    getJsonFromIpfs<BlogData>(ipfs_cid).then(json => {
+    if (!ipfs_hash) return;
+    getJsonFromIpfs<BlogData>(ipfs_hash).then(json => {
       const content = json;
       setContent(content);
       console.log(content);
@@ -115,10 +115,10 @@ function Component (props: Props) {
   const postsSectionTitle = () => {
     return <>
       <span style={{ marginRight: '.5rem' }}>Posts ({postsCount})</span>
-      {isMyBlog && <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
+      <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
         <i className='plus icon' />
         Write post
-      </Link>}
+      </Link>
     </>;
   };
 

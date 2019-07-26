@@ -105,7 +105,7 @@ export function ViewComment (props: ViewCommentProps) {
   }
   useEffect(() => {
 
-    getJsonFromIpfs<CommentData>(struct.ipfs_cid).then(json => {
+    getJsonFromIpfs<CommentData>(struct.ipfs_hash).then(json => {
       console.log(json);
       setContent(json);
     }).catch(err => console.log(err));

@@ -8,7 +8,7 @@ import { queryToProp } from '@polkadot/joy-utils/index';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId, CommentData, PostData, BlogData } from './types';
 
-import * as IPFS from "typestub-ipfs";
+import * as IPFS from 'typestub-ipfs';
 const ipfsClient = require('ipfs-http-client');
 
 export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
@@ -79,8 +79,16 @@ export type UrlHasIdProps = {
   }
 };
 
+type IpfsAPI = IPFS.FilesAPI & {
+  pin: {
+    rm: (hash?: string) => any,
+    ls: (hash?: string) => any
+  },
+  repo: IPFS.RepoAPI
+};
+
 // connect to ipfs daemon API server
-const ipfs = ipfsClient('localhost', '5002', { protocol: 'http' }) as IPFS.FilesAPI;
+const ipfs = ipfsClient('localhost', '5002', { protocol: 'http' }) as IpfsAPI;
 
 // const ipfsConfig = { host: 'localhost', port:'5002', protocol: 'http' };
 // new IPFS({ config: ipfsConfig });
@@ -92,20 +100,15 @@ export async function addJsonToIpfs (data: IpfsData): Promise<string> {
   // console.log(path);
   // const json = { path: path, content: Buffer.from(JSON.stringify(data)) };
   const json = Buffer.from(JSON.stringify(data));
-  console.log(ipfs);
   const results = await ipfs.add(json);
-  console.log(results);
   return results[results.length - 1].hash;
 }
 
-// export async function removeFromIpfs (hash: string) {
-//   const remove = await ipfs.pin.rm(hash);
-//   console.log(remove);
-//   // await ipfs.repo.gc(); // TODO fixed gc;
-// }
+export async function removeFromIpfs (hash: string) {
+  await ipfs.pin.rm(hash);
+}
 
 export async function getJsonFromIpfs<T extends IpfsData> (cid: IPFS.CID): Promise<T> {
   const results = await ipfs.cat(cid);
-  console.log(results);
   return JSON.parse(results.toString()) as T;
 }

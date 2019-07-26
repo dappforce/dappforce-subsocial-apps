@@ -12,7 +12,7 @@ import { Option } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
 
-import { queryBlogsToProp, addJsonToIpfs, getJsonFromIpfs } from './utils';
+import { queryBlogsToProp, addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './utils';
 import { PostId, CommentId, Comment, CommentUpdate, CommentData } from './types';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
@@ -69,22 +69,28 @@ const InnerForm = (props: FormProps) => {
 
   const [ ipfsCid, setIpfsCid ] = useState('');
 
-  const onSubmit = (sendTx: () => void) => {
+  const onSubmit = async (sendTx: () => void) => {
     if (isValid) {
       const json = { body };
-      console.log(json);
-      addJsonToIpfs(json).then(cid => {
-        setIpfsCid(cid);
-        sendTx();
-      }).catch(err => new Error(err));
+      const cid = await addJsonToIpfs(json).catch(err => console.log(err)) as string;
+      setIpfsCid(cid);
+      sendTx();
+      // window.onunload = async (e) => {
+      //   e.preventDefault();
+      //   await removeFromIpfs(cid).catch(err => console.log(err));
+      //   return false;
+      // };// Attention!!! Old code!
+      // TODO unpin, when close tab
     }
   };
 
   const onTxCancelled = () => {
+    removeFromIpfs(ipfsCid).catch(err => console.log(err));
     setSubmitting(false);
   };
 
   const onTxFailed = (_txResult: SubmittableResult) => {
+    removeFromIpfs(ipfsCid).catch(err => console.log(err));
     setSubmitting(false);
   };
 
@@ -109,7 +115,7 @@ const InnerForm = (props: FormProps) => {
       return [ postId, parentCommentId, ipfsCid ];
     } else if (dirty) {
       const update = new CommentUpdate({
-        ipfs_cid: new Text(ipfsCid)
+        ipfs_hash: new Text(ipfsCid)
       });
       return [ struct.id, update ];
     } else {
@@ -120,7 +126,6 @@ const InnerForm = (props: FormProps) => {
 
   const form = () => (
     <Form className='ui form JoyForm EditEntityForm'>
-
       <LabelledField name='body' {...props}>
         <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write a comment...`} style={{ minWidth: '40rem' }} autoFocus={autoFocus}/>
       </LabelledField>
@@ -203,7 +208,7 @@ function LoadStruct (props: LoadStructProps) {
 
     if (struct === undefined) return;
 
-    getJsonFromIpfs<CommentData>(struct.ipfs_cid).then(json => {
+    getJsonFromIpfs<CommentData>(struct.ipfs_hash).then(json => {
       const content = json;
       setJson(content);
     }).catch(err => console.log(err));

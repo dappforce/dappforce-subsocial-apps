@@ -1,7 +1,6 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector } from '@polkadot/types';
 import * as IPFS from 'typestub-ipfs';
-const ipfsClient = require('ipfs-http-client');
 const CID = require('cids');
 
 export class BlogId extends u64 {}
@@ -51,19 +50,13 @@ export type BlogData = {
   tags: string[]
 };
 
-export type Cid = {
-  codec: string,
-  hash: object,
-  version: Number
-};
-
 export type BlogType = {
   id: BlogId,
   created: ChangeType,
   updated: OptionChange,
   writers: AccountId[],
   slug: Text,
-  ipfs_cid: Text,
+  ipfs_hash: Text,
   posts_count: u16,
   followers_count: u32
 };
@@ -76,7 +69,7 @@ export class Blog extends Struct {
       updated: OptionChange,
       writers: VecAccountId,
       slug: Text,
-      ipfs_cid: Text,
+      ipfs_hash: Text,
       posts_count: u16,
       followers_count: u32
     }, value);
@@ -102,13 +95,13 @@ export class Blog extends Struct {
     return this.get('slug') as Text;
   }
 
-  get ipfs_cid (): Cid {
-    const ipfsCid = this.get('ipfs_cid') as Text;
+  get ipfs_hash (): IPFS.CID {
+    const ipfsCid = this.get('ipfs_hash') as Text;
     return new CID(ipfsCid.toString());
   }
 
-  // get ipfs_cid (): BlogData {
-  //   const IpfsCid = this.get('ipfs_cid') as Text;
+  // get ipfs_hash (): BlogData {
+  //   const IpfsCid = this.get('ipfs_hash') as Text;
   //   return JSON.parse(IpfsCid.toString());
   // }
 
@@ -124,7 +117,7 @@ export class Blog extends Struct {
 export type BlogUpdateType = {
   writers: OptionVecAccountId,
   slug: OptionText,
-  ipfs_cid: OptionText
+  ipfs_hash: OptionText
 };
 
 export class BlogUpdate extends Struct {
@@ -132,7 +125,7 @@ export class BlogUpdate extends Struct {
     super({
       writers: OptionVecAccountId,
       slug: OptionText,
-      ipfs_cid: OptionText
+      ipfs_hash: OptionText
     }, value);
   }
 }
@@ -150,7 +143,7 @@ export type PostType = {
   created: ChangeType,
   updated: OptionChange,
   slug: Text,
-  ipfs_cid: Text,
+  ipfs_hash: Text,
   comments_count: u16,
   upvotes_count: u16,
   downvotes_count: u16
@@ -164,7 +157,7 @@ export class Post extends Struct {
       created: Change,
       updated: OptionChange,
       slug: Text,
-      ipfs_cid: Text,
+      ipfs_hash: Text,
       comments_count: u16,
       upvotes_count: u16,
       downvotes_count: u16
@@ -191,8 +184,8 @@ export class Post extends Struct {
     return this.get('slug') as Text;
   }
 
-  get ipfs_cid (): Cid {
-    const ipfsCid = this.get('ipfs_cid') as Text;
+  get ipfs_hash (): IPFS.CID {
+    const ipfsCid = this.get('ipfs_hash') as Text;
     return new CID(ipfsCid.toString());
   }
 
@@ -212,7 +205,7 @@ export class Post extends Struct {
 export type PostUpdateType = {
   blog_id: OptionBlogId,
   slug: OptionText,
-  ipfs_cid: OptionText
+  ipfs_hash: OptionText
 };
 
 export class PostUpdate extends Struct {
@@ -220,7 +213,7 @@ export class PostUpdate extends Struct {
     super({
       blog_id: OptionBlogId,
       slug: OptionText,
-      ipfs_cid: OptionText
+      ipfs_hash: OptionText
     }, value);
   }
 }
@@ -235,7 +228,7 @@ export type CommentType = {
   post_id: PostId,
   created: Change,
   updated: OptionChange,
-  ipfs_cid: Text,
+  ipfs_hash: Text,
   upvotes_count: u16,
   downvotes_count: u16
 };
@@ -248,7 +241,7 @@ export class Comment extends Struct {
       post_id: PostId,
       created: Change,
       updated: OptionChange,
-      ipfs_cid: Text,
+      ipfs_hash: Text,
       upvotes_count: u16,
       downvotes_count: u16
     }, value);
@@ -274,8 +267,8 @@ export class Comment extends Struct {
     return this.get('updated') as OptionChange;
   }
 
-  get ipfs_cid (): Cid {
-    const ipfsCid = this.get('ipfs_cid') as Text;
+  get ipfs_hash (): IPFS.CID {
+    const ipfsCid = this.get('ipfs_hash') as Text;
     return new CID(ipfsCid.toString());
   }
 
@@ -289,13 +282,13 @@ export class Comment extends Struct {
 }
 
 export type CommentUpdateType = {
-  ipfs_cid: Text
+  ipfs_hash: Text
 };
 
 export class CommentUpdate extends Struct {
   constructor (value?: CommentUpdateType) {
     super({
-      ipfs_cid: Text
+      ipfs_hash: Text
     }, value);
   }
 }

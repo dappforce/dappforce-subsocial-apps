@@ -28,7 +28,8 @@
     "postinstall": "polkadot-dev-yarn-only",
     "test": "echo \"skipping tests\"",
     "vanitygen": "node packages/app-accounts/scripts/vanitygen.js",
-    "start": "cd packages/apps && webpack --config webpack.config.js && jsipfs daemon"
+    "start": "cd packages/apps && webpack --config webpack.config.js",
+    "ipfs": "jsipfs daemon"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -36,9 +37,11 @@
     "@polkadot/dev-react": "^0.30.0-beta.1",
     "@polkadot/ts": "^0.1.56",
     "autoprefixer": "^9.4.9",
+    "cids": "^0.7.1",
     "empty": "^0.10.1",
     "gh-pages": "^2.0.1",
     "html-loader": "^0.5.5",
+    "ipfs-http-client": "^33.1.0",
     "markdown-loader": "^5.0.0",
     "postcss": "^7.0.13",
     "postcss-clean": "^1.1.0",
@@ -50,11 +53,6 @@
     "postcss-simple-vars": "^5.0.0",
     "precss": "^4.0.0",
     "source-map-explorer": "^1.7.0",
-  },
-  "dependencies": {
-    "cids": "^0.7.1",
-    "ipfs-http-client": "^33.1.0",
-    "js-ipfs": "0.0.301",
     "typestub-ipfs": "^0.23.14"
   }
 }

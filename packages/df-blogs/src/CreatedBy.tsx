@@ -8,7 +8,7 @@ import { Change } from './types';
 
 type CreatedByProps = {
   created: Change
-}
+};
 
 export const CreatedBy = (props: CreatedByProps) => (
   <Table celled selectable compact definition className='ProfileDetailsTable'>
@@ -23,4 +23,4 @@ export const CreatedBy = (props: CreatedByProps) => (
       </Table.Row>
     </Table.Body>
   </Table>
-); 
+);
