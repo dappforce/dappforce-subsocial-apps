@@ -12,7 +12,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
-import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent, addJsonToIpfs, getJsonFromIpfs, removeIpfsContent } from './utils';
+import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent, addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './utils';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 
 // TODO get next settings from Substrate:
@@ -120,11 +120,12 @@ const InnerForm = (props: FormProps) => {
   };
 
   const onTxCancelled = () => {
-   // removeFromIpfs(ipfsCid).catch(err => new Error(err));
+    removeFromIpfs(ipfsCid).catch(err => new Error(err));
     setSubmitting(false);
   };
 
   const onTxFailed = (_txResult: SubmittableResult) => {
+    removeFromIpfs(ipfsCid).catch(err => new Error(err));
     setSubmitting(false);
   };
 
@@ -147,7 +148,7 @@ const InnerForm = (props: FormProps) => {
         // TODO get updated writers from the form
         writers: new Option(VecAccountId,(struct.writers)),
         slug: new Option(Text, slug),
-        ipfs_hash: new Option(Text, ipfsCid)
+        ipfs_cid: new Option(Text, ipfsCid)
       });
       return [ struct.id, update ];
     }
@@ -267,7 +268,7 @@ function LoadStruct (props: LoadStructProps) {
 
     if (struct === undefined) return;
 
-    getJsonFromIpfs<BlogData>(struct.ipfs_hash).then(json => {
+    getJsonFromIpfs<BlogData>(struct.ipfs_cid).then(json => {
       const content = json;
       setJson(content);
     }).catch(err => console.log(err));

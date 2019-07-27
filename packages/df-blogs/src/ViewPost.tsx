@@ -39,14 +39,14 @@ function ViewPostInternal (props: ViewPostProps) {
     comments_count,
     upvotes_count,
     downvotes_count,
-    ipfs_hash
+    ipfs_cid
   } = post;
 
   const [ content , setContent ] = useState({} as PostData);
   const { title, body, image, tags } = content;
   useEffect(() => {
-    if (!ipfs_hash) return;
-    getJsonFromIpfs<PostData>(ipfs_hash).then(json => {
+    if (!ipfs_cid) return;
+    getJsonFromIpfs<PostData>(ipfs_cid).then(json => {
       const content = json;
       setContent(content);
       console.log(content);

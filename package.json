@@ -29,7 +29,7 @@
     "test": "echo \"skipping tests\"",
     "vanitygen": "node packages/app-accounts/scripts/vanitygen.js",
     "start": "cd packages/apps && webpack --config webpack.config.js",
-    "ipfs": "jsipfs daemon"
+    "ipfs": "yarn jsipfs daemon"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -53,6 +53,7 @@
     "postcss-simple-vars": "^5.0.0",
     "precss": "^4.0.0",
     "source-map-explorer": "^1.7.0",
-    "typestub-ipfs": "^0.23.14"
+    "typestub-ipfs": "^0.23.14",
+    "ipfs": "0.36.4"
   }
 }

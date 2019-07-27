@@ -124,7 +124,7 @@ const InnerForm = (props: FormProps) => {
         // TODO setting new blog_id will move the post to another blog.
         blog_id: new Option(BlogId, null),
         slug: new Option(Text, slug),
-        ipfs_hash: new Option(Text, ipfsCid)
+        ipfs_cid: new Option(Text, ipfsCid)
       });
       return [ struct.id, update ];
     }
@@ -259,7 +259,7 @@ function LoadStruct (props: LoadStructProps) {
 
     if (struct === undefined) return;
 
-    getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
+    getJsonFromIpfs<PostData>(struct.ipfs_cid).then(json => {
       const content = json;
       setJson(content);
     }).catch(err => console.log(err));

@@ -12,7 +12,7 @@ import './index.css';
 
 import { queryBlogsToProp } from './utils';
 import translate from './translate';
-import ListBlogs from './ListBlogs';
+import { ListBlogs, ListMyBlogs } from './ListBlogs';
 import { EditBlog, NewBlog } from './EditBlog';
 import ViewBlogById from './ViewBlogById';
 import { NewPost, EditPost } from './EditPost';
@@ -33,6 +33,10 @@ class App extends React.PureComponent<Props> {
         text: t('All blogs') + ` (${blogCount})`
       },
       {
+        name: 'my',
+        text: t('My blogs')
+      },
+      {
         name: 'new',
         text: t('New blog')
       }
@@ -48,6 +52,7 @@ class App extends React.PureComponent<Props> {
           <Tabs basePath={basePath} items={tabs} />
         </header>
         <Switch>
+          <Route path={`${basePath}/my`} component={ListMyBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />
           <Route path={`${basePath}/posts/:id/edit`} component={EditPost} />
           <Route path={`${basePath}/posts/:id`} component={ViewPostById} />

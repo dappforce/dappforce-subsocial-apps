@@ -115,7 +115,7 @@ const InnerForm = (props: FormProps) => {
       return [ postId, parentCommentId, ipfsCid ];
     } else if (dirty) {
       const update = new CommentUpdate({
-        ipfs_hash: new Text(ipfsCid)
+        ipfs_cid: new Text(ipfsCid)
       });
       return [ struct.id, update ];
     } else {
@@ -208,7 +208,7 @@ function LoadStruct (props: LoadStructProps) {
 
     if (struct === undefined) return;
 
-    getJsonFromIpfs<CommentData>(struct.ipfs_hash).then(json => {
+    getJsonFromIpfs<CommentData>(struct.ipfs_cid).then(json => {
       const content = json;
       setJson(content);
     }).catch(err => console.log(err));

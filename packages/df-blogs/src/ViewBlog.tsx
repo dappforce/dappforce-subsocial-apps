@@ -43,15 +43,15 @@ function Component (props: Props) {
   const {
     id,
     created: { account },
-    ipfs_hash
+    ipfs_cid
   } = blog;
 
   const [ content , setContent ] = useState({} as BlogData);
   const { desc, name, image } = content;
 
   useEffect(() => {
-    if (!ipfs_hash) return;
-    getJsonFromIpfs<BlogData>(ipfs_hash).then(json => {
+    if (!ipfs_cid) return;
+    getJsonFromIpfs<BlogData>(ipfs_cid).then(json => {
       const content = json;
       setContent(content);
       console.log(content);

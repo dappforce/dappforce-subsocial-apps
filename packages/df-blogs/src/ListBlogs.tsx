@@ -1,15 +1,17 @@
 import BN from 'bn.js';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ApiProps } from '@polkadot/ui-api/types';
 import { I18nProps } from '@polkadot/ui-app/types';
-import { withCalls } from '@polkadot/ui-api/with';
+import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
 import Section from '@polkadot/joy-utils/Section';
 import { queryBlogsToProp } from './utils';
 import translate from './translate';
 import ViewBlog from './ViewBlog';
 import { BlogId } from './types';
+import { AccountId } from '@polkadot/types';
+import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 
 type Props = ApiProps & I18nProps & {
   nextBlogId?: BN
@@ -45,8 +47,48 @@ class Component extends React.PureComponent<Props> {
   }
 }
 
-export default translate(
+export const ListBlogs = translate(
   withCalls<Props>(
     queryBlogsToProp('nextBlogId')
   )(Component)
+);
+
+type MyBlogProps = {
+  id: AccountId,
+  myblogsIds?: BlogId[]
+};
+
+const InnerListMyBlogs = (props: MyBlogProps) => {
+  const { myblogsIds } = props;
+  const totalCount = myblogsIds && myblogsIds.length;
+  return (
+  <Section title={`MyBlogs (${totalCount})`}>{
+    myblogsIds && myblogsIds.length === 0
+      ? <em>No blogs created yet.</em>
+      : <div className='ui huge relaxed middle aligned divided list ProfilePreviews'>
+          {myblogsIds && myblogsIds.map((id, i) =>
+            <ViewBlog {...props} key={i} id={id} preview />
+          )}
+        </div>
+  }</Section>
+  );
+};
+
+function withIdFromUseMyAccount (Component: React.ComponentType<MyBlogProps>) {
+  return function () {
+    const { state: { address: myAddress } } = useMyAccount();
+    try {
+      return <Component id={new AccountId(myAddress)} />;
+    } catch (err) {
+      return <em>Invalid Account id</em>;
+    }
+  };
+}
+
+export const ListMyBlogs = withMulti(
+  InnerListMyBlogs,
+  withIdFromUseMyAccount,
+  withCalls<MyBlogProps>(
+    queryBlogsToProp(`blogIdsByOwner`, { paramName: 'id', propName: 'myblogsIds' })
+  )
 );
