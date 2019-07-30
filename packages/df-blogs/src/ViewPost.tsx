@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { Segment } from 'semantic-ui-react';
+import { Segment, Dropdown } from 'semantic-ui-react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { Option } from '@polkadot/types';
@@ -13,6 +13,7 @@ import { CommentsByPost } from './ViewComment';
 import { CreatedBy } from './CreatedBy';
 import { MutedSpan } from '@polkadot/joy-utils/MutedText';
 import { Voter } from './Voter';
+import { PostHistoryModal } from './ListsEditHistory';
 
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
@@ -39,14 +40,14 @@ function ViewPostInternal (props: ViewPostProps) {
     comments_count,
     upvotes_count,
     downvotes_count,
-    ipfs_cid
+    ipfs_hash
   } = post;
 
   const [ content , setContent ] = useState({} as PostData);
   const { title, body, image, tags } = content;
   useEffect(() => {
-    if (!ipfs_cid) return;
-    getJsonFromIpfs<PostData>(ipfs_cid).then(json => {
+    if (!ipfs_hash) return;
+    getJsonFromIpfs<PostData>(ipfs_hash).then(json => {
       const content = json;
       setContent(content);
       console.log(content);
@@ -55,16 +56,20 @@ function ViewPostInternal (props: ViewPostProps) {
 
   const isMyStruct = myAddress === account.toString();
 
-  const editPostBtn = () => (
-    isMyStruct && <Link
-      to={`/blogs/posts/${id.toString()}/edit`}
-      className='ui tiny basic button'
-      style={{ marginLeft: '.5rem' }}
-    >
-      <i className='pencil alternate icon' />
-      Edit
-    </Link>
-  );
+  const renderDropDownMenu = () => {
+
+    if (!isMyStruct) return null;
+
+    const [open, setOpen] = useState(false);
+    const close = () => setOpen(false);
+    return (<Dropdown icon='ellipsis horizontal'>
+      <Dropdown.Menu>
+        <Link className='item' to={`/blogs/posts/${id.toString()}/edit`}>Edit</Link>
+        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
+        <PostHistoryModal open={open} close={close}/>
+      </Dropdown.Menu>
+    </Dropdown>);
+  };
 
   const renderPreview = () => {
     return <>
@@ -75,7 +80,7 @@ function ViewPostInternal (props: ViewPostProps) {
             style={{ marginRight: '.5rem' }}
           >{title}
           </Link>
-          {editPostBtn()}
+          {renderDropDownMenu()}
         </h2>
         <AuthorPreview address={account} />
         <div className='DfCountsPreview'>
@@ -91,7 +96,7 @@ function ViewPostInternal (props: ViewPostProps) {
     return <>
       <h1 style={{ display: 'flex' }}>
         <span style={{ marginRight: '.5rem' }}>{title}</span>
-        {editPostBtn()}
+        {renderDropDownMenu()}
       </h1>
       <CreatedBy created={post.created} />
       <div style={{ margin: '1rem 0' }}>

@@ -18,6 +18,8 @@ import TxButton from '@polkadot/joy-utils/TxButton';
 import { api } from '@polkadot/ui-api';
 import _ from 'lodash';
 import { BlogFollowersModal } from './BlogFollowers';
+import { BlogHistoryModal } from './ListsEditHistory';
+import { Dropdown } from 'semantic-ui-react';
 
 type Props = MyAccountProps & {
   preview?: boolean,
@@ -43,15 +45,15 @@ function Component (props: Props) {
   const {
     id,
     created: { account },
-    ipfs_cid
+    ipfs_hash
   } = blog;
 
   const [ content , setContent ] = useState({} as BlogData);
   const { desc, name, image } = content;
 
   useEffect(() => {
-    if (!ipfs_cid) return;
-    getJsonFromIpfs<BlogData>(ipfs_cid).then(json => {
+    if (!ipfs_hash) return;
+    getJsonFromIpfs<BlogData>(ipfs_hash).then(json => {
       const content = json;
       setContent(content);
       console.log(content);
@@ -75,6 +77,21 @@ function Component (props: Props) {
   const hasImage = image && nonEmptyStr(image);
   const postsCount = postIds ? postIds.length : 0;
 
+  const renderDropDownMenu = () => {
+
+    if (!isMyBlog) return null;
+
+    const [open, setOpen] = useState(false);
+    const close = () => setOpen(false);
+    return (<Dropdown icon='ellipsis horizontal'>
+      <Dropdown.Menu>
+        <Link className='item' to={`/blogs/${id.toString()}/edit`}>Edit</Link>
+        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
+        <BlogHistoryModal open={open} close={close}/>
+      </Dropdown.Menu>
+    </Dropdown>);
+  };
+
   const renderPreview = () => {
     return <>
       <div className={`item ProfileDetails ${isMyBlog && 'MyProfile'}`}>
@@ -85,12 +102,7 @@ function Component (props: Props) {
         <div className='content'>
           <div className='header'>
             <Link to={`/blogs/${id}`} className='handle'>{name}</Link>
-            {isMyBlog &&
-              <Link to={`/blogs/${id}/edit`} className='ui tiny basic button'>
-                <i className='pencil alternate icon' />
-                Edit my blog
-              </Link>
-            }
+            {renderDropDownMenu()}
           </div>
           <div className='description'>
             <ReactMarkdown className='JoyMemo--full' source={desc} linkTarget='_blank' />

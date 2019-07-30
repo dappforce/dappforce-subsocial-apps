@@ -1,4 +1,4 @@
-import { Comment as SuiComment, Button, Icon } from 'semantic-ui-react';
+import { Comment as SuiComment, Button, Icon, Dropdown } from 'semantic-ui-react';
 import React, { useState, useEffect } from 'react';
 
 import { withCalls, withMulti, withApi } from '@polkadot/ui-api/with';
@@ -14,6 +14,7 @@ import { PostId, CommentId, Comment, OptionComment, Post, CommentData } from './
 import { NewComment } from './EditComment';
 import { queryBlogsToProp, getJsonFromIpfs } from './utils';
 import { Voter } from './Voter';
+import { CommentHistoryModal } from './ListsEditHistory';
 
 type Props = ApiProps & {
   postId: PostId,
@@ -105,7 +106,7 @@ export function ViewComment (props: ViewCommentProps) {
   }
   useEffect(() => {
 
-    getJsonFromIpfs<CommentData>(struct.ipfs_cid).then(json => {
+    getJsonFromIpfs<CommentData>(struct.ipfs_hash).then(json => {
       console.log(json);
       setContent(json);
     }).catch(err => console.log(err));
@@ -128,18 +129,19 @@ export function ViewComment (props: ViewCommentProps) {
 
   const isMyStruct = myAddress === account.toString();
 
-  const renderButtonEditForm = () => {
+  const renderDropDownMenu = () => {
+
     if (!isMyStruct || showEditForm) return null;
 
-    return <Button
-      type='button'
-      basic
-      size='tiny'
-      onClick={() => setShowEditForm(true)}
-    >
-        <Icon name='pencil'/>
-        Edit
-    </Button>;
+    const [open, setOpen] = useState(false);
+    const close = () => setOpen(false);
+    return (<Dropdown icon='ellipsis horizontal'>
+      <Dropdown.Menu>
+        <Dropdown.Item text='Edit' onClick={() => setShowEditForm(true)} />
+        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
+        <CommentHistoryModal open={open} close={close}/>
+      </Dropdown.Menu>
+    </Dropdown>);
   };
 
   const replyButton = () => (
@@ -167,7 +169,7 @@ export function ViewComment (props: ViewCommentProps) {
               size={28}
               extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}`}
             />
-            {renderButtonEditForm()}
+            {renderDropDownMenu()}
           </SuiComment.Metadata>
           <SuiComment.Content>
             {showEditForm

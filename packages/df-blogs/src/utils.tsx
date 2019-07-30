@@ -10,6 +10,7 @@ import { CommentId, PostId, BlogId, CommentData, PostData, BlogData } from './ty
 
 import * as IPFS from 'typestub-ipfs';
 const ipfsClient = require('ipfs-http-client');
+const CID = require('cids');
 
 export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
   return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
@@ -108,7 +109,8 @@ export async function removeFromIpfs (hash: string) {
   await ipfs.pin.rm(hash);
 }
 
-export async function getJsonFromIpfs<T extends IpfsData> (cid: IPFS.CID): Promise<T> {
+export async function getJsonFromIpfs<T extends IpfsData> (hash: string): Promise<T> {
+  const cid = new CID(hash);
   const results = await ipfs.cat(cid);
   return JSON.parse(results.toString()) as T;
 }

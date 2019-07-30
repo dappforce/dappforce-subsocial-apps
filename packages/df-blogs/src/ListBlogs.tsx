@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { ApiProps } from '@polkadot/ui-api/types';
 import { I18nProps } from '@polkadot/ui-app/types';
