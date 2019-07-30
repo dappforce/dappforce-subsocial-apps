@@ -60,7 +60,8 @@ export type BlogType = {
   slug: Text,
   ipfs_cid: IpfsCid,
   posts_count: u16,
-  followers_count: u32
+  followers_count: u32,
+  edit_history: OptionVecHistoryRecord
 };
 
 export class Blog extends Struct {
@@ -73,7 +74,8 @@ export class Blog extends Struct {
       slug: Text,
       ipfs_cid: IpfsCid,
       posts_count: u16,
-      followers_count: u32
+      followers_count: u32,
+      edit_history: OptionVecHistoryRecord
     }, value);
   }
 
@@ -114,6 +116,10 @@ export class Blog extends Struct {
   get followers_count (): u32 {
     return this.get('followers_count') as u32;
   }
+
+  get edit_history (): OptionVecHistoryRecord {
+    return this.get('edit_history') as OptionVecHistoryRecord;
+  }
 }
 
 export type BlogUpdateType = {
@@ -148,7 +154,8 @@ export type PostType = {
   ipfs_cid: IpfsCid,
   comments_count: u16,
   upvotes_count: u16,
-  downvotes_count: u16
+  downvotes_count: u16,
+  edit_history: OptionVecHistoryRecord
 };
 
 export class Post extends Struct {
@@ -162,7 +169,8 @@ export class Post extends Struct {
       ipfs_cid: IpfsCid,
       comments_count: u16,
       upvotes_count: u16,
-      downvotes_count: u16
+      downvotes_count: u16,
+      edit_history: OptionVecHistoryRecord
     }, value);
   }
 
@@ -202,6 +210,10 @@ export class Post extends Struct {
   get downvotes_count (): u16 {
     return this.get('downvotes_count') as u16;
   }
+
+  get edit_history (): OptionVecHistoryRecord {
+    return this.get('edit_history') as OptionVecHistoryRecord;
+  }
 }
 
 export type PostUpdateType = {
@@ -232,7 +244,8 @@ export type CommentType = {
   updated: OptionChange,
   ipfs_cid: IpfsCid,
   upvotes_count: u16,
-  downvotes_count: u16
+  downvotes_count: u16,
+  edit_history: OptionVecHistoryRecord
 };
 
 export class Comment extends Struct {
@@ -245,7 +258,8 @@ export class Comment extends Struct {
       updated: OptionChange,
       ipfs_cid: IpfsCid,
       upvotes_count: u16,
-      downvotes_count: u16
+      downvotes_count: u16,
+      edit_history: OptionVecHistoryRecord
     }, value);
   }
 
@@ -280,6 +294,10 @@ export class Comment extends Struct {
 
   get downvotes_count (): u16 {
     return this.get('downvotes_count') as u16;
+  }
+
+  get edit_history (): OptionVecHistoryRecord {
+    return this.get('edit_history') as OptionVecHistoryRecord;
   }
 }
 
@@ -373,6 +391,32 @@ export class SocialAccount extends Struct {
   }
 }
 
+export type HistoryRecordType = {
+  created: ChangeType,
+  ipfs_cid: IpfsCid
+};
+
+export class HistoryRecord extends Struct {
+  constructor (value?: HistoryRecordType) {
+    super({
+      created: Change,
+      ipfs_cid: IpfsCid
+    }, value);
+  }
+
+  get created (): Change {
+    return this.get('created') as Change;
+  }
+
+  get ipfs_cid (): IPFS.CID {
+    const ipfsCid = this.get('ipfs_hash') as Text;
+    return new CID(ipfsCid.toString());
+  }
+}
+
+export class VecHistoryRecord extends Vector.with(HistoryRecord) {}
+export class OptionVecHistoryRecord extends Option.with(VecHistoryRecord) {}
+
 export function registerBlogsTypes () {
   try {
     const typeRegistry = getTypeRegistry();
@@ -390,7 +434,8 @@ export function registerBlogsTypes () {
       CommentUpdate,
       ReactionKind,
       Reaction,
-      SocialAccount
+      SocialAccount,
+      HistoryRecord
     });
   } catch (err) {
     console.error('Failed to register custom types of blogs module', err);
