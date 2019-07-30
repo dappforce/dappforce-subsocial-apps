@@ -61,7 +61,7 @@ export type BlogType = {
   ipfs_cid: IpfsCid,
   posts_count: u16,
   followers_count: u32,
-  edit_history: OptionVecHistoryRecord
+  edit_history: VecBlogHistoryRecord
 };
 
 export class Blog extends Struct {
@@ -75,7 +75,7 @@ export class Blog extends Struct {
       ipfs_cid: IpfsCid,
       posts_count: u16,
       followers_count: u32,
-      edit_history: OptionVecHistoryRecord
+      edit_history: VecBlogHistoryRecord
     }, value);
   }
 
@@ -117,8 +117,8 @@ export class Blog extends Struct {
     return this.get('followers_count') as u32;
   }
 
-  get edit_history (): OptionVecHistoryRecord {
-    return this.get('edit_history') as OptionVecHistoryRecord;
+  get edit_history (): VecBlogHistoryRecord {
+    return this.get('edit_history') as VecBlogHistoryRecord;
   }
 }
 
@@ -155,7 +155,7 @@ export type PostType = {
   comments_count: u16,
   upvotes_count: u16,
   downvotes_count: u16,
-  edit_history: OptionVecHistoryRecord
+  edit_history: VecPostHistoryRecord
 };
 
 export class Post extends Struct {
@@ -170,7 +170,7 @@ export class Post extends Struct {
       comments_count: u16,
       upvotes_count: u16,
       downvotes_count: u16,
-      edit_history: OptionVecHistoryRecord
+      edit_history: VecPostHistoryRecord
     }, value);
   }
 
@@ -211,8 +211,8 @@ export class Post extends Struct {
     return this.get('downvotes_count') as u16;
   }
 
-  get edit_history (): OptionVecHistoryRecord {
-    return this.get('edit_history') as OptionVecHistoryRecord;
+  get edit_history (): VecPostHistoryRecord {
+    return this.get('edit_history') as VecPostHistoryRecord;
   }
 }
 
@@ -245,7 +245,7 @@ export type CommentType = {
   ipfs_cid: IpfsCid,
   upvotes_count: u16,
   downvotes_count: u16,
-  edit_history: OptionVecHistoryRecord
+  edit_history: VecCommentHistoryRecord
 };
 
 export class Comment extends Struct {
@@ -259,7 +259,7 @@ export class Comment extends Struct {
       ipfs_cid: IpfsCid,
       upvotes_count: u16,
       downvotes_count: u16,
-      edit_history: OptionVecHistoryRecord
+      edit_history: VecCommentHistoryRecord
     }, value);
   }
 
@@ -296,8 +296,8 @@ export class Comment extends Struct {
     return this.get('downvotes_count') as u16;
   }
 
-  get edit_history (): OptionVecHistoryRecord {
-    return this.get('edit_history') as OptionVecHistoryRecord;
+  get edit_history (): VecCommentHistoryRecord {
+    return this.get('edit_history') as VecCommentHistoryRecord;
   }
 }
 
@@ -391,31 +391,77 @@ export class SocialAccount extends Struct {
   }
 }
 
-export type HistoryRecordType = {
-  created: ChangeType,
-  ipfs_cid: IpfsCid
+export type BlogHistoryRecordType = {
+  edited: ChangeType,
+  old_data: BlogUpdateType
 };
 
-export class HistoryRecord extends Struct {
-  constructor (value?: HistoryRecordType) {
+export class BlogHistoryRecord extends Struct {
+  constructor (value?: BlogHistoryRecordType) {
     super({
-      created: Change,
-      ipfs_cid: IpfsCid
+      edited: Change,
+      old_data: BlogUpdate
     }, value);
   }
 
-  get created (): Change {
-    return this.get('created') as Change;
+  get edited (): Change {
+    return this.get('edited') as Change;
   }
 
-  get ipfs_cid (): IPFS.CID {
-    const ipfsCid = this.get('ipfs_hash') as Text;
-    return new CID(ipfsCid.toString());
+  get old_data (): BlogUpdate {
+    return this.get('old_data') as BlogUpdate;
   }
 }
 
-export class VecHistoryRecord extends Vector.with(HistoryRecord) {}
-export class OptionVecHistoryRecord extends Option.with(VecHistoryRecord) {}
+export class VecBlogHistoryRecord extends Vector.with(BlogHistoryRecord) {}
+
+export type PostHistoryRecordType = {
+  edited: ChangeType,
+  old_data: PostUpdateType
+};
+
+export class PostHistoryRecord extends Struct {
+  constructor (value?: PostHistoryRecordType) {
+    super({
+      edited: Change,
+      old_data: PostUpdate
+    }, value);
+  }
+
+  get edited (): Change {
+    return this.get('edited') as Change;
+  }
+
+  get old_data (): PostUpdate {
+    return this.get('old_data') as PostUpdate;
+  }
+}
+
+export class VecPostHistoryRecord extends Vector.with(PostHistoryRecord) {}
+
+export type CommentHistoryRecordType = {
+  edited: ChangeType,
+  old_data: CommentUpdateType
+};
+
+export class CommentHistoryRecord extends Struct {
+  constructor (value?: CommentHistoryRecordType) {
+    super({
+      edited: Change,
+      old_data: CommentUpdate
+    }, value);
+  }
+
+  get edited (): Change {
+    return this.get('edited') as Change;
+  }
+
+  get old_data (): CommentUpdate {
+    return this.get('old_data') as CommentUpdate;
+  }
+}
+
+export class VecCommentHistoryRecord extends Vector.with(CommentHistoryRecord) {}
 
 export function registerBlogsTypes () {
   try {
@@ -435,7 +481,9 @@ export function registerBlogsTypes () {
       ReactionKind,
       Reaction,
       SocialAccount,
-      HistoryRecord
+      BlogHistoryRecord,
+      PostHistoryRecord,
+      CommentHistoryRecord
     });
   } catch (err) {
     console.error('Failed to register custom types of blogs module', err);
