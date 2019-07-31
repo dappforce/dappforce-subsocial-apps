@@ -1,4 +1,4 @@
-import { Comment as SuiComment, Button, Icon, Dropdown } from 'semantic-ui-react';
+import { Comment as SuiComment, Button, Dropdown } from 'semantic-ui-react';
 import React, { useState, useEffect } from 'react';
 
 import { withCalls, withMulti, withApi } from '@polkadot/ui-api/with';
@@ -130,16 +130,16 @@ export function ViewComment (props: ViewCommentProps) {
   const isMyStruct = myAddress === account.toString();
 
   const renderDropDownMenu = () => {
+    const [open, setOpen] = useState(false);
 
     if (!isMyStruct || showEditForm) return null;
 
-    const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
         <Dropdown.Item text='Edit' onClick={() => setShowEditForm(true)} />
         <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
-        <CommentHistoryModal open={open} close={close}/>
+        {open && <CommentHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
     </Dropdown>);
   };

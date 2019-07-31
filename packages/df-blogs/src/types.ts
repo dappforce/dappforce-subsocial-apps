@@ -1,9 +1,10 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
-import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, U8a } from '@polkadot/types';
+import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector } from '@polkadot/types';
 import * as IPFS from 'typestub-ipfs';
-const CID = require('cids');
 
+export class IpfsHash extends Text {}
 export class BlogId extends u64 {}
+export class OptionIpfsHash extends Option.with(IpfsHash) {}
 export class PostId extends u64 {}
 export class CommentId extends u64 {}
 export class ReactionId extends u64 {}
@@ -37,8 +38,6 @@ export class Change extends Struct {
 
 export class VecAccountId extends Vector.with(AccountId) {}
 
-export class IpfsHash extends Text {}
-export class OptionIpfsHash extends Option.with(IpfsHash) {}
 export class OptionText extends Option.with(Text) {}
 export class OptionChange extends Option.with(Change) {}
 export class OptionBlogId extends Option.with(BlogId) {}
@@ -100,8 +99,8 @@ export class Blog extends Struct {
   }
 
   get ipfs_hash (): IPFS.CID {
-    const IpfsHash = this.get('ipfs_hash') as IpfsHash;
-    return new CID(IpfsHash.toString());
+    const ipfsHash = this.get('ipfs_hash') as Text;
+    return ipfsHash.toString();
   }
 
   // get ipfs_hash (): BlogData {
@@ -135,6 +134,9 @@ export class BlogUpdate extends Struct {
       slug: OptionText,
       ipfs_hash: OptionIpfsHash
     }, value);
+  }
+  get ipfs_hash (): OptionIpfsHash {
+    return this.get('ipfs_hash') as OptionIpfsHash;
   }
 }
 
@@ -195,8 +197,8 @@ export class Post extends Struct {
   }
 
   get ipfs_hash (): IPFS.CID {
-    const IpfsHash = this.get('ipfs_hash') as Text;
-    return new CID(IpfsHash.toString());
+    const ipfsHash = this.get('ipfs_hash') as Text;
+    return ipfsHash.toString();
   }
 
   get comments_count (): u16 {
@@ -229,6 +231,10 @@ export class PostUpdate extends Struct {
       slug: OptionText,
       ipfs_hash: OptionIpfsHash
     }, value);
+  }
+
+  get ipfs_hash (): OptionIpfsHash {
+    return this.get('ipfs_hash') as OptionIpfsHash;
   }
 }
 
@@ -284,8 +290,8 @@ export class Comment extends Struct {
   }
 
   get ipfs_hash (): IPFS.CID {
-    const IpfsHash = this.get('ipfs_hash') as Text;
-    return new CID(IpfsHash.toString());
+    const ipfsHash = this.get('ipfs_hash') as Text;
+    return ipfsHash.toString();
   }
 
   get upvotes_count (): u16 {
@@ -310,6 +316,10 @@ export class CommentUpdate extends Struct {
     super({
       ipfs_hash: IpfsHash
     }, value);
+  }
+
+  get ipfs_hash (): IpfsHash {
+    return this.get('ipfs_hash') as IpfsHash;
   }
 }
 

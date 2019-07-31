@@ -66,7 +66,7 @@ function ViewPostInternal (props: ViewPostProps) {
       <Dropdown.Menu>
         <Link className='item' to={`/blogs/posts/${id.toString()}/edit`}>Edit</Link>
         <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
-        <PostHistoryModal open={open} close={close}/>
+        {open && <PostHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
     </Dropdown>);
   };
