@@ -15,14 +15,15 @@ type Props = {
 const InnerBlogFollowersModal = (props: Props) => {
 
   const { followers, followersCount } = props;
+  console.log(followers);
   const [open, setOpen] = useState(false);
 
   const renderFollowers = () => {
-    return followers && followers.map(account =>
-      <div style={{ textAlign: 'left', margin: '1rem' }}>
+    return followers && followers.map((account, index) =>
+      <div key={index} style={{ textAlign: 'left', margin: '1rem' }}>
         <AddressMini
           value={account}
-          isShort={false}
+          isShort={true}
           isPadded={false}
           size={48}
           withName

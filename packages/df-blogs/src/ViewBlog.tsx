@@ -161,7 +161,7 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowButton />
-    <BlogFollowersModal followersCount={blog.followers_count.toNumber()}/>
+    <BlogFollowersModal id={id} followersCount={blog.followers_count.toNumber()}/>
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>

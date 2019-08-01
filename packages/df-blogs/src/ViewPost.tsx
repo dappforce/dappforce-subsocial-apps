@@ -18,7 +18,7 @@ import { PostHistoryModal } from './ListsEditHistory';
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
   id: PostId,
-  postById: Option<Post>,
+  postById?: Option<Post>,
   commentIds?: CommentId[]
 };
 
