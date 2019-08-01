@@ -67,11 +67,6 @@ export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId>
   return id;
 }
 
-// It's used in such routes as:
-//   /blogs/:id
-//   /blogs/:id/edit
-//   /posts/:id
-//   /posts/:id/edit
 export type UrlHasIdProps = {
   match: {
     params: {

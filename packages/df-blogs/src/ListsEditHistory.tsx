@@ -27,7 +27,11 @@ const CommentFromHistory = (props: PropsCommentFromHistory) => {
   const [ content, setContent ] = useState({} as CommentData);
 
   useEffect(() => {
-    getJsonFromIpfs<CommentData>(ipfs_hash.toString()).then(data => setContent(data)).catch(err => new Error(err));
+    const loadData = async () => {
+      const data = await getJsonFromIpfs<CommentData>(ipfs_hash.toString());
+      setContent(data);
+    };
+    loadData().catch(err => new Error(err));
   });
 
   return (<div style={{ textAlign: 'left', margin: '1rem' }}>
@@ -62,7 +66,6 @@ const InnerCommentHistoryModal = (props: CommentHistoryProps) => {
   const comment = commentOpt.unwrap() as Comment;
 
   const { edit_history } = comment;
-  console.log(edit_history);
 
   const renderCommentHistory = () => {
     return edit_history.map((x,index) => <CommentFromHistory history={x} key={index} />);
@@ -77,7 +80,7 @@ const InnerCommentHistoryModal = (props: CommentHistoryProps) => {
     >
       <Modal.Header><h1>Edit History</h1></Modal.Header>
       <Modal.Content scrolling>
-        {edit_history && renderCommentHistory()}
+        {edit_history ? renderCommentHistory() : 'No change history'}
       </Modal.Content>
       <Modal.Actions>
         <Button content='Close' onClick={close} />
@@ -106,7 +109,11 @@ const PostFromHistory = (props: PropsPostFromHistory) => {
   useEffect(() => {
     if (ipfs_hash.isNone) return;
     const ipfsHash = ipfs_hash.unwrap().toString();
-    getJsonFromIpfs<PostData>(ipfsHash).then(data => setContent(data)).catch(err => new Error(err));
+    const loadData = async () => {
+      const data = await getJsonFromIpfs<PostData>(ipfsHash);
+      setContent(data);
+    };
+    loadData().catch(err => new Error(err));
   });
 
   return (<div style={{ textAlign: 'left', margin: '1rem' }}>
@@ -137,7 +144,6 @@ const InnerPostHistoryModal = (props: PostHistoryProps) => {
 
   const post = postOpt.unwrap();
   const { edit_history } = post;
-  console.log(edit_history);
 
   const renderPostHistory = () => {
     return post.edit_history.map((x,index) => <PostFromHistory history={x} key={index} />);
@@ -186,7 +192,11 @@ const BlogFromHistory = (props: PropsBlogFromHistory) => {
   useEffect(() => {
     if (ipfs_hash.isNone) return;
     const ipfsHash = ipfs_hash.unwrap().toString();
-    getJsonFromIpfs<BlogData>(ipfsHash).then(data => setContent(data)).catch(err => new Error(err));
+    const loadData = async () => {
+      const data = await getJsonFromIpfs<BlogData>(ipfsHash);
+      setContent(data);
+    };
+    loadData().catch(err => new Error(err));
   });
 
   return (<div style={{ textAlign: 'left', margin: '1rem' }}>

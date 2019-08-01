@@ -44,7 +44,7 @@ function ViewPostInternal (props: ViewPostProps) {
   } = post;
 
   const [ content , setContent ] = useState({} as PostData);
-  const { title, body, image, tags } = content;
+  const { title, body, image } = content;
   useEffect(() => {
     if (!ipfs_hash) return;
     getJsonFromIpfs<PostData>(ipfs_hash).then(json => {

@@ -127,7 +127,7 @@ const InnerForm = (props: FormProps) => {
   const form = () => (
     <Form className='ui form JoyForm EditEntityForm'>
       <LabelledField name='body' {...props}>
-        <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write a comment...`} style={{ minWidth: '40rem' }} autoFocus={autoFocus}/>
+        <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write a comment...`} style={{ minWidth: '40rem', marginTop: '1rem' }} autoFocus={autoFocus}/>
       </LabelledField>
 
       <LabelledField {...props}>
