@@ -17,6 +17,7 @@ import { EditBlog, NewBlog } from './EditBlog';
 import ViewBlogById from './ViewBlogById';
 import { NewPost, EditPost } from './EditPost';
 import { ViewPostById } from './ViewPost';
+import { ListFollowingBlogs } from './ListFollowingBlogs';
 
 type Props = AppProps & ApiProps & I18nProps & {
   nextBlogId?: BN
@@ -37,6 +38,10 @@ class App extends React.PureComponent<Props> {
         text: t('My blogs')
       },
       {
+        name: 'followed',
+        text: t('Following blogs')
+      },
+      {
         name: 'new',
         text: t('New blog')
       }
@@ -53,6 +58,7 @@ class App extends React.PureComponent<Props> {
         </header>
         <Switch>
           <Route path={`${basePath}/my`} component={ListMyBlogs} />
+          <Route path={`${basePath}/followed`} component={ListFollowingBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />
           <Route path={`${basePath}/posts/:id/edit`} component={EditPost} />
           <Route path={`${basePath}/posts/:id`} component={ViewPostById} />
