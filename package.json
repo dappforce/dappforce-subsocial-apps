@@ -39,8 +39,10 @@
     "autoprefixer": "^9.4.9",
     "cids": "^0.7.1",
     "empty": "^0.10.1",
+    "eslint-plugin-react-hooks": "^1.6.1",
     "gh-pages": "^2.0.1",
     "html-loader": "^0.5.5",
+    "ipfs": "0.36.4",
     "ipfs-http-client": "^33.1.0",
     "markdown-loader": "^5.0.0",
     "postcss": "^7.0.13",
@@ -53,7 +55,6 @@
     "postcss-simple-vars": "^5.0.0",
     "precss": "^4.0.0",
     "source-map-explorer": "^1.7.0",
-    "typestub-ipfs": "^0.23.14",
-    "ipfs": "0.36.4"
+    "typestub-ipfs": "^0.23.14"
   }
 }
