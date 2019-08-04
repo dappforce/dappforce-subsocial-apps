@@ -56,5 +56,11 @@
     "precss": "^4.0.0",
     "source-map-explorer": "^1.7.0",
     "typestub-ipfs": "^0.23.14"
+  },
+  "dependencies": {
+    "@polkadot/api": "^0.77.0-beta.4",
+    "@polkadot/types": "^0.77.0-beta.4",
+    "rxjs": "^6.4.0",
+    "typescript": "^3.4.3"
   }
 }

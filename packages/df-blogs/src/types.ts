@@ -98,7 +98,7 @@ export class Blog extends Struct {
     return this.get('slug') as Text;
   }
 
-  get ipfs_hash (): IPFS.CID {
+  get ipfs_hash (): string {
     const ipfsHash = this.get('ipfs_hash') as Text;
     return ipfsHash.toString();
   }
@@ -135,8 +135,20 @@ export class BlogUpdate extends Struct {
       ipfs_hash: OptionIpfsHash
     }, value);
   }
+  get writers (): OptionVecAccountId {
+    return this.get('writers') as OptionVecAccountId;
+  }
+
+  get slug (): OptionText {
+    return this.get('slug') as OptionIpfsHash;
+  }
+
   get ipfs_hash (): OptionIpfsHash {
     return this.get('ipfs_hash') as OptionIpfsHash;
+  }
+
+  set ipfs_hash (value: OptionIpfsHash) {
+    this.set('ipfs_hash', value);
   }
 }
 
@@ -196,7 +208,7 @@ export class Post extends Struct {
     return this.get('slug') as Text;
   }
 
-  get ipfs_hash (): IPFS.CID {
+  get ipfs_hash (): string {
     const ipfsHash = this.get('ipfs_hash') as Text;
     return ipfsHash.toString();
   }
@@ -235,6 +247,10 @@ export class PostUpdate extends Struct {
 
   get ipfs_hash (): OptionIpfsHash {
     return this.get('ipfs_hash') as OptionIpfsHash;
+  }
+
+  set ipfs_hash (value: OptionIpfsHash) {
+    this.set('ipfs_hash', value);
   }
 }
 
@@ -289,7 +305,7 @@ export class Comment extends Struct {
     return this.get('updated') as OptionChange;
   }
 
-  get ipfs_hash (): IPFS.CID {
+  get ipfs_hash (): string {
     const ipfsHash = this.get('ipfs_hash') as Text;
     return ipfsHash.toString();
   }
@@ -320,6 +336,10 @@ export class CommentUpdate extends Struct {
 
   get ipfs_hash (): IpfsHash {
     return this.get('ipfs_hash') as IpfsHash;
+  }
+
+  set ipfs_hash (value: OptionIpfsHash) {
+    this.set('ipfs_hash', value);
   }
 }
 

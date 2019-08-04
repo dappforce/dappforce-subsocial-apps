@@ -132,12 +132,10 @@ export function ViewComment (props: ViewCommentProps) {
   const renderDropDownMenu = () => {
     const [open, setOpen] = useState(false);
 
-    if (!isMyStruct || showEditForm) return null;
-
     const close = () => setOpen(false);
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
-        <Dropdown.Item text='Edit' onClick={() => setShowEditForm(true)} />
+      {(isMyStruct || showEditForm) && <Dropdown.Item text='Edit' onClick={() => setShowEditForm(true)} />}
         <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
         {open && <CommentHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
@@ -154,7 +152,7 @@ export function ViewComment (props: ViewCommentProps) {
     />);
 
   return <div>
-    <SuiComment.Group threaded >
+    <SuiComment.Group threaded>
     <SuiComment>
       <div className='DfCommentBox'>
         <Voter

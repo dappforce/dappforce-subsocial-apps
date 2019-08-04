@@ -79,13 +79,11 @@ function Component (props: Props) {
 
   const renderDropDownMenu = () => {
 
-    if (!isMyBlog) return null;
-
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
-        <Link className='item' to={`/blogs/${id.toString()}/edit`}>Edit</Link>
+        {isMyBlog && <Link className='item' to={`/blogs/${id.toString()}/edit`}>Edit</Link>}
         <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
         {open && <BlogHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
