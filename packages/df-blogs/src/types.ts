@@ -1,6 +1,5 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector } from '@polkadot/types';
-import * as IPFS from 'typestub-ipfs';
 
 export class IpfsHash extends Text {}
 export class BlogId extends u64 {}
@@ -150,6 +149,10 @@ export class BlogUpdate extends Struct {
   set ipfs_hash (value: OptionIpfsHash) {
     this.set('ipfs_hash', value);
   }
+
+  set slug (value: OptionText) {
+    this.set('slug', value);
+  }
 }
 
 export type PostData = {
@@ -249,8 +252,16 @@ export class PostUpdate extends Struct {
     return this.get('ipfs_hash') as OptionIpfsHash;
   }
 
+  get slug (): OptionIpfsHash {
+    return this.get('slug') as OptionIpfsHash;
+  }
+
   set ipfs_hash (value: OptionIpfsHash) {
     this.set('ipfs_hash', value);
+  }
+
+  set slug (value: OptionText) {
+    this.set('slug', value);
   }
 }
 
@@ -338,9 +349,6 @@ export class CommentUpdate extends Struct {
     return this.get('ipfs_hash') as IpfsHash;
   }
 
-  set ipfs_hash (value: OptionIpfsHash) {
-    this.set('ipfs_hash', value);
-  }
 }
 
 export class OptionComment extends Option.with(Comment) {}

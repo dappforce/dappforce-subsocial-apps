@@ -3,7 +3,7 @@ import { withMulti, withCalls } from '@polkadot/ui-api/with';
 import { Modal, Comment as SuiComment, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
-import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, BlogHistoryRecordType, VecCommentHistoryRecord, VecPostHistoryRecord } from './types';
+import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord } from './types';
 import { queryBlogsToProp, getJsonFromIpfs } from './utils';
 import { Option } from '@polkadot/types';
 import ReactMarkdown from 'react-markdown';
@@ -16,9 +16,10 @@ type ModalController = {
   close: () => void
 };
 
-const fillHistory = (history: VecBlogHistoryRecord | VecPostHistoryRecord) => {
+function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]> (history: T) {
 
   let ipfsHash = history[0].old_data.ipfs_hash;
+  let slug = history[0].old_data.slug;
 
   if (ipfsHash.isNone) {
     for (let i = 1; i < history.length; i++) {
@@ -29,15 +30,29 @@ const fillHistory = (history: VecBlogHistoryRecord | VecPostHistoryRecord) => {
     }
   }
 
-  history.forEach(x => {
-    console.log(x.old_data.ipfs_hash);
+  if (slug.isNone) {
+    for (let i = 1; i < history.length; i++) {
+      if (history[i].old_data.slug.isSome) {
+        slug = history[i].old_data.slug;
+        break;
+      }
+    }
+  }
+
+  return history.map(x => {
     if (x.old_data.ipfs_hash.isNone) {
       x.old_data.ipfs_hash = ipfsHash;
     } else {
       ipfsHash = x.old_data.ipfs_hash;
     }
-  });
-};
+    if (x.old_data.slug.isNone) {
+      x.old_data.slug = slug;
+    } else {
+      slug = x.old_data.slug;
+    }
+    return x;
+  }) as T;
+}
 
 type PropsCommentFromHistory = {
   history: CommentHistoryRecord
@@ -127,7 +142,7 @@ type PropsPostFromHistory = {
 const PostFromHistory = (props: PropsPostFromHistory) => {
 
   const { history: { old_data, edited } } = props;
-  const { ipfs_hash } = old_data;
+  const { ipfs_hash, slug } = old_data;
   const [ content, setContent ] = useState({} as PostData);
 
   useEffect(() => {
@@ -144,6 +159,7 @@ const PostFromHistory = (props: PropsPostFromHistory) => {
     <h1 style={{ display: 'flex' }}>
       <span style={{ marginRight: '.5rem' }}>{content.title}</span>
     </h1>
+    <span style={{ marginRight: '.5rem' }}>{`slug: ${slug}`}</span>
     <CreatedBy created={edited} dateLabel='Edited on' accountLabel='Edited by' />
     <div style={{ margin: '1rem 0' }}>
       {content.image && <img src={content.image} className='DfPostImage' /* add onError handler */ />}
@@ -169,10 +185,11 @@ const InnerPostHistoryModal = (props: PostHistoryProps) => {
   const post = postOpt.unwrap();
   const { edit_history } = post;
 
-  fillHistory(edit_history);
+  const history = fillHistory<VecPostHistoryRecord>(edit_history);
 
   const renderPostHistory = () => {
-    return post.edit_history.map((x,index) => <PostFromHistory history={x} key={index} />).reverse();
+    history.reverse();
+    return history.map((x,index) => <PostFromHistory history={x} key={index} />);
   };
 
   return (
@@ -213,7 +230,7 @@ type PropsBlogFromHistory = {
 const BlogFromHistory = (props: PropsBlogFromHistory) => {
 
   const { history: { old_data, edited }, currentHash } = props;
-  const { ipfs_hash } = old_data;
+  const { ipfs_hash, slug } = old_data;
   const [ content, setContent ] = useState({} as BlogData);
   const [ ipfsHash, setIpfsHash ] = useState('');
 
@@ -238,6 +255,7 @@ const BlogFromHistory = (props: PropsBlogFromHistory) => {
             <div className='header'>
               <Link to='' className='handle'>{content.name}</Link>
             </div>
+            <div className='description' style={{ margin: '0.2rem' }}>{`slug: ${slug}`}</div>
             <div className='description' style={{ margin: '0.2rem' }}>
               <ReactMarkdown className='JoyMemo--full' source={content.desc} linkTarget='_blank' />
             </div>
@@ -259,10 +277,11 @@ const InnerBlogHistoryModal = (props: BlogHistoryProps) => {
   const blog = blogOpt.unwrap();
   const { edit_history } = blog;
 
-  fillHistory(edit_history);
+  const history = fillHistory<VecBlogHistoryRecord>(edit_history);
 
   const renderBlogHistory = () => {
-    return edit_history.map((x,index) => <BlogFromHistory history={x} key={index} currentHash={blog.ipfs_hash} />).reverse();
+    history.reverse();
+    return history.map((x,index) => <BlogFromHistory history={x} key={index} currentHash={blog.ipfs_hash} />);
   };
 
   return (
