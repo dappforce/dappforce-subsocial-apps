@@ -3,23 +3,21 @@ import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { Option, AccountId, Bool } from '@polkadot/types';
+import { Option, AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { nonEmptyStr } from '@polkadot/joy-utils/index';
 import { BlogId, Blog, PostId, BlogData } from './types';
-import { Tuple } from '@polkadot/types/codec';
 import { queryBlogsToProp, getJsonFromIpfs } from './utils';
 import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 import Section from '@polkadot/joy-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
-import TxButton from '@polkadot/joy-utils/TxButton';
-import { api } from '@polkadot/ui-api';
 import _ from 'lodash';
 import { BlogFollowersModal } from './BlogFollowers';
 import { BlogHistoryModal } from './ListsEditHistory';
 import { Dropdown } from 'semantic-ui-react';
+import { FollowButtonBlog } from './FollowButton';
 
 type Props = MyAccountProps & {
   preview?: boolean,
@@ -59,19 +57,6 @@ function Component (props: Props) {
       console.log(content);
     }).catch(err => console.log(err));
   }, [ false ]);
-
-  const dataForQuery = new Tuple([AccountId, BlogId], [new AccountId(myAddress), id]);
-  const [ isFollow, setIsFollow ] = useState(false);
-  const [ triggerReload, setTriggerReload ] = useState(false);
-
-  useEffect(() => {
-    const load = async () => {
-      const _isFollow = await (api.query.blogs[`blogFollowedByAccount`](dataForQuery)) as Bool;
-      setIsFollow(_isFollow.valueOf());
-    };
-    load().catch(err => console.log(err));
-
-  }, [ triggerReload ]);
 
   const isMyBlog = myAddress && account && myAddress === account.toString();
   const hasImage = image && nonEmptyStr(image);
@@ -132,33 +117,12 @@ function Component (props: Props) {
     </>;
   };
 
-  const FollowButton = () => (
-    <TxButton
-      type='submit'
-      compact
-      isPrimary={!isFollow}
-      isBasic={isFollow}
-      label={isFollow
-        ? 'Unfollow blog'
-        : 'Follow blog'}
-      params={buildTxParams()}
-      tx={isFollow
-        ? `blogs.unfollowBlog`
-        : `blogs.followBlog`}
-      txSuccessCb={() => setTriggerReload(!triggerReload) }
-    />
-  );
-
-  const buildTxParams = () => {
-    return [ id ];
-  };
-
   return <>
     <div className='ui massive relaxed middle aligned list FullProfile'>
       {renderPreview()}
     </div>
     <CreatedBy created={blog.created} />
-    <FollowButton />
+    <FollowButtonBlog blogId={id} />
     <BlogFollowersModal id={id} followersCount={blog.followers_count.toNumber()}/>
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}

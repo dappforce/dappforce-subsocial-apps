@@ -15,7 +15,7 @@ import BalanceDisplay from './Balance';
 import IdentityIcon from './IdentityIcon';
 import { findNameByAddress, nonEmptyStr } from '@polkadot/joy-utils/index';
 import MemoView from '@polkadot/joy-utils/memo/MemoView';
-
+import { FollowButtonAccount } from '@dappforce/blogs/FollowButton';
 type Props = BareProps & {
   balance?: Balance | Array<Balance> | BN,
   children?: React.ReactNode,
@@ -32,7 +32,18 @@ type Props = BareProps & {
   withMemo?: boolean
 };
 
-class AddressMini extends React.PureComponent<Props> {
+type State = {
+  isHovering: boolean;
+};
+
+class AddressMini extends React.PureComponent<Props,State> {
+  constructor (props: Props) {
+    super(props);
+    this.handleMouseHover = this.handleMouseHover.bind(this);
+    this.state = {
+      isHovering: false
+    };
+  }
   render () {
     const { children, className, isPadded = true, extraDetails, session_validators, style, size, value } = this.props;
 
@@ -45,10 +56,14 @@ class AddressMini extends React.PureComponent<Props> {
       validator.toString() === address
     );
 
+    const renderFollowButton = <FollowButtonAccount accountId={address} />;
+
     return (
       <div
         className={classes('ui--AddressMini', isPadded ? 'padded' : '', className)}
         style={style}
+        onMouseEnter={this.handleMouseHover}
+        onMouseLeave={this.handleMouseHover}
       >
         <div className='ui--AddressMini-info'>
           <IdentityIcon
@@ -67,8 +82,19 @@ class AddressMini extends React.PureComponent<Props> {
           </div>
           {children}
         </div>
+        {this.state.isHovering && renderFollowButton}
       </div>
     );
+  }
+
+  private handleMouseHover () {
+    this.setState(this.toggleHoverState);
+  }
+
+  private toggleHoverState (state: State) {
+    return {
+      isHovering: !state.isHovering
+    };
   }
 
   private renderAddress (address: string) {
