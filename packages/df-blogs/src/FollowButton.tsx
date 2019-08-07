@@ -8,6 +8,7 @@ import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import TxButton from '@polkadot/joy-utils/TxButton';
 import { api } from '@polkadot/ui-api';
 import _ from 'lodash';
+import { Transition } from 'semantic-ui-react';
 
 type PropsFollowButtonBlog = {
   blogId: BlogId
@@ -19,17 +20,17 @@ export function FollowButtonBlog (props: PropsFollowButtonBlog) {
 
   const dataForQuery = new Tuple([AccountId, BlogId], [new AccountId(myAddress), blogId]);
 
-  const [ isFollow, setIsFollow ] = useState(true);
+  const [ isFollow, setIsFollow ] = useState(false);
   const [ triggerReload, setTriggerReload ] = useState(false);
 
   useEffect(() => {
     const load = async () => {
-      const _isFollow = await (api.query.blogs[`accountFollowedByBlog`](dataForQuery)) as Bool;
+      const _isFollow = await (api.query.blogs[`blogFollowedByAccount`](dataForQuery)) as Bool;
       setIsFollow(_isFollow.valueOf());
     };
     load().catch(err => console.log(err));
 
-  }, [ BlogId ]);
+  }, [ blogId ]);
 
   const buildTxParams = () => {
     return [ blogId ];
@@ -52,15 +53,17 @@ export function FollowButtonBlog (props: PropsFollowButtonBlog) {
 }
 
 type PropsFollowButtonAccount = {
-  accountId: string
+  address: string,
+  visible: boolean
 };
 
 export function FollowButtonAccount (props: PropsFollowButtonAccount) {
-  const { accountId } = props;
+  const { address, visible } = props;
   const { state: { address: myAddress } } = useMyAccount();
 
-  if (myAddress === accountId) return null;
+  if (myAddress === address) return null;
 
+  const accountId = new AccountId(address);
   const dataForQuery = new Tuple([AccountId, AccountId], [new AccountId(myAddress), accountId]);
 
   const [ isFollow, setIsFollow ] = useState(true);
@@ -73,24 +76,27 @@ export function FollowButtonAccount (props: PropsFollowButtonAccount) {
     };
     load().catch(err => console.log(err));
 
-  }, [ AccountId ]);
+  }, [ accountId ]);
 
   const buildTxParams = () => {
     return [ accountId ];
   };
 
-  return <div className='DfFollowButton'><TxButton
-    type='submit'
-    compact
-    isBasic={isFollow}
-    isPrimary={!isFollow}
-    label={isFollow
-      ? 'Unfollow blog'
-      : 'Follow blog'}
-    params={buildTxParams()}
-    tx={isFollow
-      ? `blogs.unfollowAccount`
-      : `blogs.followAccount`}
-    txSuccessCb={() => setTriggerReload(!triggerReload) }
-  /></div>;
+  return <div className='DfFollowButton'>
+    <Transition visible={visible} animation='scale' duration={300}>
+      <TxButton
+        type='submit'
+        compact
+        isBasic={isFollow}
+        isPrimary={!isFollow}
+        label={isFollow
+          ? 'Unfollow blog'
+          : 'Follow blog'}
+        params={buildTxParams()}
+        tx={isFollow
+          ? `blogs.unfollowAccount`
+          : `blogs.followAccount`}
+        txSuccessCb={() => setTriggerReload(!triggerReload) }
+      />
+    </Transition></div>;
 }

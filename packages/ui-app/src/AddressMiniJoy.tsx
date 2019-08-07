@@ -56,7 +56,7 @@ class AddressMini extends React.PureComponent<Props,State> {
       validator.toString() === address
     );
 
-    const renderFollowButton = <FollowButtonAccount accountId={address} />;
+    const renderFollowButton = <FollowButtonAccount address={address} visible={this.state.isHovering} />;
 
     return (
       <div
@@ -82,7 +82,7 @@ class AddressMini extends React.PureComponent<Props,State> {
           </div>
           {children}
         </div>
-        {this.state.isHovering && renderFollowButton}
+        {renderFollowButton}
       </div>
     );
   }
