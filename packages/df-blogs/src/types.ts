@@ -505,10 +505,10 @@ export function registerBlogsTypes () {
   try {
     const typeRegistry = getTypeRegistry();
     typeRegistry.register({
-      BlogId,
-      PostId,
-      CommentId,
-      ReactionId,
+      BlogId: 'u64',
+      PostId: 'u64',
+      CommentId: 'u64',
+      ReactionId: 'u64',
       Change,
       Blog,
       BlogUpdate,

@@ -90,8 +90,8 @@ export function FollowButtonAccount (props: PropsFollowButtonAccount) {
         isBasic={isFollow}
         isPrimary={!isFollow}
         label={isFollow
-          ? 'Unfollow blog'
-          : 'Follow blog'}
+          ? 'Unfollow account'
+          : 'Follow account'}
         params={buildTxParams()}
         tx={isFollow
           ? `blogs.unfollowAccount`

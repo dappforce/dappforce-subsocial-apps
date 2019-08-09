@@ -18,6 +18,7 @@ type ModalController = {
 
 function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]> (history: T) {
 
+  if (history[0] === undefined) return;
   let ipfsHash = history[0].old_data.ipfs_hash;
   let slug = history[0].old_data.slug;
 
@@ -39,7 +40,7 @@ function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]> (histo
     }
   }
 
-  return history.map(x => {
+  return history.forEach(x => {
     if (x.old_data.ipfs_hash.isNone) {
       x.old_data.ipfs_hash = ipfsHash;
     } else {
@@ -50,8 +51,7 @@ function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]> (histo
     } else {
       slug = x.old_data.slug;
     }
-    return x;
-  }) as T;
+  });
 }
 
 type PropsCommentFromHistory = {
@@ -136,18 +136,26 @@ export const CommentHistoryModal = withMulti(
 );
 
 type PropsPostFromHistory = {
-  history: PostHistoryRecord
+  history: PostHistoryRecord,
+  current_data: {
+    ipfs_hash: string,
+    slug: string
+  }
 };
 
 const PostFromHistory = (props: PropsPostFromHistory) => {
 
-  const { history: { old_data, edited } } = props;
+  const { history: { old_data, edited }, current_data } = props;
   const { ipfs_hash, slug } = old_data;
   const [ content, setContent ] = useState({} as PostData);
+  const [ ipfsHash, setIpfsHash ] = useState('');
+  const [ _slug, setSlug ] = useState('');
 
   useEffect(() => {
-    if (ipfs_hash.isNone) return;
-    const ipfsHash = ipfs_hash.unwrap().toString();
+    if (ipfs_hash.isNone) setIpfsHash(current_data.ipfs_hash);
+    if (slug.isNone) setSlug(current_data.slug);
+    setIpfsHash(ipfs_hash.unwrap().toString());
+    setSlug(slug.unwrap().toString());
     const loadData = async () => {
       const data = await getJsonFromIpfs<PostData>(ipfsHash);
       setContent(data);
@@ -159,7 +167,7 @@ const PostFromHistory = (props: PropsPostFromHistory) => {
     <h1 style={{ display: 'flex' }}>
       <span style={{ marginRight: '.5rem' }}>{content.title}</span>
     </h1>
-    <span style={{ marginRight: '.5rem' }}>{`slug: ${slug}`}</span>
+    <span style={{ marginRight: '.5rem' }}>{`slug: ${_slug}`}</span>
     <CreatedBy created={edited} dateLabel='Edited on' accountLabel='Edited by' />
     <div style={{ margin: '1rem 0' }}>
       {content.image && <img src={content.image} className='DfPostImage' /* add onError handler */ />}
@@ -185,11 +193,15 @@ const InnerPostHistoryModal = (props: PostHistoryProps) => {
   const post = postOpt.unwrap();
   const { edit_history } = post;
 
-  const history = fillHistory<VecPostHistoryRecord>(edit_history);
+  fillHistory<VecPostHistoryRecord>(edit_history);
 
   const renderPostHistory = () => {
-    history.reverse();
-    return history.map((x,index) => <PostFromHistory history={x} key={index} />);
+    edit_history.reverse();
+    return edit_history.map((x,index) => <PostFromHistory
+      history={x}
+      key={index}
+      current_data={{ ipfs_hash: post.ipfs_hash, slug: post.slug.toString() }}
+    />);
   };
 
   return (
@@ -224,19 +236,25 @@ type BlogHistoryProps = ModalController & {
 
 type PropsBlogFromHistory = {
   history: BlogHistoryRecord,
-  currentHash: string;
+  current_data: {
+    ipfs_hash: string,
+    slug: string
+  }
 };
 
 const BlogFromHistory = (props: PropsBlogFromHistory) => {
 
-  const { history: { old_data, edited }, currentHash } = props;
+  const { history: { old_data, edited }, current_data } = props;
   const { ipfs_hash, slug } = old_data;
   const [ content, setContent ] = useState({} as BlogData);
   const [ ipfsHash, setIpfsHash ] = useState('');
+  const [ _slug, setSlug ] = useState('');
 
   useEffect(() => {
-    if (ipfs_hash.isNone) setIpfsHash(currentHash);
+    if (ipfs_hash.isNone) setIpfsHash(current_data.ipfs_hash);
+    if (slug.isNone) setSlug(current_data.slug);
     setIpfsHash(ipfs_hash.unwrap().toString());
+    setSlug(slug.unwrap().toString());
     const loadData = async () => {
       const data = await getJsonFromIpfs<BlogData>(ipfsHash);
       setContent(data);
@@ -255,7 +273,7 @@ const BlogFromHistory = (props: PropsBlogFromHistory) => {
             <div className='header'>
               <Link to='' className='handle'>{content.name}</Link>
             </div>
-            <div className='description' style={{ margin: '0.2rem' }}>{`slug: ${slug}`}</div>
+            <div className='description' style={{ margin: '0.2rem' }}>{`slug: ${_slug}`}</div>
             <div className='description' style={{ margin: '0.2rem' }}>
               <ReactMarkdown className='JoyMemo--full' source={content.desc} linkTarget='_blank' />
             </div>
@@ -277,11 +295,17 @@ const InnerBlogHistoryModal = (props: BlogHistoryProps) => {
   const blog = blogOpt.unwrap();
   const { edit_history } = blog;
 
-  const history = fillHistory<VecBlogHistoryRecord>(edit_history);
+  console.log(edit_history);
+
+  fillHistory<VecBlogHistoryRecord>(edit_history);
 
   const renderBlogHistory = () => {
-    history.reverse();
-    return history.map((x,index) => <BlogFromHistory history={x} key={index} currentHash={blog.ipfs_hash} />);
+    edit_history.reverse();
+    return edit_history.map((x,index) => <BlogFromHistory
+      history={x}
+      key={index}
+      current_data={{ ipfs_hash: blog.ipfs_hash, slug: blog.slug.toString() }}
+    />);
   };
 
   return (
@@ -293,7 +317,7 @@ const InnerBlogHistoryModal = (props: BlogHistoryProps) => {
     >
       <Modal.Header><h1>Edit History</h1></Modal.Header>
       <Modal.Content scrolling>
-        {history && renderBlogHistory()}
+        {edit_history && renderBlogHistory()}
       </Modal.Content>
       <Modal.Actions>
         <Button content='Close' onClick={close} />
