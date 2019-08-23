@@ -4,7 +4,7 @@
 
 import { RpcMethod } from '@polkadot/jsonrpc/types';
 import { BareProps } from '../types';
-import { ActionStatus, PartialQueueTx$Extrinsic, PartialQueueTx$Rpc, QueueProps, QueueStatus, QueueTx, QueueTx$Extrinsic, QueueTx$Rpc, QueueTx$Status } from './types';
+import { ActionStatus, PartialQueueTx$Rpc, QueueProps, QueueStatus, QueueTx, QueueTx$Extrinsic, QueueTx$Rpc, QueueTx$Status } from './types';
 
 import React from 'react';
 import jsonrpc from '@polkadot/jsonrpc';
@@ -166,8 +166,7 @@ export default class Queue extends React.Component<Props, State> {
 
     return id;
   }
-
-  queueExtrinsic = ({ accountId, extrinsic, signerCb, signerOptions, txFailedCb, txSuccessCb, txUpdateCb, txSentCb, txCancelledCb, isUnsigned }: PartialQueueTx$Extrinsic): number => {
+  queueExtrinsic = ({ accountId, extrinsic, signerCb, signerOptions, txFailedCb, txSuccessCb, txUpdateCb, txSentCb, txCancelledCb, isUnsigned }: any): number => {
     return this.queueAdd({
       accountId,
       extrinsic,
