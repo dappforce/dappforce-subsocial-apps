@@ -45,7 +45,6 @@ function Component (props: Props) {
     created: { account },
     ipfs_hash
   } = blog;
-
   const [ content , setContent ] = useState({} as BlogData);
   const { desc, name, image } = content;
 

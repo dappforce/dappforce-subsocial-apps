@@ -20,13 +20,13 @@ export const Voter = (props: VoterProps) => {
     struct
   } = props;
 
-  const resetState: any = 'None';
+  const resetState: any = 'None'; // TODO create type
   const [ reactionState, setReactionState ] = useState(resetState);
 
   const { state: { address } } = useMyAccount();
 
-  const reactionKind = reactionState instanceof Reaction ? reactionState.kind.toString() : 'None';
   const reactionIsNone = !(reactionState instanceof Reaction);
+  const reactionKind = reactionIsNone ? 'None' : reactionState.kind.toString();
 
   const [ state , setState ] = useState(struct);
   const { id } = state;

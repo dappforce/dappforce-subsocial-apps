@@ -16,9 +16,10 @@ type ModalController = {
   close: () => void
 };
 
-function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]> (history: T) {
+export function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]> (historyLast: T) {
 
-  if (history[0] === undefined) return;
+  if (historyLast[0] === undefined) return;
+  const history = [...historyLast];
   let ipfsHash = history[0].old_data.ipfs_hash;
   let slug = history[0].old_data.slug;
 
@@ -40,18 +41,19 @@ function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]> (histo
     }
   }
 
-  return history.forEach(x => {
-    if (x.old_data.ipfs_hash.isNone) {
-      x.old_data.ipfs_hash = ipfsHash;
+  return history.map(record => {
+    if (record.old_data.ipfs_hash.isNone) {
+      record.old_data.ipfs_hash = ipfsHash;
     } else {
-      ipfsHash = x.old_data.ipfs_hash;
+      ipfsHash = record.old_data.ipfs_hash;
     }
-    if (x.old_data.slug.isNone) {
-      x.old_data.slug = slug;
+    if (record.old_data.slug.isNone) {
+      record.old_data.slug = slug;
     } else {
-      slug = x.old_data.slug;
+      slug = record.old_data.slug;
     }
-  });
+    return record;
+  }).reverse() as T;
 }
 
 type PropsCommentFromHistory = {
@@ -152,16 +154,15 @@ const PostFromHistory = (props: PropsPostFromHistory) => {
   const [ _slug, setSlug ] = useState('');
 
   useEffect(() => {
-    if (ipfs_hash.isNone) setIpfsHash(current_data.ipfs_hash);
-    if (slug.isNone) setSlug(current_data.slug);
-    setIpfsHash(ipfs_hash.unwrap().toString());
-    setSlug(slug.unwrap().toString());
+    ipfs_hash.isNone ? setIpfsHash(current_data.ipfs_hash) : setIpfsHash(ipfs_hash.unwrap().toString());
+    slug.isNone ? setSlug(current_data.slug) : setSlug(slug.unwrap().toString());
     const loadData = async () => {
       const data = await getJsonFromIpfs<PostData>(ipfsHash);
       setContent(data);
     };
     loadData().catch(err => new Error(err));
-  });
+  },[ipfsHash, _slug]);
+
 
   return (<div style={{ textAlign: 'left', margin: '1rem' }}>
     <h1 style={{ display: 'flex' }}>
@@ -193,11 +194,10 @@ const InnerPostHistoryModal = (props: PostHistoryProps) => {
   const post = postOpt.unwrap();
   const { edit_history } = post;
 
-  fillHistory<VecPostHistoryRecord>(edit_history);
+  const history = fillHistory<VecPostHistoryRecord>(edit_history);
 
   const renderPostHistory = () => {
-    edit_history.reverse();
-    return edit_history.map((x,index) => <PostFromHistory
+    return history && history.map((x,index) => <PostFromHistory
       history={x}
       key={index}
       current_data={{ ipfs_hash: post.ipfs_hash, slug: post.slug.toString() }}
@@ -213,7 +213,7 @@ const InnerPostHistoryModal = (props: PostHistoryProps) => {
     >
       <Modal.Header><h1>Edit History</h1></Modal.Header>
       <Modal.Content scrolling>
-        {edit_history && renderPostHistory()}
+        {history && renderPostHistory()}
       </Modal.Content>
       <Modal.Actions>
         <Button content='Close' onClick={close} />
@@ -251,16 +251,14 @@ const BlogFromHistory = (props: PropsBlogFromHistory) => {
   const [ _slug, setSlug ] = useState('');
 
   useEffect(() => {
-    if (ipfs_hash.isNone) setIpfsHash(current_data.ipfs_hash);
-    if (slug.isNone) setSlug(current_data.slug);
-    setIpfsHash(ipfs_hash.unwrap().toString());
-    setSlug(slug.unwrap().toString());
+    ipfs_hash.isNone ? setIpfsHash(current_data.ipfs_hash) : setIpfsHash(ipfs_hash.unwrap().toString());
+    slug.isNone ? setSlug(current_data.slug) : setSlug(slug.unwrap().toString());
     const loadData = async () => {
       const data = await getJsonFromIpfs<BlogData>(ipfsHash);
       setContent(data);
     };
     loadData().catch(err => new Error(err));
-  });
+  },[ipfsHash, _slug]);
 
   return (<div style={{ textAlign: 'left', margin: '1rem' }}>
       <div className='ui massive relaxed middle aligned list FullProfile'>
@@ -297,11 +295,10 @@ const InnerBlogHistoryModal = (props: BlogHistoryProps) => {
 
   console.log(edit_history);
 
-  fillHistory<VecBlogHistoryRecord>(edit_history);
+  const history = fillHistory<VecBlogHistoryRecord>(edit_history);
 
   const renderBlogHistory = () => {
-    edit_history.reverse();
-    return edit_history.map((x,index) => <BlogFromHistory
+    return history && history.map((x,index) => <BlogFromHistory
       history={x}
       key={index}
       current_data={{ ipfs_hash: blog.ipfs_hash, slug: blog.slug.toString() }}
