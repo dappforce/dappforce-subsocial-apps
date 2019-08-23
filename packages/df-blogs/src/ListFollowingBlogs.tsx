@@ -4,7 +4,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
 import { queryBlogsToProp } from './utils';
 import _ from 'lodash';
-import { BlogId } from 'build/df-blogs/src/types';
+import { BlogId } from './types';
 import Section from '@polkadot/joy-utils/Section';
 import ViewBlog from './ViewBlog';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';

@@ -1,5 +1,5 @@
-import { Option, Enum } from '@polkadot/types/codec';
-import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, Struct } from '@polkadot/types';
+import { Option, Struct, Enum } from '@polkadot/types/codec';
+import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32 } from '@polkadot/types';
 
 export class IpfsHash extends Text {}
 export class BlogId extends u64 {}
@@ -59,7 +59,8 @@ export type BlogType = {
   ipfs_hash: IpfsHash,
   posts_count: u16,
   followers_count: u32,
-  edit_history: VecBlogHistoryRecord
+  edit_history: VecBlogHistoryRecord,
+  score: i32
 };
 
 export class Blog extends Struct {
@@ -73,7 +74,8 @@ export class Blog extends Struct {
       ipfs_hash: IpfsHash,
       posts_count: u16,
       followers_count: u32,
-      edit_history: VecBlogHistoryRecord
+      edit_history: VecBlogHistoryRecord,
+      score: i32
     }, value);
   }
 
@@ -117,6 +119,10 @@ export class Blog extends Struct {
 
   get edit_history (): VecBlogHistoryRecord {
     return this.get('edit_history') as VecBlogHistoryRecord;
+  }
+
+  get score (): i32 {
+    return this.get('score') as i32;
   }
 }
 
@@ -172,7 +178,9 @@ export type PostType = {
   comments_count: u16,
   upvotes_count: u16,
   downvotes_count: u16,
-  edit_history: VecPostHistoryRecord
+  shares_count: u16,
+  edit_history: VecPostHistoryRecord,
+  score: i32
 };
 
 export class Post extends Struct {
@@ -187,7 +195,9 @@ export class Post extends Struct {
       comments_count: u16,
       upvotes_count: u16,
       downvotes_count: u16,
-      edit_history: VecPostHistoryRecord
+      shares_count: u16,
+      edit_history: VecPostHistoryRecord,
+      score: i32
     }, value);
   }
 
@@ -228,8 +238,16 @@ export class Post extends Struct {
     return this.get('downvotes_count') as u16;
   }
 
+  get shares_count (): u16 {
+    return this.get('shares_count') as u16;
+  }
+
   get edit_history (): VecPostHistoryRecord {
     return this.get('edit_history') as VecPostHistoryRecord;
+  }
+
+  get score (): i32 {
+    return this.get('score') as i32;
   }
 }
 
@@ -278,7 +296,9 @@ export type CommentType = {
   ipfs_hash: IpfsHash,
   upvotes_count: u16,
   downvotes_count: u16,
-  edit_history: VecCommentHistoryRecord
+  shares_count: u16,
+  edit_history: VecCommentHistoryRecord,
+  score: i32
 };
 
 export class Comment extends Struct {
@@ -292,7 +312,9 @@ export class Comment extends Struct {
       ipfs_hash: IpfsHash,
       upvotes_count: u16,
       downvotes_count: u16,
-      edit_history: VecCommentHistoryRecord
+      shares_count: u16,
+      edit_history: VecCommentHistoryRecord,
+      score: i32
     }, value);
   }
 
@@ -329,8 +351,16 @@ export class Comment extends Struct {
     return this.get('downvotes_count') as u16;
   }
 
+  get shares_count (): u16 {
+    return this.get('shares_count') as u16;
+  }
+
   get edit_history (): VecCommentHistoryRecord {
     return this.get('edit_history') as VecCommentHistoryRecord;
+  }
+
+  get score (): i32 {
+    return this.get('score') as i32;
   }
 }
 
@@ -404,7 +434,8 @@ export class Reaction extends Struct {
 export type SocialAccountType = {
   followers_count: u32,
   following_accounts_count: u16,
-  following_blogs_count: u16
+  following_blogs_count: u16,
+  reputation: u32
 };
 
 export class SocialAccount extends Struct {
@@ -412,7 +443,8 @@ export class SocialAccount extends Struct {
     super({
       followers_count: u32,
       following_accounts_count: u16,
-      following_blogs_count: u16
+      following_blogs_count: u16,
+      reputation: u32
     }, value);
   }
 
@@ -426,6 +458,10 @@ export class SocialAccount extends Struct {
 
   get following_blogs_count (): u16 {
     return this.get('following_blogs_count') as u16;
+  }
+
+  get reputation (): u32 {
+    return this.get('reputation') as u32;
   }
 }
 
@@ -501,14 +537,40 @@ export class CommentHistoryRecord extends Struct {
 
 export class VecCommentHistoryRecord extends Vector.with(CommentHistoryRecord) {}
 
+export const ScoringActions: { [key: string ]: string } = {
+  UpvotePost: 'UpvotePost',
+  DownvotePost: 'DownvotePost',
+  SharePost: 'SharePost',
+  UpvoteComment: 'UpvoteComment',
+  DownvoteComment: 'DownvoteComment',
+  ShareComment: 'ShareComment',
+  FollowBlog: 'FollowBlog',
+  FollowAccount: 'FollowAccount'
+};
+
+export class ScoringAction extends Enum {
+  constructor (value?: any) {
+    super([
+      'UpvotePost',
+      'DownvotePost',
+      'SharePost',
+      'UpvoteComment',
+      'DownvoteComment',
+      'ShareComment',
+      'FollowBlog',
+      'FollowAccount'
+    ], value);
+  }
+}
+
 export function registerBlogsTypes () {
   try {
     const typeRegistry = getTypeRegistry();
     typeRegistry.register({
-      BlogId,
-      PostId,
-      CommentId,
-      ReactionId,
+      BlogId: 'u64',
+      PostId: 'u64',
+      CommentId: 'u64',
+      ReactionId: 'u64',
       Change,
       Blog,
       BlogUpdate,
@@ -521,7 +583,8 @@ export function registerBlogsTypes () {
       SocialAccount,
       BlogHistoryRecord,
       PostHistoryRecord,
-      CommentHistoryRecord
+      CommentHistoryRecord,
+      ScoringAction
     });
   } catch (err) {
     console.error('Failed to register custom types of blogs module', err);
