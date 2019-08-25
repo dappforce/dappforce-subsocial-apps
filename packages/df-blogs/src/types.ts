@@ -465,6 +465,71 @@ export class SocialAccount extends Struct {
   }
 }
 
+export type ProfileType = {
+  created: ChangeType,
+  updated: OptionChange,
+  username: Text,
+  ipfs_hash: IpfsHash
+};
+
+export class Profile extends Struct {
+  constructor (value?: ProfileType) {
+    super({
+      created: Change,
+      updated: OptionChange,
+      username: Text,
+      ipfs_hash: IpfsHash
+    }, value);
+  }
+
+  get created (): Change {
+    return this.get('created') as Change;
+  }
+
+  get updated (): OptionChange {
+    return this.get('updated') as OptionChange;
+  }
+
+  get username (): Text {
+    return this.get('username') as Text;
+  }
+
+  get ipfs_hash (): string {
+    const ipfsHash = this.get('ipfs_hash') as Text;
+    return ipfsHash.toString();
+  }
+}
+
+export type ProfileUpdateType = {
+  username: OptionText,
+  ipfs_hash: OptionIpfsHash
+};
+
+export class ProfileUpdate extends Struct {
+  constructor (value?: ProfileUpdateType) {
+    super({
+      username: OptionText,
+      ipfs_hash: OptionIpfsHash
+    }, value);
+  }
+
+  get ipfs_hash (): OptionIpfsHash {
+    return this.get('ipfs_hash') as OptionIpfsHash;
+  }
+
+  get username (): OptionIpfsHash {
+    return this.get('username') as OptionIpfsHash;
+  }
+
+  set ipfs_hash (value: OptionIpfsHash) {
+    this.set('ipfs_hash', value);
+  }
+
+  set username (value: OptionText) {
+    this.set('username', value);
+  }
+}
+
 export type BlogHistoryRecordType = {
   edited: ChangeType,
   old_data: BlogUpdateType
@@ -584,7 +649,9 @@ export function registerBlogsTypes () {
       BlogHistoryRecord,
       PostHistoryRecord,
       CommentHistoryRecord,
-      ScoringAction
+      ScoringAction,
+      Profile,
+      ProfileUpdate
     });
   } catch (err) {
     console.error('Failed to register custom types of blogs module', err);
