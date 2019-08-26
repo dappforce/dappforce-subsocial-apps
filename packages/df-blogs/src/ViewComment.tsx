@@ -15,6 +15,7 @@ import { NewComment } from './EditComment';
 import { queryBlogsToProp, getJsonFromIpfs } from './utils';
 import { Voter } from './Voter';
 import { CommentHistoryModal } from './ListsEditHistory';
+import { ShareButtonComment } from './ShareButton';
 
 type Props = ApiProps & {
   postId: PostId,
@@ -125,7 +126,7 @@ export function ViewComment (props: ViewCommentProps) {
     };
     loadComment().catch(err => console.log(err));
 
-  },[ doReloadComment ]); // TODO use reactionKind
+  },[ doReloadComment ]);
 
   const isMyStruct = myAddress === account.toString();
 
@@ -135,8 +136,7 @@ export function ViewComment (props: ViewCommentProps) {
     const close = () => setOpen(false);
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
-      {(isMyStruct || showEditForm) && <Dropdown.Item text='Edit' onClick={() => setShowEditForm(true)} />}
-        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
+        {(isMyStruct || showEditForm) && <Dropdown.Item text='Edit' onClick={() => setShowEditForm(true)} />}
         {open && <CommentHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
     </Dropdown>);
@@ -182,6 +182,7 @@ export function ViewComment (props: ViewCommentProps) {
                 <SuiComment.Text>{content.body}</SuiComment.Text>
                 <SuiComment.Actions>
                   <SuiComment.Action>
+                    <ShareButtonComment commentId={id}/>
                     {showReplyForm
                       ? <NewComment
                           postId={struct.post_id}

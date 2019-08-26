@@ -177,7 +177,7 @@ export default class Queue extends React.Component<Props, State> {
       txSuccessCb,
       txUpdateCb,
       txSentCb,
-      txCancelledCb,
+      txCancelledCb
     });
   }
 
