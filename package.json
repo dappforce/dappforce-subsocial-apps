@@ -28,8 +28,7 @@
     "postinstall": "polkadot-dev-yarn-only",
     "test": "echo \"skipping tests\"",
     "vanitygen": "node packages/app-accounts/scripts/vanitygen.js",
-    "start": "cd packages/apps && webpack --config webpack.config.js",
-    "ipfs": "yarn jsipfs daemon"
+    "start": "cd packages/apps && webpack --config webpack.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",

@@ -1,6 +1,7 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32 } from '@polkadot/types';
 
+export type IpfsData = CommentData | PostData | BlogData;
 export class IpfsHash extends Text {}
 export class BlogId extends u64 {}
 export class OptionIpfsHash extends Option.with(IpfsHash) {}

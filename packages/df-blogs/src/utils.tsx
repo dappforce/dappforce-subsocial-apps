@@ -6,11 +6,10 @@ import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { Options } from '@polkadot/ui-api/with/types';
 import { queryToProp } from '@polkadot/joy-utils/index';
 import { SubmittableResult } from '@polkadot/api';
-import { CommentId, PostId, BlogId, CommentData, PostData, BlogData } from './types';
+import { CommentId, PostId, BlogId, IpfsData } from './types';
+import axios from 'axios';
 
-import * as IPFS from 'typestub-ipfs';
-const ipfsClient = require('ipfs-http-client');
-const CID = require('cids');
+const host = 'http://localhost:3001';
 
 export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
   return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
@@ -75,37 +74,19 @@ export type UrlHasIdProps = {
   }
 };
 
-type IpfsAPI = IPFS.FilesAPI & {
-  pin: {
-    rm: (hash?: string) => any,
-    ls: (hash?: string) => any
-  },
-  repo: IPFS.RepoAPI
-};
-
-// connect to ipfs daemon API server
-const ipfs = ipfsClient('localhost', '5002', { protocol: 'http' }) as IpfsAPI;
-
-// const ipfsConfig = { host: 'localhost', port:'5002', protocol: 'http' };
-// new IPFS({ config: ipfsConfig });
-
-type IpfsData = CommentData | PostData | BlogData;
-
-export async function addJsonToIpfs (data: IpfsData): Promise<string> {
-  // const path = `subsocial/${pathDir}`;
-  // console.log(path);
-  // const json = { path: path, content: Buffer.from(JSON.stringify(data)) };
-  const json = Buffer.from(JSON.stringify(data));
-  const results = await ipfs.add(json);
-  return results[results.length - 1].hash;
+export async function addJsonToIpfs (ipfsData: IpfsData): Promise<string> {
+  const res = await axios.post(`${host}/v1/ipfs/add`, ipfsData);
+  const { data } = res;
+  return data as string;
 }
 
 export async function removeFromIpfs (hash: string) {
-  await ipfs.pin.rm(hash);
+  await axios.get(`${host}/v1/ipfs/rm/${hash}`);
 }
 
 export async function getJsonFromIpfs<T extends IpfsData> (hash: string): Promise<T> {
-  const cid = new CID(hash);
-  const results = await ipfs.cat(cid);
-  return JSON.parse(results.toString()) as T;
+  const res = await axios.get(`${host}/v1/ipfs/get/${hash}`);
+  const { data } = res;
+  console.log(data);
+  return data as T;
 }

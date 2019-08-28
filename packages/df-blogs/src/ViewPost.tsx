@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { Segment, Dropdown } from 'semantic-ui-react';
+import { Segment, Dropdown, Popup, Button, Grid } from 'semantic-ui-react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { Option } from '@polkadot/types';
@@ -81,7 +81,28 @@ function ViewPostInternal (props: ViewPostProps) {
           </Link>
           {renderDropDownMenu()}
         </h2>
-        <AuthorPreview address={account} />
+        <Popup trigger={<AuthorPreview address={account} />} flowing hoverable>
+    <Grid centered divided columns={3}>
+      <Grid.Column textAlign='center'>
+        <p>
+          <b>2</b> projects, $10 a month
+        </p>
+        <Button>Choose</Button>
+      </Grid.Column>
+      <Grid.Column textAlign='center'>
+        <p>
+          <b>5</b> projects, $20 a month
+        </p>
+        <Button>Choose</Button>
+      </Grid.Column>
+      <Grid.Column textAlign='center'>
+        <p>
+          <b>8</b> projects, $25 a month
+        </p>
+        <Button>Choose</Button>
+      </Grid.Column>
+    </Grid>
+  </Popup>
         <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div>
         <div className='DfCountsPreview'>
           <MutedSpan>Comments: <b>{comments_count.toString()}</b></MutedSpan>
