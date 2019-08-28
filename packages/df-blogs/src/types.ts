@@ -435,7 +435,8 @@ export type SocialAccountType = {
   followers_count: u32,
   following_accounts_count: u16,
   following_blogs_count: u16,
-  reputation: u32
+  reputation: u32,
+  profile: OptionProfile
 };
 
 export class SocialAccount extends Struct {
@@ -444,7 +445,8 @@ export class SocialAccount extends Struct {
       followers_count: u32,
       following_accounts_count: u16,
       following_blogs_count: u16,
-      reputation: u32
+      reputation: u32,
+      profile: OptionProfile
     }, value);
   }
 
@@ -463,13 +465,18 @@ export class SocialAccount extends Struct {
   get reputation (): u32 {
     return this.get('reputation') as u32;
   }
+
+  get profile (): OptionProfile {
+    return this.get('profile') as OptionProfile;
+  }
 }
 
 export type ProfileType = {
   created: ChangeType,
   updated: OptionChange,
   username: Text,
-  ipfs_hash: IpfsHash
+  ipfs_hash: IpfsHash,
+  edit_history: VecProfileHistoryRecord
 };
 
 export class Profile extends Struct {
@@ -478,7 +485,8 @@ export class Profile extends Struct {
       created: Change,
       updated: OptionChange,
       username: Text,
-      ipfs_hash: IpfsHash
+      ipfs_hash: IpfsHash,
+      edit_history: VecProfileHistoryRecord
     }, value);
   }
 
@@ -498,7 +506,13 @@ export class Profile extends Struct {
     const ipfsHash = this.get('ipfs_hash') as Text;
     return ipfsHash.toString();
   }
+
+  get edit_history (): VecProfileHistoryRecord {
+    return this.get('edit_history') as VecProfileHistoryRecord;
+  }
 }
+
+export class OptionProfile extends Option.with(Profile) {}
 
 export type ProfileUpdateType = {
   username: OptionText,
@@ -602,6 +616,30 @@ export class CommentHistoryRecord extends Struct {
 
 export class VecCommentHistoryRecord extends Vector.with(CommentHistoryRecord) {}
 
+export type ProfileHistoryRecordType = {
+  edited: ChangeType,
+  old_data: ProfileUpdateType
+};
+
+export class ProfileHistoryRecord extends Struct {
+  constructor (value?: ProfileHistoryRecordType) {
+    super({
+      edited: Change,
+      old_data: ProfileUpdate
+    }, value);
+  }
+
+  get edited (): Change {
+    return this.get('edited') as Change;
+  }
+
+  get old_data (): ProfileUpdate {
+    return this.get('old_data') as ProfileUpdate;
+  }
+}
+
+export class VecProfileHistoryRecord extends Vector.with(ProfileHistoryRecord) {}
+
 export const ScoringActions: { [key: string ]: string } = {
   UpvotePost: 'UpvotePost',
   DownvotePost: 'DownvotePost',
@@ -639,19 +677,20 @@ export function registerBlogsTypes () {
       Change,
       Blog,
       BlogUpdate,
+      BlogHistoryRecord,
       Post,
       PostUpdate,
+      PostHistoryRecord,
       Comment,
       CommentUpdate,
+      CommentHistoryRecord,
       ReactionKind,
       Reaction,
       SocialAccount,
-      BlogHistoryRecord,
-      PostHistoryRecord,
-      CommentHistoryRecord,
       ScoringAction,
       Profile,
-      ProfileUpdate
+      ProfileUpdate,
+      ProfileHistoryRecord
     });
   } catch (err) {
     console.error('Failed to register custom types of blogs module', err);
