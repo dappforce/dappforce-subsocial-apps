@@ -81,7 +81,8 @@ function ViewPostInternal (props: ViewPostProps) {
           </Link>
           {renderDropDownMenu()}
         </h2>
-        <Popup trigger={<AuthorPreview address={account} />} flowing hoverable>
+        <AuthorPreview address={account} />
+        {/* <Popup trigger={<AuthorPreview address={account} />} flowing hoverable>
     <Grid centered divided columns={3}>
       <Grid.Column textAlign='center'>
         <p>
@@ -102,7 +103,7 @@ function ViewPostInternal (props: ViewPostProps) {
         <Button>Choose</Button>
       </Grid.Column>
     </Grid>
-  </Popup>
+  </Popup> */}
         <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div>
         <div className='DfCountsPreview'>
           <MutedSpan>Comments: <b>{comments_count.toString()}</b></MutedSpan>
