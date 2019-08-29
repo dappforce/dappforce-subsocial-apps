@@ -1,13 +1,13 @@
 {
-  "name": "@joystream/types",
+  "name": "@dappforce/types",
   "version": "0.1.3",
-  "description": "Joystream types for Substrate modules",
+  "description": "Dappforce types for Substrate modules",
   "main": "lib/index.js",
   "scripts": {
     "postinstall": "npm run build",
     "build": "tsc --build tsconfig.json"
   },
-  "author": "Joystream contributors",
+  "author": "Dappforce",
   "maintainers": [],
   "dependencies": {
     "@polkadot/keyring": "^0.76.1",
