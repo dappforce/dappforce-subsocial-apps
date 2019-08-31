@@ -1,6 +1,6 @@
 
 import BN from 'bn.js';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { Route, Switch } from 'react-router';
 
 import { AppProps, I18nProps } from '@polkadot/ui-app/types';
@@ -18,12 +18,13 @@ import ViewBlogById from './ViewBlogById';
 import { NewPost, EditPost } from './EditPost';
 import { ViewPostById } from './ViewPost';
 import { ListFollowingBlogs } from './ListFollowingBlogs';
+import { ViewNewsFeed } from './ActivityStream'
 
 type Props = AppProps & ApiProps & I18nProps & {
   nextBlogId?: BN
 };
 
-class App extends React.PureComponent<Props> {
+class App extends PureComponent<Props> {
 
   private buildTabs (): TabItem[] {
     const { t, nextBlogId } = this.props;
@@ -44,6 +45,10 @@ class App extends React.PureComponent<Props> {
       {
         name: 'new',
         text: t('New blog')
+      },
+      {
+        name: 'feed',
+        text: t('News feed')
       }
     ];
   }
@@ -57,6 +62,7 @@ class App extends React.PureComponent<Props> {
           <Tabs basePath={basePath} items={tabs} />
         </header>
         <Switch>
+          <Route path={`${basePath}/feed`} component={ViewNewsFeed} />
           <Route path={`${basePath}/my`} component={ListMyBlogs} />
           <Route path={`${basePath}/followed`} component={ListFollowingBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />

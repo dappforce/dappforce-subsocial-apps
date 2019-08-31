@@ -9,7 +9,7 @@ import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId, IpfsData } from './types';
 import axios from 'axios';
 
-const host = 'http://localhost:3001';
+export const host = 'http://localhost:3001/v1';
 
 export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
   return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
@@ -75,17 +75,17 @@ export type UrlHasIdProps = {
 };
 
 export async function addJsonToIpfs (ipfsData: IpfsData): Promise<string> {
-  const res = await axios.post(`${host}/v1/ipfs/add`, ipfsData);
+  const res = await axios.post(`${host}/ipfs/add`, ipfsData);
   const { data } = res;
   return data as string;
 }
 
 export async function removeFromIpfs (hash: string) {
-  await axios.get(`${host}/v1/ipfs/rm/${hash}`);
+  await axios.get(`${host}/ipfs/rm/${hash}`);
 }
 
 export async function getJsonFromIpfs<T extends IpfsData> (hash: string): Promise<T> {
-  const res = await axios.get(`${host}/v1/ipfs/get/${hash}`);
+  const res = await axios.get(`${host}/ipfs/get/${hash}`);
   const { data } = res;
   console.log(data);
   return data as T;
