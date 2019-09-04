@@ -84,7 +84,7 @@ function ViewPostInternal (props: ViewPostProps) {
           {renderDropDownMenu()}
         </h2>
         <AuthorPreview address={account} />
-        <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div>
+        {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         <div className='DfCountsPreview'>
           <MutedSpan>Comments: <b>{comments_count.toString()}</b></MutedSpan>
           <MutedSpan>Upvotes: <b>{upvotes_count.toString()}</b></MutedSpan>
@@ -107,7 +107,7 @@ function ViewPostInternal (props: ViewPostProps) {
         {/* TODO render tags */}
       </div>
       <Voter struct={post} />
-      <ShareButtonPost postId={post.id}/>
+      {/* <ShareButtonPost postId={post.id}/> */}
       <CommentsByPost postId={post.id} post={post} />
     </>;
   };

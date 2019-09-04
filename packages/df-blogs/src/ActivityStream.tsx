@@ -89,18 +89,18 @@ function Activity (props: ActivityProps) {
   </div>);
 
   const renderActivity = () => {
-    // const [ comment, setComment ] = useState({} as Comment);
-    // if (nonEmptyStr(comment_id)) {
-    //   const commentId = new CommentId(hexToNumber('0x' + comment_id));
-    //   api.query.blogs.commentById(commentId,
-    //     (commentOpt: OptionComment) =>
-    //       setComment(commentOpt.unwrap() as Comment))
-    //     .catch(err => new Error(err));
-    //   return <ViewComment key={id} comment={comment} api={api}/>
-    // } else {
-    const postId = new PostId(hexToNumber('0x' + post_id));
-    return <ViewPost key={id} id={postId} withCreatedBy={false}/>;
-    //}
+    const [ comment, setComment ] = useState({} as Comment);
+    if (nonEmptyStr(comment_id)) {
+      const commentId = new CommentId(hexToNumber('0x' + comment_id));
+      api.query.blogs.commentById(commentId,
+        (commentOpt: OptionComment) =>
+          setComment(commentOpt.unwrap() as Comment))
+        .catch(err => new Error(err));
+      return <ViewPost key={id} id={comment.post_id} withCreatedBy={false}/>;
+    } else {
+      const postId = new PostId(hexToNumber('0x' + post_id));
+      return <ViewPost key={id} id={postId} withCreatedBy={false}/>;
+    }
   };
 
   return <Segment className='DfActivity'>

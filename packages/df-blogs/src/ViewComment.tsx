@@ -182,7 +182,7 @@ export function ViewComment (props: ViewCommentProps) {
                 <SuiComment.Text>{content.body}</SuiComment.Text>
                 <SuiComment.Actions>
                   <SuiComment.Action>
-                    <ShareButtonComment commentId={id}/>
+                    {/* <ShareButtonComment commentId={id}/> */}
                     {showReplyForm
                       ? <NewComment
                           postId={struct.post_id}
