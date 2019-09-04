@@ -16,7 +16,10 @@ import IdentityIcon from './IdentityIcon';
 import { findNameByAddress, nonEmptyStr } from '@polkadot/joy-utils/index';
 import MemoView from '@polkadot/joy-utils/memo/MemoView';
 import { FollowButtonAccount } from '@dappforce/blogs/FollowButton';
-type Props = BareProps & {
+import { Popup, Grid } from 'semantic-ui-react';
+import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
+
+type Props = MyAccountProps & BareProps & {
   balance?: Balance | Array<Balance> | BN,
   children?: React.ReactNode,
   isPadded?: boolean,
@@ -32,20 +35,12 @@ type Props = BareProps & {
   withMemo?: boolean
 };
 
-type State = {
-  isHovering: boolean;
-};
-
-class AddressMini extends React.PureComponent<Props,State> {
+class AddressMini extends React.PureComponent<Props> {
   constructor (props: Props) {
     super(props);
-    this.handleMouseHover = this.handleMouseHover.bind(this);
-    this.state = {
-      isHovering: false
-    };
   }
   render () {
-    const { children, className, isPadded = true, extraDetails, session_validators, style, size, value } = this.props;
+    const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value } = this.props;
 
     if (!value) {
       return null;
@@ -56,45 +51,44 @@ class AddressMini extends React.PureComponent<Props,State> {
       validator.toString() === address
     );
 
-    const renderFollowButton = <FollowButtonAccount address={address} visible={this.state.isHovering} />;
+    const renderFollowButton = <FollowButtonAccount address={address} />;
+
+    const renderAutorPreview = () => (
+    <div
+      className={classes('ui--AddressMini', isPadded ? 'padded' : '', className)}
+      style={style}
+    >
+      <div className='ui--AddressMini-info'>
+        <IdentityIcon
+          isHighlight={!!isValidator}
+          size={size || 36}
+          value={address}
+        />
+        <div>
+          {this.renderAddress(address)}
+          <div className='ui--AddressMini-details'>
+            {this.renderName(address)}
+            {extraDetails}
+            {this.renderBalance()}
+            {this.renderMemo(address)}
+          </div>
+        </div>
+        {children}
+      </div>
+    </div>
+    );
 
     return (
-      <div
-        className={classes('ui--AddressMini', isPadded ? 'padded' : '', className)}
-        style={style}
-        onMouseEnter={this.handleMouseHover}
-        onMouseLeave={this.handleMouseHover}
-      >
-        <div className='ui--AddressMini-info'>
-          <IdentityIcon
-            isHighlight={!!isValidator}
-            size={size || 36}
-            value={address}
-          />
-          <div>
-            {this.renderAddress(address)}
-            <div className='ui--AddressMini-details'>
-              {this.renderName(address)}
-              {extraDetails}
-              {this.renderBalance()}
-              {this.renderMemo(address)}
-            </div>
-          </div>
-          {children}
-        </div>
-        {renderFollowButton}
-      </div>
+      myAddress !== address
+      ? <Popup trigger={renderAutorPreview()} flowing hoverable>
+        {<Grid centered divided columns={1}>
+          <Grid.Column textAlign='center'>
+            {renderFollowButton}
+          </Grid.Column>
+        </Grid>}
+      </Popup>
+      : renderAutorPreview()
     );
-  }
-
-  private handleMouseHover () {
-    this.setState(this.toggleHoverState);
-  }
-
-  private toggleHoverState (state: State) {
-    return {
-      isHovering: !state.isHovering
-    };
   }
 
   private renderAddress (address: string) {
@@ -154,5 +148,6 @@ class AddressMini extends React.PureComponent<Props,State> {
 
 export default withMulti(
   AddressMini,
+  withMyAccount,
   withCall('query.session.validators')
 );

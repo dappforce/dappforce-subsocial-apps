@@ -18,6 +18,7 @@ import { ShareButtonPost } from './ShareButton';
 
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
+  withCreatedBy?: boolean,
   id: PostId,
   postById?: Option<Post>,
   commentIds?: CommentId[]
@@ -32,7 +33,8 @@ function ViewPostInternal (props: ViewPostProps) {
   const {
     myAddress,
     preview = false,
-    id
+    id,
+    withCreatedBy = true
   } = props;
 
   const post = postById.unwrap();
@@ -82,28 +84,6 @@ function ViewPostInternal (props: ViewPostProps) {
           {renderDropDownMenu()}
         </h2>
         <AuthorPreview address={account} />
-        {/* <Popup trigger={<AuthorPreview address={account} />} flowing hoverable>
-    <Grid centered divided columns={3}>
-      <Grid.Column textAlign='center'>
-        <p>
-          <b>2</b> projects, $10 a month
-        </p>
-        <Button>Choose</Button>
-      </Grid.Column>
-      <Grid.Column textAlign='center'>
-        <p>
-          <b>5</b> projects, $20 a month
-        </p>
-        <Button>Choose</Button>
-      </Grid.Column>
-      <Grid.Column textAlign='center'>
-        <p>
-          <b>8</b> projects, $25 a month
-        </p>
-        <Button>Choose</Button>
-      </Grid.Column>
-    </Grid>
-  </Popup> */}
         <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div>
         <div className='DfCountsPreview'>
           <MutedSpan>Comments: <b>{comments_count.toString()}</b></MutedSpan>
@@ -120,7 +100,7 @@ function ViewPostInternal (props: ViewPostProps) {
         <span style={{ marginRight: '.5rem' }}>{title}</span>
         {renderDropDownMenu()}
       </h1>
-      <CreatedBy created={post.created} />
+      {withCreatedBy && <CreatedBy created={post.created} />}
       <div style={{ margin: '1rem 0' }}>
         {image && <img src={image} className='DfPostImage' /* add onError handler */ />}
         <ReactMarkdown className='JoyMemo--full' source={body} linkTarget='_blank' />

@@ -81,7 +81,7 @@ export async function addJsonToIpfs (ipfsData: IpfsData): Promise<string> {
 }
 
 export async function removeFromIpfs (hash: string) {
-  await axios.get(`${host}/ipfs/rm/${hash}`);
+  await axios.post(`${host}/ipfs/remove/${hash}`);
 }
 
 export async function getJsonFromIpfs<T extends IpfsData> (hash: string): Promise<T> {

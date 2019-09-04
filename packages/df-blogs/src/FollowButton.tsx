@@ -53,15 +53,12 @@ export function FollowButtonBlog (props: PropsFollowButtonBlog) {
 }
 
 type PropsFollowButtonAccount = {
-  address: string,
-  visible: boolean
+  address: string
 };
 
 export function FollowButtonAccount (props: PropsFollowButtonAccount) {
-  const { address, visible } = props;
+  const { address } = props;
   const { state: { address: myAddress } } = useMyAccount();
-
-  if (myAddress === address) return null;
 
   const accountId = new AccountId(address);
   const dataForQuery = new Tuple([AccountId, AccountId], [new AccountId(myAddress), accountId]);
@@ -83,20 +80,19 @@ export function FollowButtonAccount (props: PropsFollowButtonAccount) {
   };
 
   return <div className='DfFollowButton'>
-    <Transition visible={visible} animation='scale' duration={300}>
-      <TxButton
-        type='submit'
-        compact
-        isBasic={isFollow}
-        isPrimary={!isFollow}
-        label={isFollow
-          ? 'Unfollow account'
-          : 'Follow account'}
-        params={buildTxParams()}
-        tx={isFollow
-          ? `blogs.unfollowAccount`
-          : `blogs.followAccount`}
-        txSuccessCb={() => setTriggerReload(!triggerReload) }
-      />
-    </Transition></div>;
+    <TxButton
+      type='submit'
+      compact
+      isBasic={isFollow}
+      isPrimary={!isFollow}
+      label={isFollow
+        ? 'Unfollow account'
+        : 'Follow account'}
+      params={buildTxParams()}
+      tx={isFollow
+        ? `blogs.unfollowAccount`
+        : `blogs.followAccount`}
+      txSuccessCb={() => setTriggerReload(!triggerReload) }
+    />
+  </div>;
 }

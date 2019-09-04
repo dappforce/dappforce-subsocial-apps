@@ -18,7 +18,7 @@ import ViewBlogById from './ViewBlogById';
 import { NewPost, EditPost } from './EditPost';
 import { ViewPostById } from './ViewPost';
 import { ListFollowingBlogs } from './ListFollowingBlogs';
-import { ViewNewsFeed } from './ActivityStream'
+import { ViewNewsFeed, ViewNotifications } from './ActivityStream';
 
 type Props = AppProps & ApiProps & I18nProps & {
   nextBlogId?: BN
@@ -49,6 +49,10 @@ class App extends PureComponent<Props> {
       {
         name: 'feed',
         text: t('News feed')
+      },
+      {
+        name: 'notifications',
+        text: t('Notifications')
       }
     ];
   }
@@ -63,6 +67,7 @@ class App extends PureComponent<Props> {
         </header>
         <Switch>
           <Route path={`${basePath}/feed`} component={ViewNewsFeed} />
+          <Route path={`${basePath}/notifications`} component={ViewNotifications} />
           <Route path={`${basePath}/my`} component={ListMyBlogs} />
           <Route path={`${basePath}/followed`} component={ListFollowingBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />

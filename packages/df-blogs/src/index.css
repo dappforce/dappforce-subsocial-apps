@@ -114,3 +114,13 @@ hr {
 .DfFollowButton {
   margin-top: .6rem;
 }
+
+/*.DfActivity{
+  position: relative;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  margin: 1rem 0;
+  padding: 1em 1em;
+  border-radius: 0 !important;
+  border: 0 !important;
+}*/
