@@ -14,7 +14,6 @@ import { CreatedBy } from './CreatedBy';
 import { MutedSpan } from '@polkadot/joy-utils/MutedText';
 import { Voter } from './Voter';
 import { PostHistoryModal } from './ListsEditHistory';
-import { ShareButtonPost } from './ShareButton';
 
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,

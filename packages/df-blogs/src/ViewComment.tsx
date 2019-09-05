@@ -15,7 +15,6 @@ import { NewComment } from './EditComment';
 import { queryBlogsToProp, getJsonFromIpfs } from './utils';
 import { Voter } from './Voter';
 import { CommentHistoryModal } from './ListsEditHistory';
-import { ShareButtonComment } from './ShareButton';
 
 type Props = ApiProps & {
   postId: PostId,

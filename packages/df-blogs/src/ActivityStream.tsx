@@ -12,6 +12,7 @@ import { Segment } from 'semantic-ui-react';
 import { nonEmptyStr } from '@polkadot/joy-utils/';
 import { ViewComment } from './ViewComment';
 import { api } from '@polkadot/ui-api';
+import { Link } from 'react-router-dom';
 
 type Activity = {
   id: number,
@@ -83,12 +84,13 @@ function Activity (props: ActivityProps) {
   const { activity } = props;
   const { account, event, date, post_id, comment_id, blog_id, following_id, id } = activity;
   console.log([post_id, comment_id, blog_id, following_id]);
+  const [ message, setMessage ] = useState('');
 
   const renderDate = () => (<div className='ui--AddressSummary-name'>
     Created in: <b style={{ textTransform: 'uppercase' }}>{date}</b>
   </div>);
 
-  const renderActivity = () => {
+  const getPostId = () => {
     const [ comment, setComment ] = useState({} as Comment);
     if (nonEmptyStr(comment_id)) {
       const commentId = new CommentId(hexToNumber('0x' + comment_id));
@@ -96,12 +98,15 @@ function Activity (props: ActivityProps) {
         (commentOpt: OptionComment) =>
           setComment(commentOpt.unwrap() as Comment))
         .catch(err => new Error(err));
-      return <ViewPost key={id} id={comment.post_id} withCreatedBy={false}/>;
+      setMessage('created comment on');
+      return comment.post_id;
     } else {
       const postId = new PostId(hexToNumber('0x' + post_id));
-      return <ViewPost key={id} id={postId} withCreatedBy={false}/>;
+      setMessage('created post');
+      return postId;
     }
   };
+  const postId = getPostId();
 
   return <Segment className='DfActivity'>
     <AddressMini
@@ -112,6 +117,11 @@ function Activity (props: ActivityProps) {
       withName
       extraDetails={renderDate()}
     />
-    {renderActivity()}
+    {message}
+    <Link to={`/blogs/posts/${postId}`}><ViewPost id={postId} withCreatedBy={false}/></Link>;
   </Segment>;
 };
+
+function Notification (props: ActivityProps) {
+  
+}
