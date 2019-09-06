@@ -235,6 +235,5 @@ export const EditComment = withMulti<LoadStructProps>(
 );
 
 export const NewComment = withMulti<OuterProps>(
-  EditForm,
-  withOnlyMembers
+  EditForm
 );
