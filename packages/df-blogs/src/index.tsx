@@ -66,11 +66,11 @@ class App extends PureComponent<Props> {
           <Tabs basePath={basePath} items={tabs} />
         </header>
         <Switch>
-          <Route path={`${basePath}/feed`} component={ViewNewsFeed} />
-          <Route path={`${basePath}/notifications`} component={ViewNotifications} />
           <Route path={`${basePath}/my`} component={ListMyBlogs} />
           <Route path={`${basePath}/followed`} component={ListFollowingBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />
+          <Route path={`${basePath}/feed`} component={ViewNewsFeed} />
+          <Route path={`${basePath}/notifications`} component={ViewNotifications} />
           <Route path={`${basePath}/posts/:id/edit`} component={EditPost} />
           <Route path={`${basePath}/posts/:id`} component={ViewPostById} />
           <Route path={`${basePath}/:id/edit`} component={EditBlog} />

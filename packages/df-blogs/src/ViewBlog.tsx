@@ -21,6 +21,7 @@ import { FollowButtonBlog } from './FollowButton';
 
 type Props = MyAccountProps & {
   preview?: boolean,
+  extraPreview?: boolean,
   id: BlogId,
   blogById?: Option<Blog>,
   postIds?: PostId[],
@@ -35,6 +36,7 @@ function Component (props: Props) {
 
   const {
     preview = false,
+    extraPreview = false,
     myAddress,
     postIds = []
   } = props;
@@ -74,6 +76,10 @@ function Component (props: Props) {
     </Dropdown>);
   };
 
+  const renderExtraPreview = () => (<>
+    <Link to={`/blogs/${id}`} className='handle'>{name}</Link>
+  </>);
+
   const renderPreview = () => {
     return <>
       <div className={`item ProfileDetails ${isMyBlog && 'MyProfile'}`}>
@@ -83,7 +89,7 @@ function Component (props: Props) {
         }
         <div className='content'>
           <div className='header'>
-            <Link to={`/blogs/${id}`} className='handle'>{name}</Link>
+            {renderExtraPreview()}
             {renderDropDownMenu()}
           </div>
           <div className='description'>
@@ -94,7 +100,9 @@ function Component (props: Props) {
     </>;
   };
 
-  if (preview) {
+  if (extraPreview) {
+    return renderExtraPreview();
+  } else if (preview) {
     return renderPreview();
   }
 
