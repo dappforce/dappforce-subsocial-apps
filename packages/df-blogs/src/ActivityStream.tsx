@@ -86,8 +86,8 @@ function Activity (props: ActivityProps) {
   const [ message, setMessage ] = useState(event);
 
   const renderInfoOfEvent = () => (<div className='ui--AddressSummary-name'>
+    <div><b style={{ textTransform: 'uppercase' }}>{date}</b></div>
     <div>{message}</div>
-    <div>Created in: <b style={{ textTransform: 'uppercase' }}>{date}</b></div>
   </div>);
 
   const postId = new PostId(hexToNumber('0x' + post_id));
@@ -114,7 +114,7 @@ function Notification (props: ActivityProps) {
   let postId = new PostId(0);
   console.log(postId);
   const renderInfoOfEvent = () => (<div className='ui--AddressSummary-name'>
-        <div><b style={{ textTransform: 'uppercase' }}>{date} </b></div>
+        <div><b style={{ textTransform: 'uppercase' }}>{`${date} `}</b></div>
     <div>{message}</div>
   </div>);
 

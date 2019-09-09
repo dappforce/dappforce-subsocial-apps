@@ -65,7 +65,18 @@ class AddressMini extends React.PureComponent<Props> {
           value={address}
         />
         <div>
-          {this.renderAddress(address)}
+        {myAddress !== address &&
+        <Popup
+            trigger={this.renderAddress(address)}
+            flowing
+            hoverable
+        >
+        <Grid centered divided columns={1}>
+          <Grid.Column textAlign='center'>
+            {renderFollowButton}
+          </Grid.Column>
+          </Grid>
+        </Popup>}
           <div className='ui--AddressMini-details'>
             {this.renderName(address)}
             {extraDetails}
@@ -78,17 +89,7 @@ class AddressMini extends React.PureComponent<Props> {
     </div>
     );
 
-    return (
-      myAddress !== address
-      ? <Popup trigger={renderAutorPreview()} flowing hoverable>
-        {<Grid centered divided columns={1}>
-          <Grid.Column textAlign='center'>
-            {renderFollowButton}
-          </Grid.Column>
-        </Grid>}
-      </Popup>
-      : renderAutorPreview()
-    );
+    return renderAutorPreview();
   }
 
   private renderAddress (address: string) {
