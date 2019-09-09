@@ -58,5 +58,10 @@
     "rxjs": "^6.4.0",
     "source-map-explorer": "^1.7.0",
     "ts-jest": "^24.0.2"
+  },
+  "dependencies": {
+    "@types/moment-timezone": "^0.5.12",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.26"
   }
 }

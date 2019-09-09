@@ -9,9 +9,11 @@ import { hexToNumber } from '@polkadot/util';
 import { PostId, CommentId, OptionComment, Comment, BlogId } from './types';
 import { ViewPost } from './ViewPost';
 import { Segment } from 'semantic-ui-react';
-import { api } from '@polkadot/ui-api';
+import { api, withMulti } from '@polkadot/ui-api';
 import { Link } from 'react-router-dom';
 import ViewBlog from './ViewBlog';
+import moment from 'moment-timezone';
+import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
 
 type Activity = {
   id: number,
@@ -28,9 +30,10 @@ type ActivityProps = {
   activity: Activity;
 };
 
-export const ViewNewsFeed = () => {
+export const InnerViewNewsFeed = (props: MyAccountProps) => {
+  const { myAddress } = props;
+  console.log(myAddress);
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
-  const { state: { address: myAddress } } = useMyAccount();
   useEffect(() => {
     const loadWithApi = async () => {
       const res = await axios.get(`${host}/offchain/feed/${myAddress}`);
@@ -54,9 +57,9 @@ export const ViewNewsFeed = () => {
   );
 };
 
-export const ViewNotifications = () => {
+export const InnerViewNotifications = (props: MyAccountProps) => {
+  const { myAddress } = props;
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
-  const { state: { address: myAddress } } = useMyAccount();
   useEffect(() => {
     const loadWithApi = async () => {
       const res = await axios.get(`${host}/offchain/notifications/${myAddress}`);
@@ -81,17 +84,15 @@ export const ViewNotifications = () => {
 
 function Activity (props: ActivityProps) {
   const { activity } = props;
-  const { account, event, date, post_id } = activity;
-  console.log(date);
-  const [ message, setMessage ] = useState(event);
+  const { account, date, post_id } = activity;
+  const formatDate = moment(date).format('lll');
 
   const renderInfoOfEvent = () => (<div className='ui--AddressSummary-name'>
-    <div><b style={{ textTransform: 'uppercase' }}>{date}</b></div>
-    <div>{message}</div>
+    <div><b style={{ textTransform: 'uppercase', marginRight: '.4rem' }}>{formatDate}</b></div>
+    <div>{'create post'}</div>
   </div>);
 
   const postId = new PostId(hexToNumber('0x' + post_id));
-  setMessage('created post');
 
   return <Segment className='DfActivity'>
     <AddressMini
@@ -102,19 +103,18 @@ function Activity (props: ActivityProps) {
       withName
       extraDetails={renderInfoOfEvent()}
     />
-    <Link to={`/blogs/posts/${postId}`}><ViewPost id={postId} withCreatedBy={false}/></Link>;
+    <ViewPost id={postId} withCreatedBy={false}/>
   </Segment>;
 }
 
 function Notification (props: ActivityProps) {
   const { activity } = props;
-  const { account, event, date, post_id, comment_id, blog_id, following_id, id } = activity;
-  console.log([post_id, comment_id, blog_id, following_id]);
+  const { account, event, date, post_id, comment_id, blog_id } = activity;
+  const formatDate = moment(date).format('lll');
   const [ message, setMessage ] = useState(<>{event}</>);
   let postId = new PostId(0);
-  console.log(postId);
   const renderInfoOfEvent = () => (<div className='ui--AddressSummary-name'>
-        <div><b style={{ textTransform: 'uppercase' }}>{`${date} `}</b></div>
+        <div><b style={{ textTransform: 'uppercase', marginRight: '.4rem' }}>{`${formatDate} `}</b></div>
     <div>{message}</div>
   </div>);
 
@@ -189,4 +189,14 @@ function Notification (props: ActivityProps) {
     extraDetails={renderInfoOfEvent()}
   />
   </Segment>;
-}
+};
+
+export const ViewNewsFeed = withMulti(
+  InnerViewNewsFeed,
+  withMyAccount
+);
+
+export const ViewNotifications = withMulti(
+  InnerViewNotifications,
+  withMyAccount
+);
