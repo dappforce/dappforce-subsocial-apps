@@ -14,6 +14,8 @@ import { Link } from 'react-router-dom';
 import ViewBlog from './ViewBlog';
 import moment from 'moment-timezone';
 import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
+import ActivityStreamItem from './ActivityStreamItem';
+import { Post } from '@dappforce/types/blogs';
 
 type Activity = {
   id: number,
@@ -157,7 +159,7 @@ function Notification (props: ActivityProps) {
         case 'PostReactionCreated': {
           postId = new PostId(hexToNumber('0x' + post_id));
           setMessage(<>
-            {'created reaction on your post '}
+            {'created reaction to your post '}
             <ViewPost id={postId} withCreatedBy={false} extraPreview/>
           </>);
           break;
@@ -170,7 +172,7 @@ function Notification (props: ActivityProps) {
           const comment = commentOpt.unwrap() as Comment;
           postId = new PostId(hexToNumber('0x' + comment.post_id));
           setMessage(<>
-            {'created reaction on your comment in '}
+            {'created reaction to your comment in '}
             <ViewPost id={postId} withCreatedBy={false} extraPreview/></>);
           break;
         }
@@ -180,13 +182,15 @@ function Notification (props: ActivityProps) {
   }, [ postId >= new PostId(0) ]);
 
   return <Segment className='DfActivity'>
-  <AddressMini
+  <ActivityStreamItem
     value={account}
     isShort={false}
     isPadded={false}
-    size={36}
+    size={48}
     withName
-    extraDetails={renderInfoOfEvent()}
+    date={formatDate}
+    event={'NOT FOUND'}
+    subject={<ViewPost id={postId} extraPreview/>}
   />
   </Segment>;
 };

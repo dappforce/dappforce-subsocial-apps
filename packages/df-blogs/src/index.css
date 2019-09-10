@@ -124,3 +124,35 @@ hr {
   border-radius: 0 !important;
   border: 0 !important;
 }*/
+
+.ui--DfActivityStreamItem{
+  display: inline-block;
+  padding: 0 0.25rem 0 0;
+}
+
+.ui--DfActivityStreamItem-info{
+  display: flex;
+  flex-direction: row;
+}
+
+.ui--DfActivityStreamItem-info .ui--IdentityIcon{
+  padding-top: 0.4rem;
+  margin-right:0.4rem;
+}
+
+.ui--DfActivityStreamItem-address{
+  &.withAddr {
+    font-family: monospace;
+  }
+
+  &.withName {
+    text-transform: uppercase;
+  }
+}
+
+.ui--DfActivityStreamItemSummary-name,
+.ui--DfActivityStreamItem-details.event,
+.ui--DfActivityStreamItem-details.subject{
+  display: inline-block;
+  margin-right: 0.35rem;
+}
