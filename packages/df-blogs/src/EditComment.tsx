@@ -12,7 +12,8 @@ import { Option } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
 
-import { queryBlogsToProp, addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './utils';
+import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
+import { queryBlogsToProp } from './utils';
 import { PostId, CommentId, Comment, CommentUpdate, CommentData } from './types';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({

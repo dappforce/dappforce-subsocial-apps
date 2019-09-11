@@ -7,13 +7,14 @@ import TxButton from '@polkadot/joy-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
+import { addJsonToIpfs, getJsonFromIpfs } from './OffchainUtils';
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
 import { PostId, Post, PostData, PostUpdate, BlogId } from './types';
 import Section from '@polkadot/joy-utils/Section';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent, addJsonToIpfs, getJsonFromIpfs } from './utils';
+import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()
