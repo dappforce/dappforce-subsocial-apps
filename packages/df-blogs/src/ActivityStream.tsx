@@ -112,17 +112,26 @@ function Notification (props: ActivityProps) {
   const [ subject, setSubject ] = useState(<></>);
   let postId = new PostId(0);
 
+  enum Events {
+    FollowAccount = 'followed your account',
+    FollowBlog = 'followed your blog',
+    CommentCreated = 'commented your post',
+    CommentReply = 'replied to your comment',
+    PostReactionCreated = 'reacted to your post',
+    CommentReactionCreated = 'reacted to your comment'
+  }
+
   useEffect(() => {
     console.log(event);
     const loadActivity = async () => {
       switch (event) {
         case 'FollowAccount': {
-          setMessage('followed your account');
+          setMessage(Events.FollowAccount);
           break;
         }
         case 'FollowBlog': {
           const blogId = new BlogId(hexToNumber('0x' + blog_id));
-          setMessage('followed your blog');
+          setMessage(Events.FollowBlog);
           setSubject(<ViewBlog id={blogId} extraPreview/>);
           break;
         }
@@ -137,9 +146,9 @@ function Notification (props: ActivityProps) {
             const comment = commentOpt.unwrap() as Comment;
             postId = new PostId(hexToNumber('0x' + comment.post_id));
             if (comment.parent_id.isSome) {
-              setMessage('replied to your comment in');
+              setMessage(Events.CommentReactionCreated);
             } else {
-              setMessage('commented your post');
+              setMessage(Events.CommentCreated);
             }
           }
           setSubject(<ViewPost id={postId} withCreatedBy={false} extraPreview/>);
@@ -147,7 +156,7 @@ function Notification (props: ActivityProps) {
         }
         case 'PostReactionCreated': {
           postId = new PostId(hexToNumber('0x' + post_id));
-          setMessage('reacted to your post');
+          setMessage(Events.PostReactionCreated);
           setSubject(<ViewPost id={postId} withCreatedBy={false} extraPreview/>);
           break;
         }
@@ -158,7 +167,7 @@ function Notification (props: ActivityProps) {
 
           const comment = commentOpt.unwrap() as Comment;
           postId = new PostId(hexToNumber('0x' + comment.post_id));
-          setMessage('reacted to your comment');
+          setMessage(Events.CommentReactionCreated);
           setSubject(<ViewPost id={postId} withCreatedBy={false} extraPreview/>);
           break;
         }
