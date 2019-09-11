@@ -65,8 +65,8 @@ class AddressMini extends React.PureComponent<Props> {
           value={address}
         />
         <div>
-        {myAddress !== address &&
-        <Popup
+        {myAddress !== address
+        ? <Popup
             trigger={this.renderAddress(address)}
             flowing
             hoverable
@@ -76,7 +76,8 @@ class AddressMini extends React.PureComponent<Props> {
             {renderFollowButton}
           </Grid.Column>
           </Grid>
-        </Popup>}
+        </Popup>
+        : this.renderAddress(address)}
           <div className='ui--AddressMini-details'>
             {this.renderName(address)}
             {extraDetails}

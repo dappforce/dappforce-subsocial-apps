@@ -32,7 +32,7 @@ type ActivityProps = {
   activity: Activity;
 };
 
-export const InnerViewNewsFeed = (props: MyAccountProps) => {
+const InnerViewNewsFeed = (props: MyAccountProps) => {
   const { myAddress } = props;
   console.log(myAddress);
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
@@ -49,7 +49,7 @@ export const InnerViewNewsFeed = (props: MyAccountProps) => {
   return (
   <Section title={`News Feed (${totalCount})`}>{
     myFeeds && myFeeds.length === 0
-      ? <em>No news.</em>
+      ? <em>No news yet.</em>
       : <div className='ui huge relaxed middle aligned divided list ProfileextraPreviews'>
       {myFeeds && myFeeds.map((item, id) =>
         <Activity key={id} activity={item}/>
@@ -59,7 +59,7 @@ export const InnerViewNewsFeed = (props: MyAccountProps) => {
   );
 };
 
-export const InnerViewNotifications = (props: MyAccountProps) => {
+const InnerViewNotifications = (props: MyAccountProps) => {
   const { myAddress } = props;
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
   useEffect(() => {
@@ -89,97 +89,7 @@ function Activity (props: ActivityProps) {
   const { account, date, post_id } = activity;
   const formatDate = moment(date).format('lll');
 
-  const renderInfoOfEvent = () => (<div className='ui--AddressSummary-name'>
-    <div><b style={{ textTransform: 'uppercase', marginRight: '.4rem' }}>{formatDate}</b></div>
-    <div>{'create post'}</div>
-  </div>);
-
   const postId = new PostId(hexToNumber('0x' + post_id));
-
-  return <Segment className='DfActivity'>
-    <AddressMini
-      value={account}
-      isShort={false}
-      isPadded={false}
-      size={36}
-      withName
-      extraDetails={renderInfoOfEvent()}
-    />
-    <ViewPost id={postId} withCreatedBy={false}/>
-  </Segment>;
-}
-
-function Notification (props: ActivityProps) {
-  const { activity } = props;
-  const { account, event, date, post_id, comment_id, blog_id } = activity;
-  const formatDate = moment(date).format('lll');
-  const [ message, setMessage ] = useState(<>{event}</>);
-  let postId = new PostId(0);
-  const renderInfoOfEvent = () => (<div className='ui--AddressSummary-name'>
-        <div><b style={{ textTransform: 'uppercase', marginRight: '.4rem' }}>{`${formatDate} `}</b></div>
-    <div>{message}</div>
-  </div>);
-
-  useEffect(() => {
-    console.log('here');
-    const loadActivity = async () => {
-      switch (event) {
-        case 'FollowAccount': {
-          setMessage(<>followed your</>);
-          break;
-        }
-        case 'FollowBlog': {
-          const blogId = new BlogId(hexToNumber('0x' + blog_id));
-          setMessage(<>follower your blog <ViewBlog id={blogId} extraPreview/></>);
-          break;
-        }
-        case 'CommentCreated': {
-          let textActivity = '';
-          if (postId === new PostId(0)) {
-            postId = new PostId(hexToNumber('0x' + post_id));
-          } else {
-            const commentId = new CommentId(hexToNumber('0x' + comment_id));
-            const commentOpt = await api.query.blogs.commentById(commentId) as OptionComment;
-            if (commentOpt.isNone) return;
-
-            const comment = commentOpt.unwrap() as Comment;
-            postId = new PostId(hexToNumber('0x' + comment.post_id));
-            if (comment.parent_id.isSome){
-              textActivity = 'replied on your comment in ';
-            } else {
-              textActivity = 'create comment on ';
-            }
-          }
-          setMessage(<>
-            {textActivity}
-            <ViewPost id={postId} withCreatedBy={false} extraPreview/>
-          </>);
-          break;
-        }
-        case 'PostReactionCreated': {
-          postId = new PostId(hexToNumber('0x' + post_id));
-          setMessage(<>
-            {'created reaction to your post '}
-            <ViewPost id={postId} withCreatedBy={false} extraPreview/>
-          </>);
-          break;
-        }
-        case 'CommentReactionCreated': {
-          const commentId = new CommentId(hexToNumber('0x' + comment_id));
-          const commentOpt = await api.query.blogs.commentById(commentId) as OptionComment;
-          if (commentOpt.isNone) return;
-
-          const comment = commentOpt.unwrap() as Comment;
-          postId = new PostId(hexToNumber('0x' + comment.post_id));
-          setMessage(<>
-            {'created reaction to your comment in '}
-            <ViewPost id={postId} withCreatedBy={false} extraPreview/></>);
-          break;
-        }
-      }
-    };
-    loadActivity().catch(err => new Error(err));
-  }, [ postId >= new PostId(0) ]);
 
   return <Segment className='DfActivity'>
   <ActivityStreamItem
@@ -189,11 +99,87 @@ function Notification (props: ActivityProps) {
     size={48}
     withName
     date={formatDate}
-    event={'NOT FOUND'}
-    subject={<ViewPost id={postId} extraPreview/>}
   />
+    <ViewPost id={postId} withCreatedBy={false} preview/>
   </Segment>;
-};
+}
+
+function Notification (props: ActivityProps) {
+  const { activity } = props;
+  const { account, event, date, post_id, comment_id, blog_id } = activity;
+  const formatDate = moment(date).format('lll');
+  const [ message, setMessage ] = useState('string');
+  const [ subject, setSubject ] = useState(<></>);
+  let postId = new PostId(0);
+
+  useEffect(() => {
+    console.log(event);
+    const loadActivity = async () => {
+      switch (event) {
+        case 'FollowAccount': {
+          setMessage('followed your account');
+          break;
+        }
+        case 'FollowBlog': {
+          const blogId = new BlogId(hexToNumber('0x' + blog_id));
+          setMessage('followed your blog');
+          setSubject(<ViewBlog id={blogId} extraPreview/>);
+          break;
+        }
+        case 'CommentCreated': {
+          if (postId === new PostId(0)) {
+            postId = new PostId(hexToNumber('0x' + post_id));
+          } else {
+            const commentId = new CommentId(hexToNumber('0x' + comment_id));
+            const commentOpt = await api.query.blogs.commentById(commentId) as OptionComment;
+            if (commentOpt.isNone) return;
+
+            const comment = commentOpt.unwrap() as Comment;
+            postId = new PostId(hexToNumber('0x' + comment.post_id));
+            if (comment.parent_id.isSome) {
+              setMessage('replied to your comment in');
+            } else {
+              setMessage('commented your post');
+            }
+          }
+          setSubject(<ViewPost id={postId} withCreatedBy={false} extraPreview/>);
+          break;
+        }
+        case 'PostReactionCreated': {
+          postId = new PostId(hexToNumber('0x' + post_id));
+          setMessage('reacted to your post');
+          setSubject(<ViewPost id={postId} withCreatedBy={false} extraPreview/>);
+          break;
+        }
+        case 'CommentReactionCreated': {
+          const commentId = new CommentId(hexToNumber('0x' + comment_id));
+          const commentOpt = await api.query.blogs.commentById(commentId) as OptionComment;
+          if (commentOpt.isNone) return;
+
+          const comment = commentOpt.unwrap() as Comment;
+          postId = new PostId(hexToNumber('0x' + comment.post_id));
+          setMessage('reacted to your comment');
+          setSubject(<ViewPost id={postId} withCreatedBy={false} extraPreview/>);
+          break;
+        }
+      }
+    };
+    loadActivity().catch(err => new Error(err));
+  }, [ postId > new PostId(0) ]);
+
+  return <Segment className='DfActivity'>
+    <ActivityStreamItem
+      value={account}
+      isShort={false}
+      isPadded={false}
+      size={48}
+      withName
+      date={formatDate}
+      event={message}
+      subject={subject}
+    />
+  </Segment>;
+}
 
 export const ViewNewsFeed = withMulti(
   InnerViewNewsFeed,

@@ -1,6 +1,3 @@
-// Copyright 2017-2019 @polkadot/app-staking authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
 import BN from 'bn.js';
 import React from 'react';
 import { AccountId, AccountIndex, Address, Balance } from '@polkadot/types';
@@ -27,13 +24,14 @@ type Props = MyAccountProps & BareProps & {
   withAddress?: boolean,
   withName?: boolean,
   date: string,
-  event: string
+  event?: string
 };
 
 class ActivityStreamItem extends React.PureComponent<Props> {
   constructor (props: Props) {
     super(props);
   }
+
   render () {
     const { children, myAddress, className, isPadded = true, date, event, subject, session_validators, style, size, value } = this.props;
 
@@ -48,49 +46,50 @@ class ActivityStreamItem extends React.PureComponent<Props> {
 
     const renderFollowButton = <FollowButtonAccount address={address} />;
 
-    const renderAutorPreview = () => (
-    <div
-      className={classes('ui--DfActivityStreamItem', isPadded ? 'padded' : '', className)}
-      style={style}
-    >
-      <div className='ui--DfActivityStreamItem-info'>
-        <IdentityIcon
-          isHighlight={!!isValidator}
-          size={size || 36}
-          value={address}
-        />
-        <div>
-        {myAddress !== address &&
-        <Popup
-            trigger={this.renderAddress(address)}
-            flowing
-            hoverable
-        >
-        <Grid centered divided columns={1}>
-          <Grid.Column textAlign='center'>
-            {renderFollowButton}
-          </Grid.Column>
-          </Grid>
-        </Popup>}
-          <div className='ui--DfActivityStreamItem-details'>
-            {this.renderName(address)}
-            <div className='ui--DfActivityStreamItem-details event'>
-            {event}
-            </div>
-            <div className='ui--DfActivityStreamItem-details subject'>
-            {subject}
-            </div>
-            <div className='ui--DfActivityStreamItem-details date'>
-            {date}
+    const renderPreview = () => (
+      <div
+        className={classes('DfActivityStreamItem', isPadded ? 'padded' : '', className)}
+        style={style}
+      >
+        <div className='DfActivityStreamItem-info'>
+          <IdentityIcon
+            isHighlight={!!isValidator}
+            size={size || 36}
+            value={address}
+          />
+          <div>
+            {myAddress !== address &&
+              <Popup
+                  trigger={this.renderAddress(address)}
+                  flowing
+                  hoverable
+              >
+              <Grid centered divided columns={1}>
+                <Grid.Column textAlign='center'>
+                  {renderFollowButton}
+                </Grid.Column>
+                </Grid>
+              </Popup>
+            }
+            <div className='DfActivityStreamItem-details'>
+              {this.renderName(address)}
+              <div className='DfActivityStreamItem-details event'>
+                {event}
+              </div>
+              <div className='DfActivityStreamItem-details subject'>
+                {subject}
+              </div>
+              <div className='DfActivityStreamItem-details date'>
+                {date}
+              </div>
             </div>
           </div>
+          {children}
         </div>
-        {children}
       </div>
-    </div>
     );
 
-    return renderAutorPreview();
+    return renderPreview();
   }
 
   private renderAddress (address: string) {
@@ -100,7 +99,7 @@ class ActivityStreamItem extends React.PureComponent<Props> {
     }
 
     return (
-      <div className='ui--DfActivityStreamItem-address'>
+      <div className='DfActivityStreamItem-address'>
         {isShort ? toShortAddress(address) : address}
       </div>
     );
@@ -114,8 +113,8 @@ class ActivityStreamItem extends React.PureComponent<Props> {
 
     name = name ? name : findNameByAddress(address);
     return (nonEmptyStr(name) ?
-      <div className='ui--DfActivityStreamItemSummary-name'>
-        <b style={{ textTransform: 'uppercase' }}>{name}</b>
+      <div className='DfActivityStreamItem-details name'>
+        <b>{name}</b>
       </div> : null
     );
   }
