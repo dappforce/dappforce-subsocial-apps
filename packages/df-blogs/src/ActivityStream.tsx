@@ -1,21 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
 import Section from '@polkadot/joy-utils/Section';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import axios from 'axios';
 import { host } from './utils';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { hexToNumber } from '@polkadot/util';
 import { PostId, CommentId, OptionComment, Comment, BlogId } from './types';
 import { ViewPost } from './ViewPost';
 import { Segment } from 'semantic-ui-react';
 import { api, withMulti } from '@polkadot/ui-api';
-import { Link } from 'react-router-dom';
 import ViewBlog from './ViewBlog';
 import moment from 'moment-timezone';
 import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
 import ActivityStreamItem from './ActivityStreamItem';
-import { Post } from '@dappforce/types/blogs';
 
 type Activity = {
   id: number,
@@ -38,7 +34,7 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
   useEffect(() => {
     const loadWithApi = async () => {
-      const res = await axios.get(`${host}/offchain/feed/${myAddress}`);
+      const res = await axios.get(`${host}/offchain/feed/${myAddress}?count=20`);
       const { data } = res;
       console.log(data);
       setMyFeeds(data);
@@ -64,7 +60,7 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
   useEffect(() => {
     const loadWithApi = async () => {
-      const res = await axios.get(`${host}/offchain/notifications/${myAddress}`);
+      const res = await axios.get(`${host}/offchain/notifications/${myAddress}?count=20`);
       const { data } = res;
       setMyFeeds(data);
     };
@@ -116,11 +112,11 @@ function Notification (props: ActivityProps) {
     console.log(event);
     const loadActivity = async () => {
       switch (event) {
-        case 'FollowAccount': {
+        case 'AccountFollowed': {
           setMessage('followed your account');
           break;
         }
-        case 'FollowBlog': {
+        case 'BlogFollowed': {
           const blogId = new BlogId(hexToNumber('0x' + blog_id));
           setMessage('followed your blog');
           setSubject(<ViewBlog id={blogId} extraPreview/>);
