@@ -111,7 +111,7 @@ function Notification (props: ActivityProps) {
   let postId = new PostId(0);
 
   enum Events {
-    FollowAccount = 'followed your account',
+    AccountFollowed = 'followed your account',
     FollowBlog = 'followed your blog',
     CommentCreated = 'commented your post',
     CommentReply = 'replied to your comment',
@@ -123,8 +123,8 @@ function Notification (props: ActivityProps) {
     console.log(event);
     const loadActivity = async () => {
       switch (event) {
-          setMessage(Events.FollowAccount);
         case 'AccountFollowed': {
+          setMessage(Events.AccountFollowed);
           break;
         }
         case 'BlogFollowed': {
