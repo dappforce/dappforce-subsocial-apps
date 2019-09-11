@@ -107,7 +107,9 @@ function Activity (props: ActivityProps) {
 function Notification (props: ActivityProps) {
   const { activity } = props;
   const { account, event, date, post_id, comment_id, blog_id } = activity;
+  console.log(date);
   const formatDate = moment(date).format('lll');
+  console.log(formatDate);
   const [ message, setMessage ] = useState('string');
   const [ subject, setSubject ] = useState(<></>);
   let postId = new PostId(0);

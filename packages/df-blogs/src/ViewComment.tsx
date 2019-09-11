@@ -9,10 +9,11 @@ import { ApiProps } from '@polkadot/ui-api/types';
 import { ApiPromise } from '@polkadot/api';
 import { api } from '@polkadot/ui-api';
 
+import { getJsonFromIpfs } from './OffchainUtils';
 import { partition } from 'lodash';
 import { PostId, CommentId, Comment, OptionComment, Post, CommentData } from './types';
 import { NewComment } from './EditComment';
-import { queryBlogsToProp, getJsonFromIpfs } from './utils';
+import { queryBlogsToProp } from './utils';
 import { Voter } from './Voter';
 import { CommentHistoryModal } from './ListsEditHistory';
 
