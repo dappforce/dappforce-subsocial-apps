@@ -1,4 +1,4 @@
-import { CommentId, PostId, BlogId, IpfsData } from './types';
+import { CommentId, PostId, BlogId, IpfsData, Activity } from './types';
 import axios from 'axios';
 
 export const host = 'http://localhost:3001/v1';
@@ -19,3 +19,16 @@ export async function getJsonFromIpfs<T extends IpfsData> (hash: string): Promis
   console.log(data);
   return data as T;
 }
+
+export const getNewsFeed = async (myAddress: string): Promise<Activity[]> => {
+  const res = await axios.get(`${host}/offchain/feed/${myAddress}?count=20`);
+  const { data } = res;
+  console.log(data);
+  return data;
+};
+
+export const getNotification = async (myAddress: string): Promise<Activity[]> => {
+  const res = await axios.get(`${host}/offchain/notifications/${myAddress}?count=20`);
+  const { data } = res;
+  return data;
+};
