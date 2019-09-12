@@ -1,10 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Section from '@polkadot/joy-utils/Section';
-import axios from 'axios';
-import { host } from './utils';
 import { hexToNumber } from '@polkadot/util';
-import { PostId, CommentId, OptionComment, Comment, BlogId } from './types';
+import { PostId, CommentId, OptionComment, Comment, BlogId, Activity } from './types';
 import { ViewPost } from './ViewPost';
 import { Segment } from 'semantic-ui-react';
 import { api, withMulti } from '@polkadot/ui-api';
@@ -12,17 +10,7 @@ import ViewBlog from './ViewBlog';
 import moment from 'moment-timezone';
 import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
 import ActivityStreamItem from './ActivityStreamItem';
-
-type Activity = {
-  id: number,
-  account: string,
-  event: string,
-  following_id: string,
-  blog_id: string,
-  post_id: string,
-  comment_id: string,
-  date: Date
-};
+import { getNewsFeed, getNotification } from './OffchainUtils';
 
 type ActivityProps = {
   activity: Activity;
@@ -33,13 +21,12 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
   console.log(myAddress);
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
   useEffect(() => {
-    const loadWithApi = async () => {
-      const res = await axios.get(`${host}/offchain/feed/${myAddress}?count=20`);
-      const { data } = res;
-      console.log(data);
-      setMyFeeds(data);
-    };
-    loadWithApi().catch(err => new Error(err));
+    if (!myAddress) return;
+
+    getNewsFeed(myAddress)
+      .then(data => setMyFeeds(data))
+      .catch(err => new Error(err));
+
   },[false]);
   const totalCount = myFeeds && myFeeds.length;
   return (
@@ -48,7 +35,7 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
       ? <em>No news yet.</em>
       : <div className='ui huge relaxed middle aligned divided list ProfileextraPreviews'>
       {myFeeds && myFeeds.map((item, id) =>
-        <Activity key={id} activity={item}/>
+        <ViewActivity key={id} activity={item}/>
       )}
     </div>
   }</Section>
@@ -59,12 +46,12 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   const { myAddress } = props;
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
   useEffect(() => {
-    const loadWithApi = async () => {
-      const res = await axios.get(`${host}/offchain/notifications/${myAddress}?count=20`);
-      const { data } = res;
-      setMyFeeds(data);
-    };
-    loadWithApi().catch(err => new Error(err));
+    if (!myAddress) return;
+
+    getNotification(myAddress)
+      .then(data => setMyFeeds(data))
+      .catch(err => new Error(err));
+
   },[false]);
   const totalCount = myFeeds && myFeeds.length;
   return (
@@ -80,7 +67,7 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   );
 };
 
-function Activity (props: ActivityProps) {
+function ViewActivity (props: ActivityProps) {
   const { activity } = props;
   const { account, date, post_id } = activity;
   const formatDate = moment(date).format('lll');
@@ -103,16 +90,14 @@ function Activity (props: ActivityProps) {
 function Notification (props: ActivityProps) {
   const { activity } = props;
   const { account, event, date, post_id, comment_id, blog_id } = activity;
-  console.log(date);
   const formatDate = moment(date).format('lll');
-  console.log(formatDate);
   const [ message, setMessage ] = useState('string');
   const [ subject, setSubject ] = useState(<></>);
   let postId = new PostId(0);
 
   enum Events {
     AccountFollowed = 'followed your account',
-    FollowBlog = 'followed your blog',
+    BlogFollowed = 'followed your blog',
     CommentCreated = 'commented your post',
     CommentReply = 'replied to your comment',
     PostReactionCreated = 'reacted to your post',
@@ -129,7 +114,7 @@ function Notification (props: ActivityProps) {
         }
         case 'BlogFollowed': {
           const blogId = new BlogId(hexToNumber('0x' + blog_id));
-          setMessage(Events.FollowBlog);
+          setMessage(Events.BlogFollowed);
           setSubject(<ViewBlog id={blogId} extraPreview/>);
           break;
         }
