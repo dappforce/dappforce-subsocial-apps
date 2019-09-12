@@ -24,7 +24,8 @@ type Props = MyAccountProps & BareProps & {
   withAddress?: boolean,
   withName?: boolean,
   date: string,
-  event?: string
+  event?: string,
+  count?: number
 };
 
 class ActivityStreamItem extends React.PureComponent<Props> {
@@ -33,7 +34,7 @@ class ActivityStreamItem extends React.PureComponent<Props> {
   }
 
   render () {
-    const { children, myAddress, className, isPadded = true, date, event, subject, session_validators, style, size, value } = this.props;
+    const { children, myAddress, className, isPadded = true, date, event, count, subject, session_validators, style, size, value } = this.props;
 
     if (!value) {
       return null;
@@ -43,6 +44,8 @@ class ActivityStreamItem extends React.PureComponent<Props> {
     const isValidator = (session_validators || []).find((validator) =>
       validator.toString() === address
     );
+
+    const renderCount = () => (count && `and ${count} people `);
 
     const renderFollowButton = <FollowButtonAccount address={address} />;
 
@@ -73,6 +76,7 @@ class ActivityStreamItem extends React.PureComponent<Props> {
             }
             <div className='DfActivityStreamItem-details'>
               {this.renderName(address)}
+              {renderCount()}
               <div className='DfActivityStreamItem-details event'>
                 {event}
               </div>

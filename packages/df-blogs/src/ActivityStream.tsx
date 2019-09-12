@@ -89,7 +89,7 @@ function ViewActivity (props: ActivityProps) {
 
 function Notification (props: ActivityProps) {
   const { activity } = props;
-  const { account, event, date, post_id, comment_id, blog_id } = activity;
+  const { account, event, date, post_id, comment_id, blog_id, agg_count } = activity;
   const formatDate = moment(date).format('lll');
   const [ message, setMessage ] = useState('string');
   const [ subject, setSubject ] = useState(<></>);
@@ -169,6 +169,7 @@ function Notification (props: ActivityProps) {
       date={formatDate}
       event={message}
       subject={subject}
+      count={agg_count}
     />
   </Segment>;
 }
