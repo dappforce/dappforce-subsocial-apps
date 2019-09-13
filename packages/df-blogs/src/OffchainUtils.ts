@@ -27,7 +27,7 @@ export const getNewsFeed = async (myAddress: string): Promise<Activity[]> => {
   return data;
 };
 
-export const getNotification = async (myAddress: string): Promise<Activity[]> => {
+export const getNotifications = async (myAddress: string): Promise<Activity[]> => {
   const res = await axios.get(`${host}/offchain/notifications/${myAddress}?count=20`);
   const { data } = res;
   return data;

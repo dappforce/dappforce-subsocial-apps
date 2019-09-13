@@ -4,7 +4,7 @@ import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
 
-import { Option, Text } from '@polkadot/types';
+import { Option, Text, AccountId } from '@polkadot/types';
 import Section from '@polkadot/joy-utils/Section';
 import TxButton from '@polkadot/joy-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
@@ -12,9 +12,10 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as JoyForms from '@polkadot/joy-utils/forms';
-import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
-import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
+import { ProfileData, Profile, ProfileUpdate } from './types';
+import { queryBlogsToProp } from './utils';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { SocialAccount } from '@dappforce/types/blogs';
 
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -34,26 +35,37 @@ const DESC_MAX_LEN = 1000;
 
 // const COMMENT_MIN_LEN = 2;
 // const COMMENT_MAX_LEN = 1000;
+function urlValidation (name: string) {
+  return Yup.string()
+    .url(`${name} URL is not valid.`)
+    .max(URL_MAX_LEN, `${name} URL is too long. Maximum length is ${URL_MAX_LEN} chars.`);
+}
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
-
-  slug: Yup.string()
+  username: Yup.string()
     .required('Slug is required')
     .matches(SLUG_REGEX, 'Slug can have only letters (a-z, A-Z), numbers (0-9), underscores (_) and dashes (-).')
     .min(SLUG_MIN_LEN, `Slug is too short. Minimum length is ${SLUG_MIN_LEN} chars.`)
     .max(SLUG_MAX_LEN, `Slug is too long. Maximum length is ${SLUG_MAX_LEN} chars.`),
 
-  name: Yup.string()
+  fullname: Yup.string()
     .required('Name is required')
     .min(NAME_MIN_LEN, `Name is too short. Minimum length is ${NAME_MIN_LEN} chars.`)
     .max(NAME_MAX_LEN, `Name is too long. Maximum length is ${NAME_MAX_LEN} chars.`),
 
-  image: Yup.string()
-    .url('Image must be a valid URL.')
+  avatar: Yup.string()
+    .url('Avatar must be a valid URL.')
     .max(URL_MAX_LEN, `Image URL is too long. Maximum length is ${URL_MAX_LEN} chars.`),
 
-  desc: Yup.string()
-    .max(DESC_MAX_LEN, `Description is too long. Maximum length is ${DESC_MAX_LEN} chars.`)
+  facebook: urlValidation('Facebook'),
+
+  github: urlValidation('Github'),
+
+  linkedIn: urlValidation('LinkedIn'),
+
+  instagram: urlValidation('Instagram'),
+
+  desc: Yup.string().max(DESC_MAX_LEN, `Description is too long. Maximum length is ${DESC_MAX_LEN} chars.`)
 });
 
 type ValidationProps = {
@@ -62,13 +74,13 @@ type ValidationProps = {
 
 type OuterProps = ValidationProps & {
   history?: History,
-  id?: BlogId,
-  struct?: Blog,
-  json?: BlogData
+  id?: AccountId,
+  struct?: Profile,
+  json?: ProfileData
 };
 
-type FormValues = BlogData & {
-  slug: string
+type FormValues = ProfileData & {
+  username: string;
 };
 
 type FormProps = OuterProps & FormikProps<FormValues>;
@@ -80,7 +92,6 @@ const LabelledText = JoyForms.LabelledText<FormValues>();
 const InnerForm = (props: FormProps) => {
   const {
     history,
-    id,
     struct,
     values,
     dirty,
@@ -94,16 +105,19 @@ const InnerForm = (props: FormProps) => {
 
   // values.then((res: BlogData & {slug: string}) => setContent(res));
   const {
-    slug,
-    name,
-    desc,
-    image,
-    tags
+    username,
+    fullname,
+    avatar,
+    about,
+    facebook,
+    github,
+    linkedIn,
+    instagram
   } = values;
 
-  const goToView = (id: BlogId) => {
+  const goToView = () => {
     if (history) {
-      history.push('/blogs/profile' + id.toString());
+      history.push('/blogs/profile');
     }
   };
 
@@ -111,7 +125,7 @@ const InnerForm = (props: FormProps) => {
 
   const onSubmit = (sendTx: () => void) => {
     if (isValid) {
-      const json = { name, desc, image, tags };
+      const json = { fullname, avatar, about, facebook, github, linkedIn, instagram };
       console.log(json);
       addJsonToIpfs(json).then(cid => {
         setIpfsCid(cid);
@@ -135,40 +149,58 @@ const InnerForm = (props: FormProps) => {
 
     if (!history) return;
 
-    const _id = id ? id : getNewIdFromEvent<BlogId>(_txResult);
-    _id && goToView(_id);
+    goToView();
   };
 
   const buildTxParams = () => {
     if (!isValid) return [];
     if (!struct) {
-      return [ slug, ipfsCid ];
+      return [ username, ipfsCid ];
     } else {
       // TODO update only dirty values.
-      const update = new BlogUpdate({
+      const update = new ProfileUpdate({
         // TODO get updated writers from the form
-        writers: new Option(VecAccountId,(struct.writers)),
-        slug: new Option(Text, slug),
+        username: new Option(Text, username),
         ipfs_hash: new Option(Text, ipfsCid)
       });
-      return [ struct.id, update ];
+      return [ update ];
     }
   };
 
-  const title = struct ? `Edit blog` : `New my blog`;
+  const title = struct ? `Edit profile` : `New profile`;
 
   return (
     <Section className='EditEntityBox' title={title}>
     <Form className='ui form JoyForm EditEntityForm'>
 
-      <LabelledText name='name' label='Blog name' placeholder='Name of your blog.' {...props} />
+      <LabelledText name='fullname' label='Fullname' placeholder='Enter your fullname' {...props} />
 
-      <LabelledText name='slug' label='URL slug' placeholder={`You can use a-z, 0-9, dashes and underscores.`} style={{ maxWidth: '30rem' }} {...props} />
+      <LabelledText name='username' label='username' placeholder={`You can use a-z, 0-9, dashes and underscores.`} style={{ maxWidth: '30rem' }} {...props} />
 
-      <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image Url.`} {...props} />
+      <LabelledText name='avatar' label='Avatar URL' placeholder={`Should be a valid image Url.`} {...props} />
 
-      <LabelledField name='desc' label='Description' {...props}>
-        <Field component='textarea' id='desc' name='desc' disabled={isSubmitting} rows={3} placeholder='Tell others what is your blog about. You can use Markdown.' />
+      <LabelledText
+        name='facebook'
+        label='Facebook link'
+        placeholder={`Should be a valid page's url.`}
+        {...props}
+      />
+      <LabelledText name='github' label='Github link' placeholder={`Should be a valid page's url`} {...props} />
+      <LabelledText
+        name='linkedIn'
+        label='LinkedIn link'
+        placeholder={`Should be a valid page's url.`}
+        {...props}
+      />
+      <LabelledText
+        name='instagram'
+        label='Instagram link'
+        placeholder={`Should be a valid page's url.`}
+        {...props}
+      />
+
+      <LabelledField name='about' label='About' {...props}>
+        <Field component='textarea' id='about' name='about' disabled={isSubmitting} rows={3} placeholder='Tell others something about yourself. You can use Markdown.' />
       </LabelledField>
 
       {/* TODO tags */}
@@ -178,14 +210,14 @@ const InnerForm = (props: FormProps) => {
           type='submit'
           size='large'
           label={struct
-            ? 'Update blog'
-            : 'Create new blog'
+            ? 'Update profile'
+            : 'Create new profile'
           }
           isDisabled={!dirty || isSubmitting}
           params={buildTxParams()}
           tx={struct
-            ? 'blogs.updateBlog'
-            : 'blogs.createBlog'
+            ? 'blogs.updateProfile'
+            : 'blogs.createProfile'
           }
           onClick={onSubmit}
           txCancelledCb={onTxCancelled}
@@ -211,18 +243,21 @@ const EditForm = withFormik<OuterProps, FormValues>({
   mapPropsToValues: (props): FormValues => {
     const { struct, json } = props;
     if (struct && json) {
-      const slug = struct.slug.toString();
+      const username = struct.username.toString();
       return {
-        slug,
+        username,
         ...json
       };
     } else {
       return {
-        slug: '',
-        name: '',
-        desc: '',
-        image: '',
-        tags: []
+        username: '',
+        fullname: '',
+        avatar: '',
+        about: '',
+        facebook: '',
+        github: '',
+        linkedIn: '',
+        instagram: ''
       };
     }
   },
@@ -234,68 +269,72 @@ const EditForm = withFormik<OuterProps, FormValues>({
   }
 })(InnerForm);
 
-function withIdFromUrl (Component: React.ComponentType<OuterProps>) {
-  return function (props: UrlHasIdProps) {
-    const { match: { params: { id } } } = props;
+function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
+  return function () {
+    const { state: { address: myAddress } } = useMyAccount();
     try {
-      return <Component id={new BlogId(id)} {...props}/>;
+      return <Component id={new AccountId(myAddress)}/>;
     } catch (err) {
-      return <em>Invalid post ID: {id}</em>;
+      return <em>Invalid address: {myAddress}</em>;
     }
   };
 }
 
 type LoadStructProps = OuterProps & {
-  structOpt: Option<Blog>
+  socialAccountOpt: Option<SocialAccount>
 };
 
-type StructJson = BlogData | undefined;
+type StructJson = ProfileData | undefined;
 
-type Struct = Blog | undefined;
+type Struct = Profile | undefined;
 
 function LoadStruct (props: LoadStructProps) {
 
   const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
-  const { structOpt } = props;
+  const { socialAccountOpt } = props;
   const [ json, setJson ] = useState(undefined as StructJson);
   const [ struct, setStruct ] = useState(undefined as Struct);
   const jsonIsNone = json === undefined;
 
   useEffect(() => {
 
-    if (!myAddress || !structOpt || structOpt.isNone) return;
+    if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return;
 
-    setStruct(structOpt.unwrap());
+    const socialAccount = socialAccountOpt.unwrap();
+    const profileOpt = socialAccount.profile;
+    if (profileOpt.isNone) return;
+
+    setStruct(profileOpt.unwrap() as Profile);
 
     if (struct === undefined) return;
 
-    getJsonFromIpfs<BlogData>(struct.ipfs_hash).then(json => {
+    getJsonFromIpfs<ProfileData>(struct.ipfs_hash).then(json => {
       const content = json;
       setJson(content);
     }).catch(err => console.log(err));
   });
 
-  if (!myAddress || !structOpt || jsonIsNone) {
-    return <em>Loading blog...</em>;
+  if (!myAddress || !socialAccountOpt || jsonIsNone) {
+    return <em>Loading profile...</em>;
   }
 
-  if (structOpt.isNone) {
-    return <em>Blog not found...</em>;
+  if (socialAccountOpt.isNone) {
+    return <em>Profile not found...</em>;
   }
 
   return <EditForm {...props} struct={struct} json={json} />;
 }
 
-export const NewBlog = withMulti(
+export const NewProfile = withMulti(
   EditForm
   // , withOnlyMembers
 );
 
-export const EditBlog = withMulti(
+export const EditProfile = withMulti(
   LoadStruct,
-  withIdFromUrl,
+  withIdFromMyAddress,
   withCalls<OuterProps>(
-    queryBlogsToProp('blogById',
-      { paramName: 'id', propName: 'structOpt' })
+    queryBlogsToProp('socialAccountById',
+      { paramName: 'id', propName: 'socialAccountOpt' })
   )
 );

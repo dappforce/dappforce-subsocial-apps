@@ -1,7 +1,7 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32 } from '@polkadot/types';
 
-export type IpfsData = CommentData | PostData | BlogData;
+export type IpfsData = CommentData | PostData | BlogData | ProfileData;
 export type Activity = {
   id: number,
   account: string,
