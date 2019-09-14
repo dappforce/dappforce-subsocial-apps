@@ -8,7 +8,6 @@ import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import TxButton from '@polkadot/joy-utils/TxButton';
 import { api } from '@polkadot/ui-api';
 import _ from 'lodash';
-import { Transition } from 'semantic-ui-react';
 
 type PropsFollowButtonBlog = {
   blogId: BlogId

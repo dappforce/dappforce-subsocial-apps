@@ -4,12 +4,13 @@ import { Modal, Comment as SuiComment, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord } from './types';
-import { queryBlogsToProp, getJsonFromIpfs } from './utils';
+import { queryBlogsToProp } from './utils';
 import { Option } from '@polkadot/types';
 import ReactMarkdown from 'react-markdown';
 import IdentityIcon from '@polkadot/ui-identicon/Identicon';
 import { Link } from 'react-router-dom';
 import { CreatedBy } from './CreatedBy';
+import { getJsonFromIpfs } from './OffchainUtils';
 
 type ModalController = {
   open: boolean,

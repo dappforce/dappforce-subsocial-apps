@@ -13,7 +13,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp, withIdFromMyAddress } from './utils';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { SocialAccount } from '@dappforce/types/blogs';
 
@@ -88,6 +88,7 @@ const LabelledText = JoyForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
+    id,
     history,
     struct,
     values,
@@ -111,8 +112,8 @@ const InnerForm = (props: FormProps) => {
   } = values;
 
   const goToView = () => {
-    if (history) {
-      history.push('/blogs/profile'); // TODO: change to /blogs/accounts/:address
+    if (history && id) {
+      history.push(`/blogs/accounts/${id.toString()}`);
     }
   };
 
@@ -293,17 +294,6 @@ const EditForm = withFormik<OuterProps, FormValues>({
     // do submitting things
   }
 })(InnerForm);
-
-function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
-  return function (props: any) {
-    const { state: { address: myAddress } } = useMyAccount();
-    try {
-      return <Component id={new AccountId(myAddress)} {...props} />;
-    } catch (err) {
-      return <em>Invalid address: {myAddress}</em>;
-    }
-  };
-}
 
 type LoadStructProps = OuterProps & {
   socialAccountOpt: Option<SocialAccount>

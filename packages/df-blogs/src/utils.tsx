@@ -7,7 +7,6 @@ import { Options } from '@polkadot/ui-api/with/types';
 import { queryToProp } from '@polkadot/joy-utils/index';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId, IpfsData } from './types';
-import axios from 'axios';
 
 export const host = 'http://localhost:3001/v1';
 
@@ -74,3 +73,25 @@ export type UrlHasIdProps = {
   }
 };
 
+export type UrlHasAddressProps = {
+  match: {
+    params: {
+      address: string
+    }
+  }
+};
+
+type HasAccountIdProps = {
+  id: AccountId
+};
+
+export function withIdFromMyAddress <Props extends HasAccountIdProps> (Component: React.ComponentType<Props>) {
+  return function (props: UrlHasAddressProps) {
+    const { match: { params: { address } } } = props;
+    try {
+      return <Component id={new AccountId(address)} {...props} />;
+    } catch (err) {
+      return <em>Invalid address: {address}</em>;
+    }
+  };
+}

@@ -9,10 +9,11 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr } from '@polkadot/joy-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp, withIdFromMyAddress } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { FollowButtonAccount } from './FollowButton';
 
 type Props = {
   preview?: boolean,
@@ -36,6 +37,7 @@ function Component (props: Props) {
   const profile = profileOpt.unwrap() as Profile;
 
   const {
+    id,
     preview = false,
     nameOnly = false
   } = props;
@@ -76,8 +78,7 @@ function Component (props: Props) {
 
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
-        {/* // TODO refactor to /blogs/accounts/:address */}
-        {<Link className='item' to={`/blogs/profile/edit`}>Edit</Link>}
+        {<Link className='item' to={`/blogs/accounts/${id.toString()}/edit`}>Edit</Link>}
         {/* <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} /> */}
         {/* {open && <ProfileHistoryModal id={id} open={open} close={close}/>} */}
       </Dropdown.Menu>
@@ -86,7 +87,7 @@ function Component (props: Props) {
 
   // TODO refactor to /blogs/accounts/:address
   const renderNameOnly = () => (<>
-    <Link to={`/blogs/profile`} className='handle'>{fullname || username}</Link>
+    <Link to={`/blogs/accounts/${id.toString()}`} className='handle'>{fullname || username}</Link>
   </>);
 
   const renderPreview = () => {
@@ -161,25 +162,20 @@ function Component (props: Props) {
     return renderPreview();
   }
 
+  const renderFollowButton = () => {
+    const { state: { address: myAddress } } = useMyAccount();
+    if (id.toString() !== myAddress) return <FollowButtonAccount address={id.toString()} />;
+    else return null;
+  }
+
   return <>
     <div className='ui massive relaxed middle aligned list FullProfile'>
       {renderPreview()}
     </div>
     {/* TODO: impl. */}
-    {/* <FollowAccountButton blogId={id} /> */}
+    {renderFollowButton()}
     {/* <AccountFollowersModal id={id} followersCount={blog.followers_count.toNumber()}/> */}
   </>;
-}
-
-function withIdFromMyAddress (Component: React.ComponentType<Props>) {
-  return function () {
-    const { state: { address: myAddress } } = useMyAccount();
-    try {
-      return <Component id={new AccountId(myAddress)}/>;
-    } catch (err) {
-      return <em>Invalid address: {myAddress}</em>;
-    }
-  };
 }
 
 export default withMulti(

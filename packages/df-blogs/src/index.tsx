@@ -21,6 +21,7 @@ import { ListFollowingBlogs } from './ListFollowingBlogs';
 import { ViewNewsFeed, ViewNotifications } from './ActivityStream';
 import { EditProfile, NewProfile } from './EditProfile';
 import ViewProfile from './ViewProfile';
+import { useMyAccount, MyAccountContext, MyAccountContextProps } from '@polkadot/joy-utils/MyAccountContext';
 
 type Props = AppProps & ApiProps & I18nProps & {
   nextBlogId?: BN
@@ -28,9 +29,13 @@ type Props = AppProps & ApiProps & I18nProps & {
 
 class App extends PureComponent<Props> {
 
+  static contextType = MyAccountContext;
+
   private buildTabs (): TabItem[] {
     const { t, nextBlogId } = this.props;
     let blogCount = nextBlogId ? nextBlogId.sub(new BN(1)).toNumber() : 0;
+    const { state: { address: myAddress } } = (this.context as MyAccountContextProps);
+
     return [
       {
         name: 'blogs',
@@ -57,11 +62,11 @@ class App extends PureComponent<Props> {
         text: t('Notifications')
       },
       {
-        name: 'profile/new',
+        name: 'accounts/new',
         text: t('New profile')
       },
       {
-        name: 'profile',
+        name: `accounts/${myAddress}`,
         text: t('My profile')
       }
     ];
@@ -79,9 +84,9 @@ class App extends PureComponent<Props> {
           <Route path={`${basePath}/my`} component={ListMyBlogs} />
           <Route path={`${basePath}/followed`} component={ListFollowingBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />
-          <Route path={`${basePath}/profile/new`} component={NewProfile} />
-          <Route path={`${basePath}/profile/edit`} component={EditProfile} />
-          <Route path={`${basePath}/profile`} component={ViewProfile} />
+          <Route path={`${basePath}/accounts/new`} component={NewProfile} />
+          <Route path={`${basePath}/accounts/:address/edit`} component={EditProfile} />
+          <Route path={`${basePath}/accounts/:address`} component={ViewProfile} />
           <Route path={`${basePath}/feed`} component={ViewNewsFeed} />
           <Route path={`${basePath}/notifications`} component={ViewNotifications} />
           <Route path={`${basePath}/posts/:id/edit`} component={EditPost} />
