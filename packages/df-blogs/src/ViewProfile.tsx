@@ -16,7 +16,7 @@ import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 
 type Props = {
   preview?: boolean,
-  extraPreview?: boolean,
+  nameOnly?: boolean,
   id: AccountId,
   socialAccountOpt?: Option<SocialAccount>,
   followers?: AccountId[]
@@ -37,7 +37,7 @@ function Component (props: Props) {
 
   const {
     preview = false,
-    extraPreview = false
+    nameOnly = false
   } = props;
 
   const {
@@ -85,7 +85,7 @@ function Component (props: Props) {
   };
 
   // TODO refactor to /blogs/accounts/:address
-  const renderExtraPreview = () => (<>
+  const renderNameOnly = () => (<>
     <Link to={`/blogs/profile`} className='handle'>{fullname || username}</Link>
   </>);
 
@@ -98,7 +98,7 @@ function Component (props: Props) {
         }
         <div className='content'>
           <div className='header'>
-            {renderExtraPreview()}
+            {renderNameOnly()}
             {renderDropDownMenu()}
           </div>
           <div className='description'>
@@ -155,8 +155,8 @@ function Component (props: Props) {
     </>;
   };
 
-  if (extraPreview) {
-    return renderExtraPreview();
+  if (nameOnly) {
+    return renderNameOnly();
   } else if (preview) {
     return renderPreview();
   }

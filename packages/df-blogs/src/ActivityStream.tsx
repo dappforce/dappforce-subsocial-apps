@@ -33,7 +33,7 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
   <Section title={`News Feed (${totalCount})`}>{
     myFeeds && myFeeds.length === 0
       ? <em>No news yet.</em>
-      : <div className='ui huge relaxed middle aligned divided list ProfileextraPreviews'>
+      : <div className='ui huge relaxed middle aligned divided list ProfilePreviews'>
       {myFeeds && myFeeds.map((item, id) =>
         <ViewActivity key={id} activity={item}/>
       )}
@@ -45,20 +45,21 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
 const InnerViewNotifications = (props: MyAccountProps) => {
   const { myAddress } = props;
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
+
   useEffect(() => {
     if (!myAddress) return;
 
     getNotification(myAddress)
       .then(data => setMyFeeds(data))
       .catch(err => new Error(err));
-
   },[false]);
+
   const totalCount = myFeeds && myFeeds.length;
   return (
   <Section title={`Notifications (${totalCount})`}>{
     myFeeds && myFeeds.length === 0
       ? <em>No notifications.</em>
-      : <div className='ui huge relaxed middle aligned divided list ProfileextraPreviews'>
+      : <div className='ui huge relaxed middle aligned divided list ProfilePreviews'>
           {myFeeds && myFeeds.map((item, id) =>
             <Notification key={id} activity={item}/>
           )}
@@ -71,18 +72,17 @@ function ViewActivity (props: ActivityProps) {
   const { activity } = props;
   const { account, date, post_id } = activity;
   const formatDate = moment(date).format('lll');
-
   const postId = new PostId(hexToNumber('0x' + post_id));
 
   return <Segment className='DfActivity'>
-  <ActivityStreamItem
-    value={account}
-    isShort={false}
-    isPadded={false}
-    size={48}
-    withName
-    date={formatDate}
-  />
+    <ActivityStreamItem
+      value={account}
+      isShort={false}
+      isPadded={false}
+      size={48}
+      withName
+      date={formatDate}
+    />
     <ViewPost id={postId} withCreatedBy={false} preview/>
   </Segment>;
 }
@@ -115,7 +115,7 @@ function Notification (props: ActivityProps) {
         case 'BlogFollowed': {
           const blogId = new BlogId(hexToNumber('0x' + blog_id));
           setMessage(Events.BlogFollowed);
-          setSubject(<ViewBlog id={blogId} extraPreview/>);
+          setSubject(<ViewBlog id={blogId} nameOnly/>);
           break;
         }
         case 'CommentCreated': {
@@ -134,13 +134,13 @@ function Notification (props: ActivityProps) {
               setMessage(Events.CommentCreated);
             }
           }
-          setSubject(<ViewPost id={postId} withCreatedBy={false} extraPreview/>);
+          setSubject(<ViewPost id={postId} withCreatedBy={false} nameOnly/>);
           break;
         }
         case 'PostReactionCreated': {
           postId = new PostId(hexToNumber('0x' + post_id));
           setMessage(Events.PostReactionCreated);
-          setSubject(<ViewPost id={postId} withCreatedBy={false} extraPreview/>);
+          setSubject(<ViewPost id={postId} withCreatedBy={false} nameOnly/>);
           break;
         }
         case 'CommentReactionCreated': {
@@ -151,7 +151,7 @@ function Notification (props: ActivityProps) {
           const comment = commentOpt.unwrap() as Comment;
           postId = new PostId(hexToNumber('0x' + comment.post_id));
           setMessage(Events.CommentReactionCreated);
-          setSubject(<ViewPost id={postId} withCreatedBy={false} extraPreview/>);
+          setSubject(<ViewPost id={postId} withCreatedBy={false} nameOnly/>);
           break;
         }
       }

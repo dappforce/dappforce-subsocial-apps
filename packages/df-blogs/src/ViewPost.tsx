@@ -18,7 +18,7 @@ import { PostHistoryModal } from './ListsEditHistory';
 
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
-  extraPreview?: boolean,
+  nameOnly?: boolean,
   withCreatedBy?: boolean,
   id: PostId,
   postById?: Option<Post>,
@@ -34,7 +34,7 @@ function ViewPostInternal (props: ViewPostProps) {
   const {
     myAddress,
     preview = false,
-    extraPreview = false,
+    nameOnly = false,
     id,
     withCreatedBy = true
   } = props;
@@ -74,7 +74,7 @@ function ViewPostInternal (props: ViewPostProps) {
     </Dropdown>);
   };
 
-  const renderExtraPreview = () => (<>
+  const renderNameOnly = () => (<>
     <Link
       to={`/blogs/posts/${id.toString()}`}
       style={{ marginRight: '.5rem' }}
@@ -87,7 +87,7 @@ function ViewPostInternal (props: ViewPostProps) {
     return <>
       <Segment>
         <h2>
-          {renderExtraPreview()}
+          {renderNameOnly()}
           {renderDropDownMenu()}
         </h2>
         {withCreatedBy && <AuthorPreview address={account} />}
@@ -118,8 +118,8 @@ function ViewPostInternal (props: ViewPostProps) {
       <CommentsByPost postId={post.id} post={post} />
     </>;
   };
-  return extraPreview
-    ? renderExtraPreview()
+  return nameOnly
+    ? renderNameOnly()
     : preview
       ? renderPreview()
       : renderDetails();
