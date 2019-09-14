@@ -3,25 +3,26 @@ import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { Option, AccountId, Bool } from '@polkadot/types';
+import { Option, AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
+import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr } from '@polkadot/joy-utils/index';
-import { BlogId, Blog, PostId } from './types';
-import { Tuple } from '@polkadot/types/codec';
+import { BlogId, Blog, PostId, BlogData } from './types';
 import { queryBlogsToProp } from './utils';
 import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 import Section from '@polkadot/joy-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
-import TxButton from '@polkadot/joy-utils/TxButton';
-import { api } from '@polkadot/ui-api';
-import { Modal, Button } from 'semantic-ui-react';
 import _ from 'lodash';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
+import { BlogFollowersModal } from './FollowersModal';
+import { BlogHistoryModal } from './ListsEditHistory';
+import { Dropdown } from 'semantic-ui-react';
+import { FollowBlogButton } from './FollowButton';
 
 type Props = MyAccountProps & {
   preview?: boolean,
+  extraPreview?: boolean,
   id: BlogId,
   blogById?: Option<Blog>,
   postIds?: PostId[],
@@ -36,61 +37,73 @@ function Component (props: Props) {
 
   const {
     preview = false,
+    extraPreview = false,
     myAddress,
-    postIds = [],
-    followers = []
+    postIds = []
   } = props;
 
   const blog = blogById.unwrap();
   const {
     id,
     created: { account },
-    json: { name, desc, image }
+    ipfs_hash
   } = blog;
-
-  const dataForQuery = new Tuple([AccountId, BlogId], [new AccountId(myAddress), id]);
-  const [ isFollow, setIsFollow ] = useState(false);
-  const [ triggerReload, setTriggerReload ] = useState(false);
+  const [ content , setContent ] = useState({} as BlogData);
+  const { desc, name, image } = content;
 
   useEffect(() => {
-    const load = async () => {
-      const _isFollow = await (api.query.blogs[`blogFollowedByAccount`](dataForQuery)) as Bool;
-      setIsFollow(_isFollow.valueOf());
-    };
-    load().catch(err => console.log(err));
-
-  }, [ triggerReload ]);
+    if (!ipfs_hash) return;
+    getJsonFromIpfs<BlogData>(ipfs_hash).then(json => {
+      const content = json;
+      setContent(content);
+      console.log(content);
+    }).catch(err => console.log(err));
+  }, [ false ]);
 
   const isMyBlog = myAddress && account && myAddress === account.toString();
-  const hasImage = image && nonEmptyStr(image.toString());
+  const hasImage = image && nonEmptyStr(image);
   const postsCount = postIds ? postIds.length : 0;
+
+  const renderDropDownMenu = () => {
+
+    const [open, setOpen] = useState(false);
+    const close = () => setOpen(false);
+    return (<Dropdown icon='ellipsis horizontal'>
+      <Dropdown.Menu>
+        {isMyBlog && <Link className='item' to={`/blogs/${id.toString()}/edit`}>Edit</Link>}
+        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
+        {open && <BlogHistoryModal id={id} open={open} close={close}/>}
+      </Dropdown.Menu>
+    </Dropdown>);
+  };
+
+  const renderNameOnly = () => (<>
+    <Link to={`/blogs/${id}`} className='handle'>{name}</Link>
+  </>);
 
   const renderPreview = () => {
     return <>
       <div className={`item ProfileDetails ${isMyBlog && 'MyProfile'}`}>
         {hasImage
-          ? <img className='ui avatar image' src={image.toString()} />
+          ? <img className='ui avatar image' src={image} />
           : <IdentityIcon className='image' value={account} size={40} />
         }
         <div className='content'>
           <div className='header'>
-            <Link to={`/blogs/${id}`} className='handle'>{name.toString()}</Link>
-            {isMyBlog &&
-              <Link to={`/blogs/${id}/edit`} className='ui tiny basic button'>
-                <i className='pencil alternate icon' />
-                Edit my blog
-              </Link>
-            }
+            {renderNameOnly()}
+            {renderDropDownMenu()}
           </div>
           <div className='description'>
-            <ReactMarkdown className='JoyMemo--full' source={desc.toString()} linkTarget='_blank' />
+            <ReactMarkdown className='JoyMemo--full' source={desc} linkTarget='_blank' />
           </div>
         </div>
       </div>
     </>;
   };
 
-  if (preview) {
+  if (extraPreview) {
+    return renderNameOnly();
+  } else if (preview) {
     return renderPreview();
   }
 
@@ -105,70 +118,11 @@ function Component (props: Props) {
   const postsSectionTitle = () => {
     return <>
       <span style={{ marginRight: '.5rem' }}>Posts ({postsCount})</span>
-      {isMyBlog && <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
+      <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
         <i className='plus icon' />
         Write post
-      </Link>}
+      </Link>
     </>;
-  };
-
-  const FollowButton = () => (
-    <TxButton
-      type='submit'
-      compact
-      isPrimary={!isFollow}
-      isBasic={isFollow}
-      label={isFollow
-        ? 'Unfollow blog'
-        : 'Follow blog'}
-      params={buildTxParams()}
-      tx={isFollow
-        ? `blogs.unfollowBlog`
-        : `blogs.followBlog`}
-      txSuccessCb={() => setTriggerReload(!triggerReload) }
-    />
-  );
-
-  const BlogFollowersModal = () => {
-    const [open, setOpen] = useState(false);
-    const followersCount = blog.followers_count.toNumber();
-
-    const renderFollowers = () => {
-      return followers.map(account =>
-        <div style={{ textAlign: 'left', margin: '1rem' }}>
-          <AddressMini
-            value={account}
-            isShort={false}
-            isPadded={false}
-            size={48}
-            withName
-            withBalance
-          />
-        </div>
-      );
-    };
-
-    return (
-      <Modal
-        open={open}
-        dimmer='blurring'
-        trigger={<Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>}
-        centered={true}
-        style={{ marginTop: '3rem' }}
-      >
-        <Modal.Header><h1>Blog followers ({followersCount})</h1></Modal.Header>
-        <Modal.Content scrolling>
-          {renderFollowers()}
-        </Modal.Content>
-        <Modal.Actions>
-          <Button content='Close' onClick={() => setOpen(false)} />
-        </Modal.Actions>
-      </Modal>
-    );
-  };
-
-  const buildTxParams = () => {
-    return [ id ];
   };
 
   return <>
@@ -176,8 +130,8 @@ function Component (props: Props) {
       {renderPreview()}
     </div>
     <CreatedBy created={blog.created} />
-    <FollowButton />
-    <BlogFollowersModal />
+    <FollowBlogButton blogId={id} />
+    <BlogFollowersModal id={id} followersCount={blog.followers_count.toNumber()} />
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>
@@ -189,7 +143,6 @@ export default withMulti(
   withMyAccount,
   withCalls<Props>(
     queryBlogsToProp('blogById', 'id'),
-    queryBlogsToProp('blogFollowers', { paramName: 'id', propName: 'followers' }),
     queryBlogsToProp('postIdsByBlogId', { paramName: 'id', propName: 'postIds' })
   )
 );

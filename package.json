@@ -33,12 +33,18 @@
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/runtime": "^7.4.3",
+    "@polkadot/api": "^0.77.0-beta.4",
     "@polkadot/dev-react": "^0.30.0-beta.1",
     "@polkadot/ts": "^0.1.56",
+    "@polkadot/types": "^0.77.0-beta.4",
+    "@types/jest": "^24.0.16",
+    "@types/lodash": "^4.14.138",
     "autoprefixer": "^9.4.9",
     "empty": "^0.10.1",
     "gh-pages": "^2.0.1",
     "html-loader": "^0.5.5",
+    "jest": "^24.8.0",
+    "lodash": "^4.17.15",
     "markdown-loader": "^5.0.0",
     "postcss": "^7.0.13",
     "postcss-clean": "^1.1.0",
@@ -49,6 +55,13 @@
     "postcss-sass": "^0.3.5",
     "postcss-simple-vars": "^5.0.0",
     "precss": "^4.0.0",
-    "source-map-explorer": "^1.7.0"
+    "rxjs": "^6.4.0",
+    "source-map-explorer": "^1.7.0",
+    "ts-jest": "^24.0.2"
+  },
+  "dependencies": {
+    "@types/moment-timezone": "^0.5.12",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.26"
   }
 }

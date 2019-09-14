@@ -7,6 +7,7 @@ import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { PostId, Comment, Post, ReactionKind, Reaction, CommentId } from './types';
+import { CommentVoters, PostVoters } from './ListVoters';
 
 type VoterValue = {
   struct: Comment | Post
@@ -19,13 +20,13 @@ export const Voter = (props: VoterProps) => {
     struct
   } = props;
 
-  const resetState: any = 'None';
+  const resetState: any = 'None'; // TODO create type
   const [ reactionState, setReactionState ] = useState(resetState);
 
   const { state: { address } } = useMyAccount();
 
-  const reactionKind = reactionState instanceof Reaction ? reactionState.kind.toString() : 'None';
   const reactionIsNone = !(reactionState instanceof Reaction);
+  const reactionKind = reactionIsNone ? 'None' : reactionState.kind.toString();
 
   const [ state , setState ] = useState(struct);
   const { id } = state;
@@ -79,6 +80,8 @@ export const Voter = (props: VoterProps) => {
     const orientation = isComment ? 'vertical' : '';
     const count = (state.upvotes_count.toNumber() - state.downvotes_count.toNumber()).toString();
     const colorCount = count > '0' ? 'green' : count < '0' ? 'red' : '';
+    const [open, setOpen] = useState(false);
+    const close = () => setOpen(false);
 
     const renderTxButton = (isUpvote: boolean) => {
 
@@ -102,11 +105,15 @@ export const Voter = (props: VoterProps) => {
       />);
     };
 
-    return <Button.Group className={`DfVoter ${orientation}`}>
+    return <><Button.Group className={`DfVoter ${orientation}`}>
         {renderTxButton(true)}
-        <Button content={count} disabled variant='primary' className={`${colorCount} active`}/>
+        <Button content={count} variant='primary' className={`${colorCount} active`} onClick={() => setOpen(true)}/>
         {renderTxButton(false)}
-    </Button.Group>;
+    </Button.Group>
+  {isComment
+  ? <CommentVoters id={id} open={open} close={close}/>
+  : <PostVoters id={id} open={open} close={close}/>}
+  </>;
   };
 
   return VoterRender();

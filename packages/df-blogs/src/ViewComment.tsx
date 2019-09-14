@@ -1,4 +1,4 @@
-import { Comment as SuiComment, Button, Icon } from 'semantic-ui-react';
+import { Comment as SuiComment, Button, Dropdown } from 'semantic-ui-react';
 import React, { useState, useEffect } from 'react';
 
 import { withCalls, withMulti, withApi } from '@polkadot/ui-api/with';
@@ -9,11 +9,13 @@ import { ApiProps } from '@polkadot/ui-api/types';
 import { ApiPromise } from '@polkadot/api';
 import { api } from '@polkadot/ui-api';
 
+import { getJsonFromIpfs } from './OffchainUtils';
 import { partition } from 'lodash';
-import { PostId, CommentId, Comment, OptionComment, Post } from './types';
+import { PostId, CommentId, Comment, OptionComment, Post, CommentData } from './types';
 import { NewComment } from './EditComment';
 import { queryBlogsToProp } from './utils';
 import { Voter } from './Voter';
+import { CommentHistoryModal } from './ListsEditHistory';
 
 type Props = ApiProps & {
   postId: PostId,
@@ -95,6 +97,7 @@ export function ViewComment (props: ViewCommentProps) {
 
   const { id, created: { account, block, time } } = comment;
   const [ struct , setStruct ] = useState(comment);
+  const [ content , setContent ] = useState({} as CommentData);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [doReloadComment, setDoReloadComment] = useState(false);
@@ -103,6 +106,12 @@ export function ViewComment (props: ViewCommentProps) {
     return null;
   }
   useEffect(() => {
+
+    getJsonFromIpfs<CommentData>(struct.ipfs_hash).then(json => {
+      console.log(json);
+      setContent(json);
+    }).catch(err => console.log(err));
+
     if (!doReloadComment) return;
 
     console.log('Comment reload');
@@ -112,26 +121,25 @@ export function ViewComment (props: ViewCommentProps) {
       if (result.isNone) return;
       const comment = result.unwrap() as Comment;
       setStruct(comment);
+
       setDoReloadComment(false);
     };
     loadComment().catch(err => console.log(err));
 
-  },[ doReloadComment ]); // TODO use reactionKind
+  },[ doReloadComment ]);
 
   const isMyStruct = myAddress === account.toString();
 
-  const renderButtonEditForm = () => {
-    if (!isMyStruct || showEditForm) return null;
+  const renderDropDownMenu = () => {
+    const [open, setOpen] = useState(false);
 
-    return <Button
-      type='button'
-      basic
-      size='tiny'
-      onClick={() => setShowEditForm(true)}
-    >
-        <Icon name='pencil'/>
-        Edit
-    </Button>;
+    const close = () => setOpen(false);
+    return (<Dropdown icon='ellipsis horizontal'>
+      <Dropdown.Menu>
+        {(isMyStruct || showEditForm) && <Dropdown.Item text='Edit' onClick={() => setShowEditForm(true)} />}
+        {open && <CommentHistoryModal id={id} open={open} close={close}/>}
+      </Dropdown.Menu>
+    </Dropdown>);
   };
 
   const replyButton = () => (
@@ -144,7 +152,7 @@ export function ViewComment (props: ViewCommentProps) {
     />);
 
   return <div>
-  <SuiComment.Group threaded >
+    <SuiComment.Group threaded>
     <SuiComment>
       <div className='DfCommentBox'>
         <Voter
@@ -159,25 +167,28 @@ export function ViewComment (props: ViewCommentProps) {
               size={28}
               extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}`}
             />
-            {renderButtonEditForm()}
+            {renderDropDownMenu()}
           </SuiComment.Metadata>
           <SuiComment.Content>
             {showEditForm
               ? <NewComment
-                struct={comment}
-                id={comment.id}
-                postId={comment.post_id}
+                struct={struct}
+                id={struct.id}
+                postId={struct.post_id}
+                json={content.body}
                 onSuccess={() => { setShowEditForm(false); setDoReloadComment(true); }}
               />
               : <>
-                <SuiComment.Text>{struct.json.body}</SuiComment.Text>
+                <SuiComment.Text>{content.body}</SuiComment.Text>
                 <SuiComment.Actions>
                   <SuiComment.Action>
+                    {/* <ShareButtonComment commentId={id}/> */}
                     {showReplyForm
                       ? <NewComment
-                          postId={comment.post_id}
-                          parentId={comment.id}
+                          postId={struct.post_id}
+                          parentId={struct.id}
                           onSuccess={() => setShowReplyForm(false)}
+                          autoFocus={true}
                       />
                       : replyButton()
                     }

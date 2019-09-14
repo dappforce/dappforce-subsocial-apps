@@ -101,3 +101,57 @@
     }
   }
 }
+
+.ui.dropdown {
+  display: initial;
+  width: initial;
+}
+hr {
+  border: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.DfFollowButton {
+  margin-top: .6rem;
+}
+
+/*.DfActivity{
+  position: relative;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  margin: 1rem 0;
+  padding: 1em 1em;
+  border-radius: 0 !important;
+  border: 0 !important;
+}*/
+
+.DfActivityStreamItem {
+  display: inline-block;
+  padding-right: .25rem;
+}
+
+.DfActivityStreamItem-info {
+  display: flex;
+  flex-direction: row;
+}
+
+.DfActivityStreamItem-info .ui--IdentityIcon {
+  padding-top: .25rem;
+  margin-right:.6rem;
+}
+
+.DfActivityStreamItem-details.name,
+.DfActivityStreamItem-details.event,
+.DfActivityStreamItem-details.subject {
+  display: inline-block;
+  margin-right: .35rem;
+}
+
+.DfActivityStreamItem-details.date{
+  font-size: .85rem;
+  color: #999;
+}
+
+.DfActivityStreamItem-details.name{
+  text-transform: uppercase;
+}

@@ -15,8 +15,11 @@ import BalanceDisplay from './Balance';
 import IdentityIcon from './IdentityIcon';
 import { findNameByAddress, nonEmptyStr } from '@polkadot/joy-utils/index';
 import MemoView from '@polkadot/joy-utils/memo/MemoView';
+import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
+import { Popup, Grid } from 'semantic-ui-react';
+import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 
-type Props = BareProps & {
+type Props = MyAccountProps & BareProps & {
   balance?: Balance | Array<Balance> | BN,
   children?: React.ReactNode,
   isPadded?: boolean,
@@ -33,8 +36,11 @@ type Props = BareProps & {
 };
 
 class AddressMini extends React.PureComponent<Props> {
+  constructor (props: Props) {
+    super(props);
+  }
   render () {
-    const { children, className, isPadded = true, extraDetails, session_validators, style, size, value } = this.props;
+    const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value } = this.props;
 
     if (!value) {
       return null;
@@ -45,30 +51,46 @@ class AddressMini extends React.PureComponent<Props> {
       validator.toString() === address
     );
 
-    return (
-      <div
-        className={classes('ui--AddressMini', isPadded ? 'padded' : '', className)}
-        style={style}
-      >
-        <div className='ui--AddressMini-info'>
-          <IdentityIcon
-            isHighlight={!!isValidator}
-            size={size || 36}
-            value={address}
-          />
-          <div>
-            {this.renderAddress(address)}
-            <div className='ui--AddressMini-details'>
-              {this.renderName(address)}
-              {extraDetails}
-              {this.renderBalance()}
-              {this.renderMemo(address)}
-            </div>
+    const renderFollowButton = <div className='DfFollowButton'><FollowAccountButton address={address} /> </div>;
+
+    const renderAutorPreview = () => (
+    <div
+      className={classes('ui--AddressMini', isPadded ? 'padded' : '', className)}
+      style={style}
+    >
+      <div className='ui--AddressMini-info'>
+        <IdentityIcon
+          isHighlight={!!isValidator}
+          size={size || 36}
+          value={address}
+        />
+        <div>
+        {myAddress !== address
+        ? <Popup
+            trigger={this.renderAddress(address)}
+            flowing
+            hoverable
+        >
+        <Grid centered divided columns={1}>
+          <Grid.Column textAlign='center'>
+            {renderFollowButton}
+          </Grid.Column>
+          </Grid>
+        </Popup>
+        : this.renderAddress(address)}
+          <div className='ui--AddressMini-details'>
+            {this.renderName(address)}
+            {extraDetails}
+            {this.renderBalance()}
+            {this.renderMemo(address)}
           </div>
-          {children}
         </div>
+        {children}
       </div>
+    </div>
     );
+
+    return renderAutorPreview();
   }
 
   private renderAddress (address: string) {
@@ -128,5 +150,6 @@ class AddressMini extends React.PureComponent<Props> {
 
 export default withMulti(
   AddressMini,
+  withMyAccount,
   withCall('query.session.validators')
 );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'semantic-ui-react';
 import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
@@ -7,6 +7,7 @@ import TxButton from '@polkadot/joy-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
+import { addJsonToIpfs, getJsonFromIpfs } from './OffchainUtils';
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
@@ -43,6 +44,7 @@ type OuterProps = ValidationProps & {
   blogId?: BlogId,
   id?: PostId,
   struct?: Post
+  json?: PostData
 };
 
 type FormValues = PostData & {
@@ -83,10 +85,18 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  const onSubmit = (sendTx: () => void) => {
-    if (isValid) sendTx();
-  };
+  const [ ipfsCid, setIpfsCid ] = useState('');
 
+  const onSubmit = (sendTx: () => void) => {
+    if (isValid) {
+      const json = { title, body, image, tags };
+      console.log(json);
+      addJsonToIpfs(json).then(cid => {
+        setIpfsCid(cid);
+        sendTx();
+      }).catch(err => new Error(err));
+    }
+  };
   const onTxCancelled = () => {
     setSubmitting(false);
   };
@@ -107,18 +117,15 @@ const InnerForm = (props: FormProps) => {
   const buildTxParams = () => {
     if (!isValid) return [];
 
-    const json = JSON.stringify(
-      { title, body, image, tags });
-
     if (!struct) {
-      return [ blogId, slug, json ];
+      return [ blogId, slug, ipfsCid ];
     } else {
       // TODO update only dirty values.
       const update = new PostUpdate({
         // TODO setting new blog_id will move the post to another blog.
         blog_id: new Option(BlogId, null),
         slug: new Option(Text, slug),
-        json: new Option(Text, json)
+        ipfs_hash: new Option(Text, ipfsCid)
       });
       return [ struct.id, update ];
     }
@@ -183,10 +190,9 @@ const EditForm = withFormik<OuterProps, FormValues>({
 
   // Transform outer props into form values
   mapPropsToValues: (props): FormValues => {
-    const { struct } = props;
+    const { struct, json } = props;
 
-    if (struct) {
-      const { json } = struct;
+    if (struct && json) {
       const slug = struct.slug.toString();
       return {
         slug,
@@ -236,11 +242,30 @@ type LoadStructProps = OuterProps & {
   structOpt: Option<Post>
 };
 
+type StructJson = PostData | undefined;
+type Struct = Post | undefined;
+
 function LoadStruct (props: LoadStructProps) {
   const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
   const { structOpt } = props;
+  const [ json, setJson ] = useState(undefined as StructJson);
+  const [ struct, setStruct ] = useState(undefined as Struct);
+  const jsonIsNone = json === undefined;
 
-  if (!myAddress || !structOpt) {
+  useEffect(() => {
+
+    if (!myAddress || !structOpt || structOpt.isNone) return;
+
+    setStruct(structOpt.unwrap());
+
+    if (struct === undefined) return;
+
+    getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
+      setJson(json);
+    }).catch(err => console.log(err));
+  }); // TODO add guard for loading from ipfs
+
+  if (!myAddress || !structOpt || jsonIsNone) {
     return <em>Loading post...</em>;
   }
 
@@ -248,9 +273,7 @@ function LoadStruct (props: LoadStructProps) {
     return <em>Post not found</em>;
   }
 
-  const struct = structOpt.unwrap();
-
-  return <EditForm {...props} struct={struct}/>;// TODO
+  return <EditForm {...props} struct={struct} json={json}/>;// TODO
 }
 
 export const NewPost = withMulti(

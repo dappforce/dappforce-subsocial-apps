@@ -1,23 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { Segment } from 'semantic-ui-react';
+import { Segment, Dropdown } from 'semantic-ui-react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { Option } from '@polkadot/types';
 
-import { PostId, Post, CommentId } from './types';
+import { getJsonFromIpfs} from './OffchainUtils';
+import { PostId, Post, CommentId, PostData } from './types';
 import { queryBlogsToProp, UrlHasIdProps, AuthorPreview } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
 import { CommentsByPost } from './ViewComment';
 import { CreatedBy } from './CreatedBy';
 import { MutedSpan } from '@polkadot/joy-utils/MutedText';
 import { Voter } from './Voter';
+import { PostHistoryModal } from './ListsEditHistory';
 
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
+  nameOnly?: boolean,
+  withCreatedBy?: boolean,
   id: PostId,
-  postById: Option<Post>,
+  postById?: Option<Post>,
   commentIds?: CommentId[]
 };
 
@@ -30,43 +34,64 @@ function ViewPostInternal (props: ViewPostProps) {
   const {
     myAddress,
     preview = false,
-    id
+    nameOnly = false,
+    id,
+    withCreatedBy = true
   } = props;
 
   const post = postById.unwrap();
   const {
     created: { account },
-    json: { title, body, image },
     comments_count,
     upvotes_count,
-    downvotes_count
+    downvotes_count,
+    ipfs_hash
   } = post;
+
+  const [ content , setContent ] = useState({} as PostData);
+  const { title, body, image } = content;
+  useEffect(() => {
+    if (!ipfs_hash) return;
+    getJsonFromIpfs<PostData>(ipfs_hash).then(json => {
+      const content = json;
+      setContent(content);
+      console.log(content);
+    }).catch(err => console.log(err));
+  }, [ false ]);
 
   const isMyStruct = myAddress === account.toString();
 
-  const editPostBtn = () => (
-    isMyStruct && <Link
-      to={`/blogs/posts/${id.toString()}/edit`}
-      className='ui tiny basic button'
-      style={{ marginLeft: '.5rem' }}
-    >
-      <i className='pencil alternate icon' />
-      Edit
+  const renderDropDownMenu = () => {
+
+    const [open, setOpen] = useState(false);
+    const close = () => setOpen(false);
+    return (<Dropdown icon='ellipsis horizontal'>
+      <Dropdown.Menu>
+        {isMyStruct && <Link className='item' to={`/blogs/posts/${id.toString()}/edit`}>Edit</Link>}
+        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
+        {open && <PostHistoryModal id={id} open={open} close={close}/>}
+      </Dropdown.Menu>
+    </Dropdown>);
+  };
+
+  const renderNameOnly = () => (<>
+    <Link
+      to={`/blogs/posts/${id.toString()}`}
+      style={{ marginRight: '.5rem' }}
+    >{title}
     </Link>
+  </>
   );
 
   const renderPreview = () => {
     return <>
       <Segment>
         <h2>
-          <Link
-            to={`/blogs/posts/${id.toString()}`}
-            style={{ marginRight: '.5rem' }}
-          >{title}
-          </Link>
-          {editPostBtn()}
+          {renderNameOnly()}
+          {renderDropDownMenu()}
         </h2>
-        <AuthorPreview address={account} />
+        {withCreatedBy && <AuthorPreview address={account} />}
+        {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         <div className='DfCountsPreview'>
           <MutedSpan>Comments: <b>{comments_count.toString()}</b></MutedSpan>
           <MutedSpan>Upvotes: <b>{upvotes_count.toString()}</b></MutedSpan>
@@ -80,21 +105,24 @@ function ViewPostInternal (props: ViewPostProps) {
     return <>
       <h1 style={{ display: 'flex' }}>
         <span style={{ marginRight: '.5rem' }}>{title}</span>
-        {editPostBtn()}
+        {renderDropDownMenu()}
       </h1>
-      <CreatedBy created={post.created} />
+      {withCreatedBy && <CreatedBy created={post.created} />}
       <div style={{ margin: '1rem 0' }}>
         {image && <img src={image} className='DfPostImage' /* add onError handler */ />}
         <ReactMarkdown className='JoyMemo--full' source={body} linkTarget='_blank' />
         {/* TODO render tags */}
       </div>
       <Voter struct={post} />
+      {/* <ShareButtonPost postId={post.id}/> */}
       <CommentsByPost postId={post.id} post={post} />
     </>;
   };
-  return preview
-    ? renderPreview()
-    : renderDetails();
+  return nameOnly
+    ? renderNameOnly()
+    : preview
+      ? renderPreview()
+      : renderDetails();
 }
 
 export const ViewPost = withMulti(

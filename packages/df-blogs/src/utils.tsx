@@ -6,7 +6,9 @@ import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { Options } from '@polkadot/ui-api/with/types';
 import { queryToProp } from '@polkadot/joy-utils/index';
 import { SubmittableResult } from '@polkadot/api';
-import { CommentId, PostId, BlogId } from './types';
+import { CommentId, PostId, BlogId, IpfsData } from './types';
+
+export const host = 'http://localhost:3001/v1';
 
 export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
   return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
@@ -63,11 +65,6 @@ export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId>
   return id;
 }
 
-// It's used in such routes as:
-//   /blogs/:id
-//   /blogs/:id/edit
-//   /posts/:id
-//   /posts/:id/edit
 export type UrlHasIdProps = {
   match: {
     params: {
@@ -75,3 +72,26 @@ export type UrlHasIdProps = {
     }
   }
 };
+
+export type UrlHasAddressProps = {
+  match: {
+    params: {
+      address: string
+    }
+  }
+};
+
+type HasAccountIdProps = {
+  id: AccountId
+};
+
+export function withIdFromMyAddress <Props extends HasAccountIdProps> (Component: React.ComponentType<Props>) {
+  return function (props: UrlHasAddressProps) {
+    const { match: { params: { address } } } = props;
+    try {
+      return <Component id={new AccountId(address)} {...props} />;
+    } catch (err) {
+      return <em>Invalid address: {address}</em>;
+    }
+  };
+}
