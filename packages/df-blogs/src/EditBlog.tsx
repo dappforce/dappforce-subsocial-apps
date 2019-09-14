@@ -235,7 +235,7 @@ function withIdFromUrl (Component: React.ComponentType<OuterProps>) {
   return function (props: UrlHasIdProps) {
     const { match: { params: { id } } } = props;
     try {
-      return <Component id={new BlogId(id)} {...props}/>;
+      return <Component id={new BlogId(id)} {...props} />;
     } catch (err) {
       return <em>Invalid post ID: {id}</em>;
     }
@@ -267,10 +267,9 @@ function LoadStruct (props: LoadStructProps) {
     if (struct === undefined) return;
 
     getJsonFromIpfs<BlogData>(struct.ipfs_hash).then(json => {
-      const content = json;
-      setJson(content);
+      setJson(json);
     }).catch(err => console.log(err));
-  });
+  }); // TODO add guard for loading from ipfs
 
   if (!myAddress || !structOpt || jsonIsNone) {
     return <em>Loading blog...</em>;

@@ -141,9 +141,7 @@ const InnerForm = (props: FormProps) => {
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
 
-    if (!history) return; 
-
-    // TODO redirect doesn't work on Profile Update 
+    if (!history) return;
 
     goToView();
   };
@@ -297,10 +295,10 @@ const EditForm = withFormik<OuterProps, FormValues>({
 })(InnerForm);
 
 function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
-  return function () {
+  return function (props: any) {
     const { state: { address: myAddress } } = useMyAccount();
     try {
-      return <Component id={new AccountId(myAddress)}/>;
+      return <Component id={new AccountId(myAddress)} {...props} />;
     } catch (err) {
       return <em>Invalid address: {myAddress}</em>;
     }
@@ -332,15 +330,15 @@ function LoadStruct (props: LoadStructProps) {
     const socialAccount = socialAccountOpt.unwrap();
     const profileOpt = socialAccount.profile;
     if (profileOpt.isNone) return;
-  
+
     setStruct(profileOpt.unwrap() as Profile);
-  
+
     if (struct === undefined) return;
 
     getJsonFromIpfs<ProfileData>(struct.ipfs_hash).then(json => {
       setJson(json);
     }).catch(err => console.log(err));
-  });
+  }); // TODO add guard for loading from ipfs
 
   if (!myAddress || !socialAccountOpt || jsonIsNone) {
     return loadingProfile;

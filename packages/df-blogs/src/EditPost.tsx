@@ -261,10 +261,9 @@ function LoadStruct (props: LoadStructProps) {
     if (struct === undefined) return;
 
     getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
-      const content = json;
-      setJson(content);
+      setJson(json);
     }).catch(err => console.log(err));
-  });
+  }); // TODO add guard for loading from ipfs
 
   if (!myAddress || !structOpt || jsonIsNone) {
     return <em>Loading post...</em>;
