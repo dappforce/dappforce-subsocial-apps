@@ -4,7 +4,7 @@ import { AccountId, AccountIndex, Address, Balance } from '@polkadot/types';
 import { withCall, withMulti } from '@polkadot/ui-api/index';
 
 import { findNameByAddress, nonEmptyStr } from '@polkadot/joy-utils/index';
-import { FollowButtonAccount } from '@dappforce/blogs/FollowButton';
+import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
 import { Popup, Grid } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 import { BareProps } from '@polkadot/ui-app/types';
@@ -47,7 +47,7 @@ class ActivityStreamItem extends React.PureComponent<Props> {
 
     const renderCount = () => (count && `and ${count} people `);
 
-    const renderFollowButton = <FollowButtonAccount address={address} />;
+    const renderFollowButton = <div className='DfFollowButton'><FollowAccountButton address={address} /> </div>;
 
     const renderPreview = () => (
       <div

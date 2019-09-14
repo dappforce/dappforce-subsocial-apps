@@ -15,7 +15,7 @@ import BalanceDisplay from './Balance';
 import IdentityIcon from './IdentityIcon';
 import { findNameByAddress, nonEmptyStr } from '@polkadot/joy-utils/index';
 import MemoView from '@polkadot/joy-utils/memo/MemoView';
-import { FollowButtonAccount } from '@dappforce/blogs/FollowButton';
+import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
 import { Popup, Grid } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
 
@@ -51,7 +51,7 @@ class AddressMini extends React.PureComponent<Props> {
       validator.toString() === address
     );
 
-    const renderFollowButton = <FollowButtonAccount address={address} />;
+    const renderFollowButton = <div className='DfFollowButton'><FollowAccountButton address={address} /> </div>;
 
     const renderAutorPreview = () => (
     <div

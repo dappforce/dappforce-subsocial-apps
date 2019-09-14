@@ -9,11 +9,11 @@ import TxButton from '@polkadot/joy-utils/TxButton';
 import { api } from '@polkadot/ui-api';
 import _ from 'lodash';
 
-type PropsFollowButtonBlog = {
+type FollowBlogButtonProps = {
   blogId: BlogId
 };
 
-export function FollowButtonBlog (props: PropsFollowButtonBlog) {
+export function FollowBlogButton (props: FollowBlogButtonProps) {
   const { blogId } = props;
   const { state: { address: myAddress } } = useMyAccount();
 
@@ -51,11 +51,11 @@ export function FollowButtonBlog (props: PropsFollowButtonBlog) {
   />;
 }
 
-type PropsFollowButtonAccount = {
+type FollowAccountButtonProps = {
   address: string
 };
 
-export function FollowButtonAccount (props: PropsFollowButtonAccount) {
+export function FollowAccountButton (props: FollowAccountButtonProps) {
   const { address } = props;
   const { state: { address: myAddress } } = useMyAccount();
 
@@ -78,20 +78,18 @@ export function FollowButtonAccount (props: PropsFollowButtonAccount) {
     return [ accountId ];
   };
 
-  return <div className='DfFollowButton'>
-    <TxButton
-      type='submit'
-      compact
-      isBasic={isFollow}
-      isPrimary={!isFollow}
-      label={isFollow
-        ? 'Unfollow account'
-        : 'Follow account'}
-      params={buildTxParams()}
-      tx={isFollow
-        ? `blogs.unfollowAccount`
-        : `blogs.followAccount`}
-      txSuccessCb={() => setTriggerReload(!triggerReload) }
-    />
-  </div>;
+  return <TxButton
+    type='submit'
+    compact
+    isBasic={isFollow}
+    isPrimary={!isFollow}
+    label={isFollow
+      ? 'Unfollow account'
+      : 'Follow account'}
+    params={buildTxParams()}
+    tx={isFollow
+      ? `blogs.unfollowAccount`
+      : `blogs.followAccount`}
+    txSuccessCb={() => setTriggerReload(!triggerReload) }
+  />;
 }

@@ -12,7 +12,7 @@ type Props = {
   followersCount: Number
 };
 
-const InnerBlogFollowersModal = (props: Props) => {
+const InnerFollowersModal = (props: Props) => {
 
   const { followers, followersCount } = props;
   console.log(followers);
@@ -41,7 +41,7 @@ const InnerBlogFollowersModal = (props: Props) => {
       centered={true}
       style={{ marginTop: '3rem' }}
     >
-      <Modal.Header><h1>Blog followers ({followersCount})</h1></Modal.Header>
+      <Modal.Header><h1>Followers ({followersCount})</h1></Modal.Header>
       <Modal.Content scrolling>
         {renderFollowers()}
       </Modal.Content>
@@ -53,8 +53,15 @@ const InnerBlogFollowersModal = (props: Props) => {
 };
 
 export const BlogFollowersModal = withMulti(
-  InnerBlogFollowersModal,
+  InnerFollowersModal,
   withCalls<Props>(
     queryBlogsToProp('blogFollowers', { paramName: 'id', propName: 'followers' })
+  )
+);
+
+export const AccountFollowersModal = withMulti(
+  InnerFollowersModal,
+  withCalls<Props>(
+    queryBlogsToProp('accountFollowers', { paramName: 'id', propName: 'followers' })
   )
 );

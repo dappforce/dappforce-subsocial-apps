@@ -15,10 +15,10 @@ import Section from '@polkadot/joy-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
 import _ from 'lodash';
-import { BlogFollowersModal } from './BlogFollowers';
+import { BlogFollowersModal } from './FollowersModal';
 import { BlogHistoryModal } from './ListsEditHistory';
 import { Dropdown } from 'semantic-ui-react';
-import { FollowButtonBlog } from './FollowButton';
+import { FollowBlogButton } from './FollowButton';
 
 type Props = MyAccountProps & {
   preview?: boolean,
@@ -130,8 +130,8 @@ function Component (props: Props) {
       {renderPreview()}
     </div>
     <CreatedBy created={blog.created} />
-    <FollowButtonBlog blogId={id} />
-    <BlogFollowersModal id={id} followersCount={blog.followers_count.toNumber()}/>
+    <FollowBlogButton blogId={id} />
+    <BlogFollowersModal id={id} followersCount={blog.followers_count.toNumber()} />
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>

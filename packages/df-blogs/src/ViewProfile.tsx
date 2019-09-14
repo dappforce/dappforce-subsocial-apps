@@ -13,7 +13,8 @@ import { queryBlogsToProp, withIdFromMyAddress } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-import { FollowButtonAccount } from './FollowButton';
+import { FollowAccountButton } from './FollowButton';
+import { AccountFollowersModal } from './FollowersModal';
 
 type Props = {
   preview?: boolean,
@@ -35,6 +36,8 @@ function Component (props: Props) {
   if (profileOpt.isNone) return <em>Profile is not created yet.</em>;
 
   const profile = profileOpt.unwrap() as Profile;
+
+  const { followers_count } = socialAccount;
 
   const {
     id,
@@ -164,7 +167,7 @@ function Component (props: Props) {
 
   const renderFollowButton = () => {
     const { state: { address: myAddress } } = useMyAccount();
-    if (id.toString() !== myAddress) return <FollowButtonAccount address={id.toString()} />;
+    if (id.toString() !== myAddress) return <FollowAccountButton address={id.toString()} />;
     else return null;
   }
 
@@ -174,7 +177,7 @@ function Component (props: Props) {
     </div>
     {/* TODO: impl. */}
     {renderFollowButton()}
-    {/* <AccountFollowersModal id={id} followersCount={blog.followers_count.toNumber()}/> */}
+    <AccountFollowersModal id={id} followersCount={followers_count.toNumber()} />
   </>;
 }
 
