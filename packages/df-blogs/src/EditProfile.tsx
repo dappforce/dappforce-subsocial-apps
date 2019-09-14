@@ -18,23 +18,18 @@ import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { SocialAccount } from '@dappforce/types/blogs';
 
 // TODO get next settings from Substrate:
-const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
+const USERNAME_REGEX = /^[A-Za-z0-9_-]+$/;
 
 const URL_MAX_LEN = 2000;
 
-const SLUG_MIN_LEN = 5;
-const SLUG_MAX_LEN = 50;
+const USERNAME_MIN_LEN = 5;
+const USERNAME_MAX_LEN = 50;
 
-const NAME_MIN_LEN = 3;
-const NAME_MAX_LEN = 100;
-const DESC_MAX_LEN = 1000;
+const FULLNAME_MIN_LEN = 2;
+const FULLNAME_MAX_LEN = 100;
 
-// const POST_TITLE_MIN_LEN = 3;
-// const POST_TITLE_MAX_LEN = 100;
-// const POST_BODY_MAX_LEN = 10000;
+const ABOUT_MAX_LEN = 1000;
 
-// const COMMENT_MIN_LEN = 2;
-// const COMMENT_MAX_LEN = 1000;
 function urlValidation (name: string) {
   return Yup.string()
     .url(`${name} URL is not valid.`)
@@ -43,33 +38,35 @@ function urlValidation (name: string) {
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   username: Yup.string()
-    .required('Slug is required')
-    .matches(SLUG_REGEX, 'Slug can have only letters (a-z, A-Z), numbers (0-9), underscores (_) and dashes (-).')
-    .min(SLUG_MIN_LEN, `Slug is too short. Minimum length is ${SLUG_MIN_LEN} chars.`)
-    .max(SLUG_MAX_LEN, `Slug is too long. Maximum length is ${SLUG_MAX_LEN} chars.`),
+    .required('Username is required')
+    .matches(USERNAME_REGEX, 'Username can have only letters (a-z, A-Z), numbers (0-9), underscores (_) and dashes (-).')
+    .min(USERNAME_MIN_LEN, `Username is too short. Minimum length is ${USERNAME_MIN_LEN} chars.`)
+    .max(USERNAME_MAX_LEN, `Username is too long. Maximum length is ${USERNAME_MAX_LEN} chars.`),
 
   fullname: Yup.string()
-    .required('Name is required')
-    .min(NAME_MIN_LEN, `Name is too short. Minimum length is ${NAME_MIN_LEN} chars.`)
-    .max(NAME_MAX_LEN, `Name is too long. Maximum length is ${NAME_MAX_LEN} chars.`),
+    .min(FULLNAME_MIN_LEN, `Full name is too short. Minimum length is ${FULLNAME_MIN_LEN} chars.`)
+    .max(FULLNAME_MAX_LEN, `Full name is too long. Maximum length is ${FULLNAME_MAX_LEN} chars.`),
 
   avatar: Yup.string()
     .url('Avatar must be a valid URL.')
-    .max(URL_MAX_LEN, `Image URL is too long. Maximum length is ${URL_MAX_LEN} chars.`),
+    .max(URL_MAX_LEN, `Avatar URL is too long. Maximum length is ${URL_MAX_LEN} chars.`),
+
+  about: Yup.string()
+    .max(ABOUT_MAX_LEN, `Text is too long. Maximum length is ${ABOUT_MAX_LEN} chars.`),
 
   facebook: urlValidation('Facebook'),
 
-  github: urlValidation('Github'),
+  twitter: urlValidation('Twitter'),
 
   linkedIn: urlValidation('LinkedIn'),
 
-  instagram: urlValidation('Instagram'),
+  github: urlValidation('GitHub'),
 
-  desc: Yup.string().max(DESC_MAX_LEN, `Description is too long. Maximum length is ${DESC_MAX_LEN} chars.`)
+  instagram: urlValidation('Instagram')
 });
 
 type ValidationProps = {
-  // TODO get slug validation params
+  // TODO get username validation params
 };
 
 type OuterProps = ValidationProps & {
@@ -101,23 +98,21 @@ const InnerForm = (props: FormProps) => {
     resetForm
   } = props;
 
-  // const [ content , setContent ] = useState({} as BlogData & {slug: string});
-
-  // values.then((res: BlogData & {slug: string}) => setContent(res));
   const {
     username,
     fullname,
     avatar,
     about,
     facebook,
-    github,
+    twitter,
     linkedIn,
+    github,
     instagram
   } = values;
 
   const goToView = () => {
     if (history) {
-      history.push('/blogs/profile');
+      history.push('/blogs/profile'); // TODO: change to /blogs/accounts/:address
     }
   };
 
@@ -125,8 +120,7 @@ const InnerForm = (props: FormProps) => {
 
   const onSubmit = (sendTx: () => void) => {
     if (isValid) {
-      const json = { fullname, avatar, about, facebook, github, linkedIn, instagram };
-      console.log(json);
+      const json = { fullname, avatar, about, facebook, twitter, linkedIn, github, instagram };
       addJsonToIpfs(json).then(cid => {
         setIpfsCid(cid);
         sendTx();
@@ -147,19 +141,21 @@ const InnerForm = (props: FormProps) => {
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
 
-    if (!history) return;
+    if (!history) return; 
+
+    // TODO redirect doesn't work on Profile Update 
 
     goToView();
   };
 
   const buildTxParams = () => {
     if (!isValid) return [];
+
     if (!struct) {
       return [ username, ipfsCid ];
     } else {
       // TODO update only dirty values.
       const update = new ProfileUpdate({
-        // TODO get updated writers from the form
         username: new Option(Text, username),
         ipfs_hash: new Option(Text, ipfsCid)
       });
@@ -168,34 +164,66 @@ const InnerForm = (props: FormProps) => {
   };
 
   const title = struct ? `Edit profile` : `New profile`;
+  const shouldBeValidUrlText = `Should be a valid URL.`;
 
   return (
     <Section className='EditEntityBox' title={title}>
     <Form className='ui form JoyForm EditEntityForm'>
 
-      <LabelledText name='fullname' label='Fullname' placeholder='Enter your fullname' {...props} />
+      <LabelledText
+        name='username'
+        label='Username'
+        placeholder={`You can use a-z, 0-9, dashes and underscores.`}
+        style={{ maxWidth: '30rem' }}
+        {...props}
+      />
 
-      <LabelledText name='username' label='username' placeholder={`You can use a-z, 0-9, dashes and underscores.`} style={{ maxWidth: '30rem' }} {...props} />
+      <LabelledText
+        name='fullname'
+        label='Fullname'
+        placeholder='Enter your fullname'
+        {...props}
+      />
 
-      <LabelledText name='avatar' label='Avatar URL' placeholder={`Should be a valid image Url.`} {...props} />
+      <LabelledText
+        name='avatar'
+        label='Avatar URL'
+        placeholder={`Should be a valid image URL.`}
+        {...props}
+      />
 
       <LabelledText
         name='facebook'
-        label='Facebook link'
-        placeholder={`Should be a valid page's url.`}
+        label='Facebook profile'
+        placeholder={shouldBeValidUrlText}
         {...props}
       />
-      <LabelledText name='github' label='Github link' placeholder={`Should be a valid page's url`} {...props} />
+
+      <LabelledText
+        name='twitter'
+        label='Twitter profile'
+        placeholder={shouldBeValidUrlText}
+        {...props}
+      />
+
       <LabelledText
         name='linkedIn'
-        label='LinkedIn link'
-        placeholder={`Should be a valid page's url.`}
+        label='LinkedIn profile'
+        placeholder={shouldBeValidUrlText}
         {...props}
       />
+
+      <LabelledText
+        name='github'
+        label='GitHub profile'
+        placeholder={shouldBeValidUrlText}
+        {...props}
+      />
+
       <LabelledText
         name='instagram'
-        label='Instagram link'
-        placeholder={`Should be a valid page's url.`}
+        label='Instagram profile'
+        placeholder={shouldBeValidUrlText}
         {...props}
       />
 
@@ -203,15 +231,13 @@ const InnerForm = (props: FormProps) => {
         <Field component='textarea' id='about' name='about' disabled={isSubmitting} rows={3} placeholder='Tell others something about yourself. You can use Markdown.' />
       </LabelledField>
 
-      {/* TODO tags */}
-
       <LabelledField {...props}>
         <TxButton
           type='submit'
           size='large'
           label={struct
-            ? 'Update profile'
-            : 'Create new profile'
+            ? 'Update my profile'
+            : 'Create my profile'
           }
           isDisabled={!dirty || isSubmitting}
           params={buildTxParams()}
@@ -255,8 +281,9 @@ const EditForm = withFormik<OuterProps, FormValues>({
         avatar: '',
         about: '',
         facebook: '',
-        github: '',
+        twitter: '',
         linkedIn: '',
+        github: '',
         instagram: ''
       };
     }
@@ -290,32 +317,33 @@ type Struct = Profile | undefined;
 
 function LoadStruct (props: LoadStructProps) {
 
-  const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
+  const { state: { address: myAddress } } = useMyAccount();
   const { socialAccountOpt } = props;
   const [ json, setJson ] = useState(undefined as StructJson);
   const [ struct, setStruct ] = useState(undefined as Struct);
   const jsonIsNone = json === undefined;
 
-  useEffect(() => {
+  const loadingProfile = <em>Loading profile...</em>;
+  // const noProfile = <em>No profile for this account</em>;
 
+  useEffect(() => {
     if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return;
 
     const socialAccount = socialAccountOpt.unwrap();
     const profileOpt = socialAccount.profile;
     if (profileOpt.isNone) return;
-
+  
     setStruct(profileOpt.unwrap() as Profile);
-
+  
     if (struct === undefined) return;
 
     getJsonFromIpfs<ProfileData>(struct.ipfs_hash).then(json => {
-      const content = json;
-      setJson(content);
+      setJson(json);
     }).catch(err => console.log(err));
   });
 
   if (!myAddress || !socialAccountOpt || jsonIsNone) {
-    return <em>Loading profile...</em>;
+    return loadingProfile;
   }
 
   if (socialAccountOpt.isNone) {
@@ -327,7 +355,6 @@ function LoadStruct (props: LoadStructProps) {
 
 export const NewProfile = withMulti(
   EditForm
-  // , withOnlyMembers
 );
 
 export const EditProfile = withMulti(

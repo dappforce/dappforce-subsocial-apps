@@ -90,9 +90,6 @@ const InnerForm = (props: FormProps) => {
     resetForm
   } = props;
 
-  // const [ content , setContent ] = useState({} as BlogData & {slug: string});
-
-  // values.then((res: BlogData & {slug: string}) => setContent(res));
   const {
     slug,
     name,
@@ -103,7 +100,7 @@ const InnerForm = (props: FormProps) => {
 
   const goToView = (id: BlogId) => {
     if (history) {
-      history.push('/blogs/profile' + id.toString());
+      history.push('/blogs/' + id.toString());
     }
   };
 

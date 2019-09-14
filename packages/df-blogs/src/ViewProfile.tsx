@@ -13,8 +13,6 @@ import { queryBlogsToProp } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-import { tsNonNullExpression } from '@babel/types';
-import { link } from 'fs';
 
 type Props = {
   preview?: boolean,
@@ -33,7 +31,7 @@ function Component (props: Props) {
   const socialAccount = socialAccountOpt.unwrap();
   const profileOpt = socialAccount.profile;
 
-  if (profileOpt.isNone) return <em>Profile not created yet.</em>;
+  if (profileOpt.isNone) return <em>Profile is not created yet.</em>;
 
   const profile = profileOpt.unwrap() as Profile;
 
@@ -44,55 +42,57 @@ function Component (props: Props) {
 
   const {
     created: { account },
+    username,
     ipfs_hash
   } = profile;
-  const [ content , setContent ] = useState({} as ProfileData);
+
+  const [ profileData , setProfileData ] = useState({} as ProfileData);
   const {
     fullname,
     avatar,
     about,
     facebook,
-    github,
+    twitter,
     linkedIn,
-    instagram } = content;
+    github,
+    instagram
+  } = profileData;
 
   useEffect(() => {
     if (!ipfs_hash) return;
     getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
-      const content = json;
-      setContent(content);
-      console.log(content);
+      setProfileData(json);
     }).catch(err => console.log(err));
   }, [ false ]);
 
-  const hasImage = avatar && nonEmptyStr(avatar);
+  const hasAvatar = avatar && nonEmptyStr(avatar);
   const hasFacebookLink = facebook && nonEmptyStr(facebook);
-  const hasGithubLink = github && nonEmptyStr(github);
+  const hasTwitterLink = twitter && nonEmptyStr(twitter);
   const hasLinkedInLink = linkedIn && nonEmptyStr(linkedIn);
+  const hasGithubLink = github && nonEmptyStr(github);
   const hasInstagramLink = instagram && nonEmptyStr(instagram);
-
 
   const renderDropDownMenu = () => {
 
-    // const [open, setOpen] = useState(false);
-    // const close = () => setOpen(false);
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
+        {/* // TODO refactor to /blogs/accounts/:address */}
         {<Link className='item' to={`/blogs/profile/edit`}>Edit</Link>}
         {/* <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} /> */}
-        {/* {open && <BlogHistoryModal id={id} open={open} close={close}/>} */}
+        {/* {open && <ProfileHistoryModal id={id} open={open} close={close}/>} */}
       </Dropdown.Menu>
     </Dropdown>);
   };
 
+  // TODO refactor to /blogs/accounts/:address
   const renderExtraPreview = () => (<>
-    <Link to={`/blogs/profile`} className='handle'>{fullname}</Link>
+    <Link to={`/blogs/profile`} className='handle'>{fullname || username}</Link>
   </>);
 
   const renderPreview = () => {
     return <>
       <div className={`item ProfileDetails MyProfile`}>
-        {hasImage
+        {hasAvatar
           ? <img className='ui avatar image' src={avatar} />
           : <IdentityIcon className='image' value={account} size={40} />
         }
@@ -103,13 +103,51 @@ function Component (props: Props) {
           </div>
           <div className='description'>
             {hasFacebookLink &&
-            <a href={facebook} className='handle' target='_blank'>
-              <Icon className='facebook'/>
-              Facebook
-            </a>}
-            {hasGithubLink && <a href={github} className='handle' target='_blank'><Icon className='github' />Github</a>}
-            {hasLinkedInLink && <a href={linkedIn} className='handle' target='_blank'><Icon className='linkedIn' />LinkedIn</a>}
-            {hasInstagramLink && <a href={instagram} className='handle' target='_blank'><Icon className='instagram' />Instagram</a>}
+              <a
+                href={facebook}
+                className='handle'
+                target='_blank'
+              >
+                <Icon className='facebook'/>Facebook
+              </a>
+            }
+            {hasTwitterLink &&
+              <a
+                href={twitter}
+                className='handle'
+                target='_blank'
+              >
+                <Icon className='twitter' />Twitter
+              </a>
+            }
+            {hasLinkedInLink &&
+              <a
+                href={linkedIn}
+                className='handle'
+                target='_blank'
+              >
+                <Icon className='linkedIn' />LinkedIn
+              </a>
+            }
+              {hasGithubLink &&
+              <a
+                href={github}
+                className='handle'
+                target='_blank'
+              >
+                <Icon className='github' />GitHub
+              </a>
+            }
+            {hasInstagramLink &&
+              <a
+                href={instagram}
+                className='handle'
+                target='_blank'
+              >
+              <Icon className='instagram' />Instagram
+              </a>
+            }
+
             <ReactMarkdown className='JoyMemo--full' source={about} linkTarget='_blank' />
           </div>
         </div>
@@ -123,25 +161,13 @@ function Component (props: Props) {
     return renderPreview();
   }
 
-  // const postsSectionTitle = () => {
-  //   return <>
-  //     <span style={{ marginRight: '.5rem' }}>Posts ({postsCount})</span>
-  //     <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
-  //       <i className='plus icon' />
-  //       Write post
-  //     </Link>
-  //   </>;
-  // };
-
   return <>
     <div className='ui massive relaxed middle aligned list FullProfile'>
       {renderPreview()}
     </div>
-    {/* <FollowButtonBlog blogId={id} /> */}
-    {/* <BlogFollowersModal id={id} followersCount={blog.followers_count.toNumber()}/> */}
-    {/* <Section title={postsSectionTitle()}>
-      {renderPostPreviews()}
-    </Section> */}
+    {/* TODO: impl. */}
+    {/* <FollowAccountButton blogId={id} /> */}
+    {/* <AccountFollowersModal id={id} followersCount={blog.followers_count.toNumber()}/> */}
   </>;
 }
 

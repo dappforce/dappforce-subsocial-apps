@@ -508,8 +508,9 @@ export type ProfileData = {
   avatar: string;
   about: string;
   facebook: string;
-  github: string;
+  twitter: string;
   linkedIn: string;
+  github: string;
   instagram: string;
 };
 
