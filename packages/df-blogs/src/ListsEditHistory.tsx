@@ -170,7 +170,6 @@ const PostFromHistory = (props: PropsPostFromHistory) => {
     loadData().catch(err => new Error(err));
   },[ipfsHash, _slug]);
 
-
   return (<div style={{ textAlign: 'left', margin: '1rem' }}>
     <h1 style={{ display: 'flex' }}>
       <span style={{ marginRight: '.5rem' }}>{content.title}</span>

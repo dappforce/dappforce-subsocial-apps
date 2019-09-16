@@ -16,6 +16,7 @@ import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
 import { AccountFollowersModal } from './FollowersModal';
 import { ProfileHistoryModal } from './ListsEditHistory';
+import { AccountFollowingModal } from './FollowingModal';
 
 type Props = {
   preview?: boolean,
@@ -38,7 +39,7 @@ function Component (props: Props) {
 
   const profile = profileOpt.unwrap() as Profile;
 
-  const { followers_count } = socialAccount;
+  const { followers_count, following_accounts_count } = socialAccount;
 
   const {
     id,
@@ -137,7 +138,7 @@ function Component (props: Props) {
                 <Icon className='linkedIn' />LinkedIn
               </a>
             }
-              {hasGithubLink &&
+            {hasGithubLink &&
               <a
                 href={github}
                 className='handle'
@@ -173,15 +174,15 @@ function Component (props: Props) {
     const { state: { address: myAddress } } = useMyAccount();
     if (id.toString() !== myAddress) return <FollowAccountButton address={id.toString()} />;
     else return null;
-  }
+  };
 
   return <>
     <div className='ui massive relaxed middle aligned list FullProfile'>
       {renderPreview()}
     </div>
-    {/* TODO: impl. */}
     {renderFollowButton()}
     <AccountFollowersModal id={id} followersCount={followers_count.toNumber()} />
+    <AccountFollowingModal id={id} followingCount={following_accounts_count.toNumber()}/>
   </>;
 }
 

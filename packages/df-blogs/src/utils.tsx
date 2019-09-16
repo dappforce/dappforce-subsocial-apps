@@ -47,14 +47,18 @@ export const Pagination = (p: PaginationProps) => {
   );
 };
 
-export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId>
+export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId | AccountId>
   (_txResult: SubmittableResult): IdType | undefined {
 
   let id: IdType | undefined;
 
   _txResult.events.find(event => {
     const { event: { data, method } } = event;
-    if (method.indexOf(`Created`) >= 0) {
+    if (method.indexOf('ProfileCreated') >= 0) {
+      const [ newId ] = data.toArray();
+      id = newId as IdType;
+      return true;
+    } else if (method.indexOf(`Created`) >= 0) {
       const [/* owner */, newId ] = data.toArray();
       id = newId as IdType;
       return true;

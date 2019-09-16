@@ -13,7 +13,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
-import { queryBlogsToProp, withIdFromMyAddress } from './utils';
+import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent, getNewIdFromEventForProfile } from './utils';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { SocialAccount } from '@dappforce/types/blogs';
 
@@ -111,7 +111,7 @@ const InnerForm = (props: FormProps) => {
     instagram
   } = values;
 
-  const goToView = () => {
+  const goToView = (id: AccountId) => {
     if (history && id) {
       history.push(`/blogs/accounts/${id.toString()}`);
     }
@@ -143,8 +143,9 @@ const InnerForm = (props: FormProps) => {
     setSubmitting(false);
 
     if (!history) return;
-
-    goToView();
+    const _id = id ? id : getNewIdFromEvent<AccountId>(_txResult);
+    console.log(_id);
+    _id && goToView(_id);
   };
 
   const buildTxParams = () => {

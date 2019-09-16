@@ -21,7 +21,7 @@ import { ListFollowingBlogs } from './ListFollowingBlogs';
 import { ViewNewsFeed, ViewNotifications } from './ActivityStream';
 import { EditProfile, NewProfile } from './EditProfile';
 import ViewProfile from './ViewProfile';
-import { useMyAccount, MyAccountContext, MyAccountContextProps } from '@polkadot/joy-utils/MyAccountContext';
+import { MyAccountContext, MyAccountContextProps } from '@polkadot/joy-utils/MyAccountContext';
 
 type Props = AppProps & ApiProps & I18nProps & {
   nextBlogId?: BN
