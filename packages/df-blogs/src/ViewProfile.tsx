@@ -15,6 +15,7 @@ import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
 import { AccountFollowersModal } from './FollowersModal';
+import { ProfileHistoryModal } from './ListsEditHistory';
 
 type Props = {
   preview?: boolean,
@@ -79,11 +80,14 @@ function Component (props: Props) {
 
   const renderDropDownMenu = () => {
 
+    const [open, setOpen] = useState(false);
+    const close = () => setOpen(false);
+
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
         {<Link className='item' to={`/blogs/accounts/${id.toString()}/edit`}>Edit</Link>}
-        {/* <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} /> */}
-        {/* {open && <ProfileHistoryModal id={id} open={open} close={close}/>} */}
+        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
+        {open && <ProfileHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
     </Dropdown>);
   };
