@@ -6,7 +6,8 @@ import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { Options } from '@polkadot/ui-api/with/types';
 import { queryToProp } from '@polkadot/joy-utils/index';
 import { SubmittableResult } from '@polkadot/api';
-import { CommentId, PostId, BlogId, IpfsData } from './types';
+import { CommentId, PostId, BlogId } from './types';
+import { OuterProps } from './EditProfile';
 
 export const host = 'http://localhost:3001/v1';
 
@@ -81,15 +82,11 @@ export type UrlHasAddressProps = {
   }
 };
 
-type HasAccountIdProps = {
-  id: AccountId
-};
-
-export function withIdFromMyAddress <Props extends HasAccountIdProps> (Component: React.ComponentType<Props>) {
+export function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
   return function (props: UrlHasAddressProps) {
     const { match: { params: { address } } } = props;
     try {
-      return <Component id={new AccountId(address)} {...props} />;
+      return <Component id={new AccountId(address)} {...props}/>;
     } catch (err) {
       return <em>Invalid address: {address}</em>;
     }

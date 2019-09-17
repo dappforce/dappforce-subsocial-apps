@@ -10,7 +10,7 @@ import ViewBlog from './ViewBlog';
 import moment from 'moment-timezone';
 import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
 import ActivityStreamItem from './ActivityStreamItem';
-import { getNewsFeed, getNotification } from './OffchainUtils';
+import { getNewsFeed, getNotifications } from './OffchainUtils';
 
 type ActivityProps = {
   activity: Activity;
@@ -49,7 +49,7 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   useEffect(() => {
     if (!myAddress) return;
 
-    getNotification(myAddress)
+    getNotifications(myAddress)
       .then(data => setMyFeeds(data))
       .catch(err => new Error(err));
   },[false]);

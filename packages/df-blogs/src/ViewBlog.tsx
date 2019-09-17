@@ -22,7 +22,7 @@ import { FollowBlogButton } from './FollowButton';
 
 type Props = MyAccountProps & {
   preview?: boolean,
-  extraPreview?: boolean,
+  nameOnly?: boolean,
   id: BlogId,
   blogById?: Option<Blog>,
   postIds?: PostId[],
@@ -37,7 +37,7 @@ function Component (props: Props) {
 
   const {
     preview = false,
-    extraPreview = false,
+    nameOnly = false,
     myAddress,
     postIds = []
   } = props;
@@ -101,7 +101,7 @@ function Component (props: Props) {
     </>;
   };
 
-  if (extraPreview) {
+  if (nameOnly) {
     return renderNameOnly();
   } else if (preview) {
     return renderPreview();

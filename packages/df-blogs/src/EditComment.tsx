@@ -10,7 +10,6 @@ import * as JoyForms from '@polkadot/joy-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-import { withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import { queryBlogsToProp } from './utils';
