@@ -69,7 +69,7 @@ type ValidationProps = {
   // TODO get username validation params
 };
 
-type OuterProps = ValidationProps & {
+export type OuterProps = ValidationProps & {
   history?: History,
   id?: AccountId,
   struct?: Profile,
