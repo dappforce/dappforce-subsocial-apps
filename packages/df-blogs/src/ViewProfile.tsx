@@ -169,7 +169,7 @@ function Component (props: Props) {
     const { state: { address: myAddress } } = useMyAccount();
     if (id.toString() !== myAddress) return <FollowAccountButton address={id.toString()} />;
     else return null;
-  }
+  };
 
   return <>
     <div className='ui massive relaxed middle aligned list FullProfile'>
