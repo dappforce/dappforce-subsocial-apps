@@ -93,10 +93,8 @@ function Component (props: Props) {
     </Dropdown>);
   };
 
-  // TODO refactor to /blogs/accounts/:address
   const renderNameOnly = () => (<>
-    <Link to={`/blogs/accounts/${id.toString()}`} className='handle'>{fullname || username}</Link>
-  </>);
+    {fullname || username}</>);
 
   const renderPreview = () => {
     return <>
@@ -110,7 +108,7 @@ function Component (props: Props) {
             {renderNameOnly()}
             {renderDropDownMenu()}
           </div>
-          <div className='description'>
+          <div className='about'>
             {hasFacebookLink &&
               <a
                 href={facebook}
@@ -170,9 +168,11 @@ function Component (props: Props) {
     return renderPreview();
   }
 
+  const { state: { address: myAddress } } = useMyAccount();
+  const isMyProfile: boolean = id.toString() === myAddress;
+
   const renderFollowButton = () => {
-    const { state: { address: myAddress } } = useMyAccount();
-    if (id.toString() !== myAddress) return <FollowAccountButton address={id.toString()} />;
+    if (!isMyProfile) return <FollowAccountButton address={id.toString()} />;
     else return null;
   };
 
