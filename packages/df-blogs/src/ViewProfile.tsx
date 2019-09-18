@@ -94,7 +94,7 @@ function Component (props: Props) {
   };
 
   const renderNameOnly = () => (<>
-    {fullname || username}</>);
+    <div className='handle'>{fullname || username}</div></>);
 
   const renderPreview = () => {
     return <>

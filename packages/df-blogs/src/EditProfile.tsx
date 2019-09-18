@@ -13,7 +13,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as JoyForms from '@polkadot/joy-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
-import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent, getNewIdFromEventForProfile } from './utils';
+import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent} from './utils';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { SocialAccount } from '@dappforce/types/blogs';
 

@@ -58,10 +58,12 @@ function AddressMini (props: Props) {
     : {} as Profile;
 
   const {
+    username,
     ipfs_hash
   } = profile;
   const [ profileData , setProfileData ] = useState({} as ProfileData);
   const {
+    fullname,
     avatar
   } = profileData;
 
@@ -133,7 +135,7 @@ function AddressMini (props: Props) {
 
     return (
       <div className='ui--AddressMini-address'>
-        {isShort ? toShortAddress(address) : address}
+        <p>{fullname || username || (isShort ? toShortAddress(address) : address)}</p>
       </div>
     );
   }
