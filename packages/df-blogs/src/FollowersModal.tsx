@@ -20,7 +20,7 @@ const InnerFollowersModal = (props: Props) => {
 
   const renderFollowers = () => {
     return followers && followers.map((account, index) =>
-      <div key={index} style={{ textAlign: 'left', margin: '1rem' }}>
+      <div key={index} style={{ textAlign: 'left', margin: '1rem'}}>
         <AddressMini
           value={account}
           isShort={true}
@@ -28,6 +28,7 @@ const InnerFollowersModal = (props: Props) => {
           size={48}
           withName
           withBalance
+          withFollowButton
         />
       </div>
     );

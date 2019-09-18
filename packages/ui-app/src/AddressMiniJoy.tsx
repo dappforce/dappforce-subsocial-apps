@@ -35,12 +35,13 @@ type Props = MyAccountProps & BareProps & {
   withAddress?: boolean,
   withBalance?: boolean,
   withName?: boolean,
-  withMemo?: boolean
+  withMemo?: boolean,
+  withFollowButton?: boolean
 };
 
 function AddressMini (props: Props) {
 
-  const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value, socialAccountOpt } = props;
+  const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value, socialAccountOpt, withFollowButton } = props;
 
   if (!value) {
     return null;
@@ -76,8 +77,11 @@ function AddressMini (props: Props) {
   }, [address, ipfs_hash]);
 
   const hasAvatar = avatar && nonEmptyStr(avatar);
+  const isMyProfile: boolean = address === myAddress;
 
-  const renderFollowButton = <div className='DfFollowButton'><FollowAccountButton address={address} /> </div>;
+  const renderFollowButton = (withFollowButton && !isMyProfile)
+                            ? <div className = "AddressMini follow"><FollowAccountButton address={address} size={'tiny'}/></div>
+                            : null;
 
   const renderAutorPreview = () => (
     <div
@@ -112,6 +116,7 @@ function AddressMini (props: Props) {
             {renderName(address)}
             {extraDetails}
             {renderBalance()}
+            {renderFollowButton}
           </div>
         </div>
         {children}

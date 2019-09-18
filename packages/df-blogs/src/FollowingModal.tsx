@@ -28,6 +28,7 @@ const InnerFollowingModal = (props: Props) => {
           size={48}
           withName
           withBalance
+          withFollowButton
         />
       </div>
     );
