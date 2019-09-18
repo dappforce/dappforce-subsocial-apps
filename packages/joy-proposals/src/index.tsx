@@ -17,7 +17,7 @@ import Dashboard from './Dashboard';
 import Proposals from './Proposals';
 import ProposalById from './ProposalById';
 import NewForm from './NewForm';
-import { queryToProp, ZERO } from '@polkadot/joy-utils/index';
+import { queryToProp, ZERO } from '@polkadot/df-utils/index';
 
 // define out internal types
 type Props = AppProps & ApiProps & I18nProps & {

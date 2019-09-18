@@ -7,7 +7,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
 import { MemberId } from '@joystream/types/members';
 import { queryMembershipToProp } from '@polkadot/joy-members/utils';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 export type MyAddressProps = {
   myAddress?: string

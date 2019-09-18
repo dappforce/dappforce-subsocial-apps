@@ -14,7 +14,7 @@ import keyring from '@polkadot/ui-keyring';
 
 import translate from './translate';
 import { ActionStatus } from '@polkadot/ui-app/Status/types';
-import { isEmptyStr } from '@polkadot/joy-utils/';
+import { isEmptyStr } from '@polkadot/df-utils/';
 
 type Props = ComponentProps & I18nProps;
 

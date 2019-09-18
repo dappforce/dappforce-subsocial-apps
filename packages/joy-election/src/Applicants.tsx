@@ -11,9 +11,9 @@ import { formatNumber } from '@polkadot/util';
 import translate from './translate';
 import Applicant from './Applicant';
 import ApplyForm from './ApplyForm';
-import Section from '@polkadot/joy-utils/Section';
-import { queryToProp } from '@polkadot/joy-utils/index';
-import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
+import Section from '@polkadot/df-utils/Section';
+import { queryToProp } from '@polkadot/df-utils/index';
+import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 
 type Props = ApiProps & I18nProps & MyAccountProps & {
   candidacyLimit?: BN,

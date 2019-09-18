@@ -5,13 +5,13 @@ import { ApiProps } from '@polkadot/ui-api/types';
 import { I18nProps } from '@polkadot/ui-app/types';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
-import Section from '@polkadot/joy-utils/Section';
+import Section from '@polkadot/df-utils/Section';
 import { queryBlogsToProp } from './utils';
 import translate from './translate';
 import ViewBlog from './ViewBlog';
 import { BlogId } from './types';
 import { AccountId } from '@polkadot/types';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 type Props = ApiProps & I18nProps & {
   nextBlogId?: BN

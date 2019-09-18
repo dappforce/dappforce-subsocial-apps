@@ -7,10 +7,10 @@ import { Hash } from '@polkadot/types';
 
 import translate from './translate';
 import SealedVote from './SealedVote';
-import { queryToProp } from '@polkadot/joy-utils/index';
-import { MyAddressProps } from '@polkadot/joy-utils/MyAccount';
+import { queryToProp } from '@polkadot/df-utils/index';
+import { MyAddressProps } from '@polkadot/df-utils/MyAccount';
 import { SavedVote } from './myVotesStore';
-import Section from '@polkadot/joy-utils/Section';
+import Section from '@polkadot/df-utils/Section';
 
 type Props = ApiProps & I18nProps & MyAddressProps & {
   myVotes?: SavedVote[],

@@ -8,8 +8,8 @@ import { BlockNumber, Balance } from '@polkadot/types';
 import { Bubble } from '@polkadot/ui-app/index';
 import { formatNumber, formatBalance } from '@polkadot/util';
 
-import { queryToProp, ZERO } from '@polkadot/joy-utils/index';
-import Section from '@polkadot/joy-utils/Section';
+import { queryToProp, ZERO } from '@polkadot/df-utils/index';
+import Section from '@polkadot/df-utils/Section';
 import translate from './translate';
 
 type Props = ApiProps & I18nProps & {

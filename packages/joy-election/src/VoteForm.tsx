@@ -14,11 +14,11 @@ import { formatBalance } from '@polkadot/util';
 
 import translate from './translate';
 import { accountIdsToOptions, hashVote } from './utils';
-import { queryToProp, ZERO, getUrlParam, nonEmptyStr } from '@polkadot/joy-utils/index';
-import TxButton from '@polkadot/joy-utils/TxButton';
-import InputStake from '@polkadot/joy-utils/InputStake';
+import { queryToProp, ZERO, getUrlParam, nonEmptyStr } from '@polkadot/df-utils/index';
+import TxButton from '@polkadot/df-utils/TxButton';
+import InputStake from '@polkadot/df-utils/InputStake';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
-import { MyAccountProps, withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
+import { MyAccountProps, withOnlyMembers } from '@polkadot/df-utils/MyAccount';
 import { saveVote, NewVote } from './myVotesStore';
 
 // TODO use a crypto-prooven generator instead of UUID 4.

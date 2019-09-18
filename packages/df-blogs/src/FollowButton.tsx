@@ -4,8 +4,8 @@ import { AccountId, Bool } from '@polkadot/types';
 
 import { BlogId } from './types';
 import { Tuple } from '@polkadot/types/codec';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-import TxButton from '@polkadot/joy-utils/TxButton';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
+import TxButton from '@polkadot/df-utils/TxButton';
 import { api } from '@polkadot/ui-api';
 import _ from 'lodash';
 

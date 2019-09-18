@@ -8,7 +8,7 @@ import { Bubble } from '@polkadot/ui-app/index';
 import { formatNumber } from '@polkadot/util';
 import { Bool } from '@polkadot/types';
 
-import Section from '@polkadot/joy-utils/Section';
+import Section from '@polkadot/df-utils/Section';
 import translate from './translate';
 import { queryMembershipToProp } from './utils';
 

@@ -5,8 +5,8 @@ import { ApiProps } from '@polkadot/ui-api/types';
 
 import translate from './translate';
 import SealedVotes from './SealedVotes';
-import Section from '@polkadot/joy-utils/Section';
-import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
+import Section from '@polkadot/df-utils/Section';
+import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import { getVotesByVoter } from './myVotesStore';
 import VoteForm from './VoteForm';
 

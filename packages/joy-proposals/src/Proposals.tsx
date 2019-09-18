@@ -6,9 +6,9 @@ import { ApiProps } from '@polkadot/ui-api/types';
 import { I18nProps } from '@polkadot/ui-app/types';
 import { withCalls } from '@polkadot/ui-api/with';
 
-import { queryToProp, ZERO } from '@polkadot/joy-utils/index';
+import { queryToProp, ZERO } from '@polkadot/df-utils/index';
 import { Seat } from '@joystream/types/';
-import Section from '@polkadot/joy-utils/Section';
+import Section from '@polkadot/df-utils/Section';
 import translate from './translate';
 import Details from './Details';
 import FilterProps from './FilterProps';

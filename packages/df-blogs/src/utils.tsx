@@ -4,7 +4,7 @@ import { Pagination as SuiPagination } from 'semantic-ui-react';
 import { AccountId, AccountIndex, Address } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { Options } from '@polkadot/ui-api/with/types';
-import { queryToProp } from '@polkadot/joy-utils/index';
+import { queryToProp } from '@polkadot/df-utils/index';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId } from './types';
 import { OuterProps } from './EditProfile';

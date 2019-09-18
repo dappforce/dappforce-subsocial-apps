@@ -8,8 +8,8 @@ import { BlockNumber, Balance, Option } from '@polkadot/types';
 import { Bubble } from '@polkadot/ui-app/index';
 import { formatNumber, formatBalance } from '@polkadot/util';
 
-import Section from '@polkadot/joy-utils/Section';
-import { queryToProp } from '@polkadot/joy-utils/index';
+import Section from '@polkadot/df-utils/Section';
+import { queryToProp } from '@polkadot/df-utils/index';
 import { ElectionStage, Seat } from '@joystream/types/';
 import translate from './translate';
 

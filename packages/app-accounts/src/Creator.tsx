@@ -17,7 +17,7 @@ import { isHex, u8aToHex } from '@polkadot/util';
 import { keyExtractPath, mnemonicGenerate, mnemonicValidate, randomAsU8a } from '@polkadot/util-crypto';
 
 import translate from './translate';
-import { isEmptyStr } from '@polkadot/joy-utils/';
+import { isEmptyStr } from '@polkadot/df-utils/';
 
 type Props = ComponentProps & I18nProps & {
   match: {

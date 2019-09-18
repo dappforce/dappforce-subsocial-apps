@@ -7,9 +7,9 @@ import { Option, AccountId} from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 import { Actor } from '@joystream/types/roles';
 import { MemberId } from '@joystream/types/members';
-import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
+import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import { queryMembershipToProp } from '@polkadot/joy-members/utils';
-import TxButton from '@polkadot/joy-utils/TxButton';
+import TxButton from '@polkadot/df-utils/TxButton';
 
 type MemberIdProps = {
     memberIdByAccountId?: Option<MemberId>,

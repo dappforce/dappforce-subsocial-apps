@@ -2,7 +2,7 @@ import React from 'react';
 import { Field, ErrorMessage, FormikErrors, FormikTouched } from 'formik';
 
 import { BareProps } from '@polkadot/ui-app/types';
-import { nonEmptyStr } from '@polkadot/joy-utils/index';
+import { nonEmptyStr } from '@polkadot/df-utils/';
 
 type FormValuesType = {
   [s: string]: string

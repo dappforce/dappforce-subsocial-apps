@@ -14,10 +14,10 @@ import { formatNumber } from '@polkadot/util';
 import translate from './translate';
 import { withStorageProvider, StorageProviderProps } from './StorageProvider';
 import { DataObject, ContentMetadata, ContentId } from '@joystream/types/media';
-import { MutedDiv } from '@polkadot/joy-utils/MutedText';
+import { MutedDiv } from '@polkadot/df-utils/MutedText';
 import { DEFAULT_THUMBNAIL_URL, onImageError } from './utils';
-import { isEmptyStr } from '@polkadot/joy-utils/';
-import { MyAccountContext, MyAccountContextProps } from '@polkadot/joy-utils/MyAccountContext';
+import { isEmptyStr } from '@polkadot/df-utils/';
+import { MyAccountContext, MyAccountContextProps } from '@polkadot/df-utils/MyAccountContext';
 
 type Asset = {
   iAmOwner: boolean,

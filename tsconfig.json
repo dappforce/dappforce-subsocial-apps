@@ -11,6 +11,8 @@
       "@dappforce/blogs/*": [ "packages/df-blogs/src/*" ],
       "@dappforce/types/*": [ "packages/df-types/src/*" ],
       "@dappforce/types/": [ "packages/df-types/src/" ],
+      "@polkadot/df-utils/": [ "packages/df-utils/src" ],
+      "@polkadot/df-utils/*": [ "packages/df-utils/src/*" ],
       "@joystream/types/": [ "packages/joy-types/src/" ],
       "@joystream/types/*": [ "packages/joy-types/src/*" ],
       "@polkadot/joy-election/": [ "packages/joy-election/src/" ],
@@ -29,8 +31,6 @@
       "@polkadot/joy-roles/*": [ "packages/joy-roles/src/*" ],
       "@polkadot/joy-settings/": [ "packages/joy-settings/src/" ],
       "@polkadot/joy-settings/*": [ "packages/joy-settings/src/*" ],
-      "@polkadot/joy-utils/": [ "packages/joy-utils/src/" ],
-      "@polkadot/joy-utils/*": [ "packages/joy-utils/src/*" ],
 
       "@polkadot/app-123code": [ "packages/app-123code/src" ],
       "@polkadot/app-123code/*": [ "packages/app-123code/src/*" ],

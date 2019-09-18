@@ -13,10 +13,10 @@ import { formatNumber } from '@polkadot/util';
 import translate from './translate';
 import { fileNameWoExt } from './utils';
 import { ContentId } from '@joystream/types/media';
-import { MyAccountProps, withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
+import { MyAccountProps, withOnlyMembers } from '@polkadot/df-utils/MyAccount';
 import { withStorageProvider, StorageProviderProps } from './StorageProvider';
 import EditMeta from './EditMeta';
-import TxButton from '@polkadot/joy-utils/TxButton';
+import TxButton from '@polkadot/df-utils/TxButton';
 
 const MAX_FILE_SIZE_MB = 100;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;

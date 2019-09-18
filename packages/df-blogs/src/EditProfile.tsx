@@ -5,16 +5,16 @@ import * as Yup from 'yup';
 import { History } from 'history';
 
 import { Option, Text, AccountId } from '@polkadot/types';
-import Section from '@polkadot/joy-utils/Section';
-import TxButton from '@polkadot/joy-utils/TxButton';
+import Section from '@polkadot/df-utils/Section';
+import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
-import * as JoyForms from '@polkadot/joy-utils/forms';
+import * as JoyForms from '@polkadot/df-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
-import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent, getNewIdFromEventForProfile } from './utils';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent } from './utils';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { SocialAccount } from '@dappforce/types/blogs';
 
 // TODO get next settings from Substrate:
