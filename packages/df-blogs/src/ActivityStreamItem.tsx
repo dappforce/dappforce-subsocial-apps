@@ -45,13 +45,10 @@ function ActivityStreamItem (props: Props) {
       validator.toString() === address
     );
 
-  if (socialAccountOpt === undefined) return <em>Loading...</em>;
-  else if (socialAccountOpt.isNone) return <em>Social account not found yet.</em>;
-
-  const socialAccount = socialAccountOpt.unwrap();
-  const profileOpt = socialAccount.profile;
-
-  const profile = profileOpt.unwrap() as Profile;
+  const profile: Profile =
+  socialAccountOpt && socialAccountOpt.isSome
+  ? socialAccountOpt.unwrap().profile.unwrapOr({}) as Profile
+  : {} as Profile;
 
   const {
     ipfs_hash
@@ -66,7 +63,7 @@ function ActivityStreamItem (props: Props) {
     getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
       setProfileData(json);
     }).catch(err => console.log(err));
-  }, [ false ]);
+  }, [address, ipfs_hash]);
 
   const hasAvatar = avatar && nonEmptyStr(avatar);
 
@@ -75,48 +72,51 @@ function ActivityStreamItem (props: Props) {
   const renderFollowButton = <div className='DfFollowButton'><FollowAccountButton address={address} /> </div>;
 
   const renderPreview = () => (
-      <div
-        className={classes('DfActivityStreamItem', isPadded ? 'padded' : '', className)}
-        style={style}
-      >
-        <div className='DfActivityStreamItem-info'>
-          <IdentityIcon
-            isHighlight={!!isValidator}
-            size={size || 36}
-            value={address}
-          />
-          <div>
-            {myAddress !== address &&
-              <Popup
-                  trigger={renderAddress(address)}
-                  flowing
-                  hoverable
-              >
-              <Grid centered divided columns={1}>
-                <Grid.Column textAlign='center'>
-                  {renderFollowButton}
-                </Grid.Column>
-                </Grid>
-              </Popup>
-            }
-            <div className='DfActivityStreamItem-details'>
-              {renderName(address)}
-              {renderCount()}
-              <div className='DfActivityStreamItem-details event'>
-                {event}
-              </div>
-              <div className='DfActivityStreamItem-details subject'>
-                {subject}
-              </div>
-              <div className='DfActivityStreamItem-details date'>
-                {date}
-              </div>
-            </div>
+    <div
+      className={classes('DfActivityStreamItem', isPadded ? 'padded' : '', className)}
+      style={style}
+    >
+      <div className='DfActivityStreamItem-info'>
+      {hasAvatar
+        ? <img className='ui avatar image' src={avatar}/>
+        : <IdentityIcon
+          isHighlight={!!isValidator}
+          size={size || 36}
+          value={address}
+        />
+      }
+      <div>
+        {myAddress !== address &&
+          <Popup
+              trigger={renderAddress(address)}
+              flowing
+              hoverable
+          >
+          <Grid centered divided columns={1}>
+            <Grid.Column textAlign='center'>
+              {renderFollowButton}
+            </Grid.Column>
+            </Grid>
+          </Popup>
+        }
+        <div className='DfActivityStreamItem-details'>
+          {renderName(address)}
+          {renderCount()}
+          <div className='DfActivityStreamItem-details event'>
+            {event}
           </div>
-          {children}
+          <div className='DfActivityStreamItem-details subject'>
+            {subject}
+          </div>
+          <div className='DfActivityStreamItem-details date'>
+            {date}
+          </div>
         </div>
       </div>
-    );
+      {children}
+      </div>
+    </div>
+  );
 
   return renderPreview();
 

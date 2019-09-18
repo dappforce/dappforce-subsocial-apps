@@ -99,7 +99,7 @@ function AddressMini (props: Props) {
                 trigger={renderAddress(address)}
                 flowing
                 hoverable
-              >
+            >
               <Grid centered divided columns={1}>
                 <Grid.Column textAlign='center'>
                   {renderFollowButton}
