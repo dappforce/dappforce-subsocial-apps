@@ -27,12 +27,26 @@
   }
 }
 
+.modal {
+  .ui--AddressMini {
+    width: 100%;
+  }
+  .AddressMini{
+    .button{
+      min-width: 8rem;
+    }
+  }
+}
+
 .ui--AddressMini {
   .ui--IdentityIcon {
     margin-left: 0;
   }
   .ui--AddressMini-info {
     display: block;
+    .AddressMini.follow{
+      float: right;
+    }
   }
   .ui--AddressMini-details {
     display: block;

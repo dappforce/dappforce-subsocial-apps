@@ -66,7 +66,6 @@ const InnerModalVoters = (props: VotersProps) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       centered={true}
       style={{ marginTop: '3rem' }}
     >

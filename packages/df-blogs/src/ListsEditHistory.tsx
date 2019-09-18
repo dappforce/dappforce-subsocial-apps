@@ -122,7 +122,6 @@ const InnerCommentHistoryModal = (props: CommentHistoryProps) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -213,7 +212,6 @@ const InnerPostHistoryModal = (props: PostHistoryProps) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -314,7 +312,6 @@ const InnerBlogHistoryModal = (props: BlogHistoryProps) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -420,7 +417,6 @@ const InnerProfileHistoryModal = (props: ProfileHistoryProps) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       centered={true}
       style={{ marginTop: '3rem' }}
     >

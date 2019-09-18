@@ -37,7 +37,6 @@ const InnerFollowersModal = (props: Props) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       trigger={<Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>}
       centered={true}
       style={{ marginTop: '3rem' }}

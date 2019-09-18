@@ -80,7 +80,7 @@ function AddressMini (props: Props) {
   const isMyProfile: boolean = address === myAddress;
 
   const renderFollowButton = (withFollowButton && !isMyProfile)
-                            ? <div className = "AddressMini follow"><FollowAccountButton address={address} size={'tiny'}/></div>
+                            ? <div className = "AddressMini follow"><FollowAccountButton address={address}/></div>
                             : null;
 
   const renderAutorPreview = () => (
@@ -106,7 +106,6 @@ function AddressMini (props: Props) {
             >
               <Grid centered divided columns={1}>
                 <Grid.Column textAlign='center'>
-                  {renderFollowButton}
                 </Grid.Column>
               </Grid>
             </Popup>
@@ -116,9 +115,9 @@ function AddressMini (props: Props) {
             {renderName(address)}
             {extraDetails}
             {renderBalance()}
-            {renderFollowButton}
           </div>
         </div>
+        {renderFollowButton}
         {children}
       </div>
     </div>
