@@ -15,6 +15,8 @@ import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
 import { AccountFollowersModal } from './FollowersModal';
+import { ProfileHistoryModal } from './ListsEditHistory';
+import { AccountFollowingModal } from './FollowingModal';
 
 type Props = {
   preview?: boolean,
@@ -37,7 +39,7 @@ function Component (props: Props) {
 
   const profile = profileOpt.unwrap() as Profile;
 
-  const { followers_count } = socialAccount;
+  const { followers_count, following_accounts_count } = socialAccount;
 
   const {
     id,
@@ -79,19 +81,20 @@ function Component (props: Props) {
 
   const renderDropDownMenu = () => {
 
+    const [open, setOpen] = useState(false);
+    const close = () => setOpen(false);
+
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
         {<Link className='item' to={`/blogs/accounts/${id.toString()}/edit`}>Edit</Link>}
-        {/* <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} /> */}
-        {/* {open && <ProfileHistoryModal id={id} open={open} close={close}/>} */}
+        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
+        {open && <ProfileHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
     </Dropdown>);
   };
 
-  // TODO refactor to /blogs/accounts/:address
   const renderNameOnly = () => (<>
-    <Link to={`/blogs/accounts/${id.toString()}`} className='handle'>{fullname || username}</Link>
-  </>);
+    {fullname || username}</>);
 
   const renderPreview = () => {
     return <>
@@ -105,7 +108,7 @@ function Component (props: Props) {
             {renderNameOnly()}
             {renderDropDownMenu()}
           </div>
-          <div className='description'>
+          <div className='about'>
             {hasFacebookLink &&
               <a
                 href={facebook}
@@ -133,7 +136,7 @@ function Component (props: Props) {
                 <Icon className='linkedIn' />LinkedIn
               </a>
             }
-              {hasGithubLink &&
+            {hasGithubLink &&
               <a
                 href={github}
                 className='handle'
@@ -165,9 +168,11 @@ function Component (props: Props) {
     return renderPreview();
   }
 
+  const { state: { address: myAddress } } = useMyAccount();
+  const isMyProfile: boolean = id.toString() === myAddress;
+
   const renderFollowButton = () => {
-    const { state: { address: myAddress } } = useMyAccount();
-    if (id.toString() !== myAddress) return <FollowAccountButton address={id.toString()} />;
+    if (!isMyProfile) return <FollowAccountButton address={id.toString()} />;
     else return null;
   };
 
@@ -175,9 +180,9 @@ function Component (props: Props) {
     <div className='ui massive relaxed middle aligned list FullProfile'>
       {renderPreview()}
     </div>
-    {/* TODO: impl. */}
     {renderFollowButton()}
     <AccountFollowersModal id={id} followersCount={followers_count.toNumber()} />
+    <AccountFollowingModal id={id} followingCount={following_accounts_count.toNumber()}/>
   </>;
 }
 

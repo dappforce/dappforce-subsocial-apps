@@ -53,6 +53,7 @@ const InnerModalVoters = (props: VotersProps) => {
         isPadded={false}
         size={28}
         extraDetails={`Kind: ${reaction.kind}`}
+        withFollowButton
       />
     </div>;
     });

@@ -68,11 +68,12 @@ function Component (props: Props) {
 
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
+
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
         {isMyBlog && <Link className='item' to={`/blogs/${id.toString()}/edit`}>Edit</Link>}
         <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
-        {open && <BlogHistoryModal id={id} open={open} close={close}/>}
+        {open && <BlogHistoryModal id={id} close={close}/>}
       </Dropdown.Menu>
     </Dropdown>);
   };

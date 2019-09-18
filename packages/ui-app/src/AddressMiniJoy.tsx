@@ -5,21 +5,24 @@
 import { BareProps } from './types';
 
 import BN from 'bn.js';
-import React from 'react';
-import { AccountId, AccountIndex, Address, Balance } from '@polkadot/types';
-import { withCall, withMulti } from '@polkadot/ui-api/index';
+import React, { useState, useEffect } from 'react';
+import { AccountId, AccountIndex, Address, Balance, Option } from '@polkadot/types';
+import { withCall, withMulti, withCalls } from '@polkadot/ui-api/index';
 
 import classes from './util/classes';
 import toShortAddress from './util/toShortAddress';
 import BalanceDisplay from './Balance';
 import IdentityIcon from './IdentityIcon';
 import { findNameByAddress, nonEmptyStr } from '@polkadot/joy-utils/index';
-import MemoView from '@polkadot/joy-utils/memo/MemoView';
 import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
 import { Popup, Grid } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
+import { queryBlogsToProp } from '@dappforce/blogs/utils';
+import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
+import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
 
 type Props = MyAccountProps & BareProps & {
+  socialAccountOpt?: Option<SocialAccount>,
   balance?: Balance | Array<Balance> | BN,
   children?: React.ReactNode,
   isPadded?: boolean,
@@ -32,69 +35,99 @@ type Props = MyAccountProps & BareProps & {
   withAddress?: boolean,
   withBalance?: boolean,
   withName?: boolean,
-  withMemo?: boolean
+  withMemo?: boolean,
+  withFollowButton?: boolean
 };
 
-class AddressMini extends React.PureComponent<Props> {
-  constructor (props: Props) {
-    super(props);
-  }
-  render () {
-    const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value } = this.props;
+function AddressMini (props: Props) {
 
-    if (!value) {
-      return null;
+  const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value, socialAccountOpt, withFollowButton } = props;
+
+  if (!value) {
+    return null;
+  }
+
+  const address = value.toString();
+  const isValidator = (session_validators || []).find((validator) =>
+    validator.toString() === address
+  );
+
+  const profile: Profile =
+    socialAccountOpt && socialAccountOpt.isSome
+    ? socialAccountOpt.unwrap().profile.unwrapOr({}) as Profile
+    : {} as Profile;
+
+  const {
+    ipfs_hash
+  } = profile;
+  const [ profileData , setProfileData ] = useState({} as ProfileData);
+  const {
+    avatar
+  } = profileData;
+
+  useEffect(() => {
+    if (!ipfs_hash) {
+      setProfileData({} as ProfileData);
+      return;
     }
 
-    const address = value.toString();
-    const isValidator = (session_validators || []).find((validator) =>
-      validator.toString() === address
-    );
+    getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
+      setProfileData(json);
+    }).catch(err => console.log(err));
+  }, [address, ipfs_hash]);
 
-    const renderFollowButton = <div className='DfFollowButton'><FollowAccountButton address={address} /> </div>;
+  const hasAvatar = avatar && nonEmptyStr(avatar);
+  const isMyProfile: boolean = address === myAddress;
 
-    const renderAutorPreview = () => (
+  const renderFollowButton = (withFollowButton && !isMyProfile)
+                            ? <div className = "AddressMini follow"><FollowAccountButton address={address} size={'tiny'}/></div>
+                            : null;
+
+  const renderAutorPreview = () => (
     <div
       className={classes('ui--AddressMini', isPadded ? 'padded' : '', className)}
       style={style}
     >
       <div className='ui--AddressMini-info'>
-        <IdentityIcon
-          isHighlight={!!isValidator}
-          size={size || 36}
-          value={address}
-        />
+        {hasAvatar
+          ? <img className='ui avatar image' src={avatar} />
+          : <IdentityIcon
+            isHighlight={!!isValidator}
+            size={size || 36}
+            value={address}
+          />
+        }
         <div>
-        {myAddress !== address
-        ? <Popup
-            trigger={this.renderAddress(address)}
-            flowing
-            hoverable
-        >
-        <Grid centered divided columns={1}>
-          <Grid.Column textAlign='center'>
-            {renderFollowButton}
-          </Grid.Column>
-          </Grid>
-        </Popup>
-        : this.renderAddress(address)}
+          {myAddress !== address
+            ? <Popup
+                trigger={renderAddress(address)}
+                flowing
+                hoverable
+            >
+              <Grid centered divided columns={1}>
+                <Grid.Column textAlign='center'>
+                  {renderFollowButton}
+                </Grid.Column>
+              </Grid>
+            </Popup>
+            : renderAddress(address)
+          }
           <div className='ui--AddressMini-details'>
-            {this.renderName(address)}
+            {renderName(address)}
             {extraDetails}
-            {this.renderBalance()}
-            {this.renderMemo(address)}
+            {renderBalance()}
+            {renderFollowButton}
           </div>
         </div>
         {children}
       </div>
     </div>
-    );
+  );
 
-    return renderAutorPreview();
-  }
+  return renderAutorPreview();
 
-  private renderAddress (address: string) {
-    const { isShort = true, withAddress = true } = this.props;
+  function renderAddress (address: string) {
+    const { isShort = true, withAddress = true } = props;
     if (!withAddress) {
       return null;
     }
@@ -106,8 +139,8 @@ class AddressMini extends React.PureComponent<Props> {
     );
   }
 
-  private renderName (address: string) {
-    let { name, withName = false } = this.props;
+  function renderName (address: string) {
+    let { name, withName = false } = props;
     if (!withName) {
       return null;
     }
@@ -120,8 +153,8 @@ class AddressMini extends React.PureComponent<Props> {
     );
   }
 
-  private renderBalance () {
-    const { balance, value, withBalance = false } = this.props;
+  function renderBalance () {
+    const { balance, value, withBalance = false } = props;
     if (!withBalance || !value) {
       return null;
     }
@@ -135,21 +168,14 @@ class AddressMini extends React.PureComponent<Props> {
       />
     );
   }
-
-  private renderMemo (address: string) {
-    let { withMemo = false } = this.props;
-    if (!withMemo) {
-      return null;
-    }
-
-    return <div className='ui--AddressSummary-memo'>
-      Memo: <b><MemoView accountId={address} preview={true} showEmpty={true} /></b>
-    </div>;
-  }
 }
 
 export default withMulti(
   AddressMini,
   withMyAccount,
-  withCall('query.session.validators')
+  withCall('query.session.validators'),
+  withCalls<Props>(
+    queryBlogsToProp('socialAccountById',
+      { paramName: 'value', propName: 'socialAccountOpt' })
+  )
 );
