@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import uiSettings from '@polkadot/joy-settings/';
+import uiSettings from '@polkadot/df-settings/';
 import { AppProps, I18nProps } from '@polkadot/ui-app/types';
 import { TabItem } from '@polkadot/ui-app/Tabs';
 import { SubjectInfo } from '@polkadot/ui-keyring/observable/types';
@@ -20,7 +20,6 @@ import Creator from './Creator';
 import Editor from './Editor';
 import Restore from './Restore';
 import Vanity from './Vanity';
-import MemoForm from './MemoForm';
 import translate from './translate';
 
 type Props = AppProps & I18nProps & {
@@ -62,10 +61,6 @@ class AccountsApp extends React.PureComponent<Props, State> {
         uiSettings.isBasicMode ? null : {
           name: 'vanity',
           text: t('Vanity address')
-        },
-        {
-          name: 'memo',
-          text: t('My memo')
         }
       ].filter(x => x !== null) as TabItem[]
     };
@@ -118,7 +113,6 @@ class AccountsApp extends React.PureComponent<Props, State> {
           <Route path={`${basePath}/create`} render={renderCreator} />
           <Route path={`${basePath}/restore`} render={this.renderComponent(Restore)} />
           <Route path={`${basePath}/vanity`} render={this.renderComponent(Vanity)} />
-          <Route path={`${basePath}/memo`} component={MemoForm} />
           <Route
             render={
               hidden.includes('edit')

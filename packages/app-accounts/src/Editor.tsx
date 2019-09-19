@@ -11,14 +11,13 @@ import { ComponentProps } from './types';
 import React from 'react';
 import { AddressSummary, Button, Input, InputAddress, Labelled, Dropdown } from '@polkadot/ui-app';
 import keyring from '@polkadot/ui-keyring';
-import uiSettings from '@polkadot/joy-settings/';
+import uiSettings from '@polkadot/df-settings/';
 
 import Backup from './Backup';
 import ChangePass from './ChangePass';
 import Forgetting from './Forgetting';
 import translate from './translate';
-import MemoView from '@polkadot/joy-utils/memo/MemoView';
-import { MyAccountContext, MyAccountContextProps } from '@polkadot/joy-utils/MyAccountContext';
+import { MyAccountContext, MyAccountContextProps } from '@polkadot/df-utils/MyAccountContext';
 
 type Props = ComponentProps & I18nProps & {
   allAccounts?: SubjectInfo
@@ -149,9 +148,6 @@ class Editor extends React.PureComponent<Props, State> {
               options={uiSettings.availableCryptos}
             />
           </div>
-          {address && <Labelled label='memo:' style={{ marginTop: '.5rem' }}>
-            <MemoView accountId={address} />
-          </Labelled>}
         </div>
       </div>
     );

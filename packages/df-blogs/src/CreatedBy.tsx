@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
 
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
+import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { formatNumber } from '@polkadot/util';
 
 import { Change } from './types';

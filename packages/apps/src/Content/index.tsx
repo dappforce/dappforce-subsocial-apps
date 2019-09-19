@@ -17,7 +17,7 @@ import routing from '../routing';
 import translate from '../translate';
 import NotFound from './NotFound';
 import TopBar from '../TopBar';
-import { MyAccountProvider } from '@polkadot/joy-utils/MyAccountContext';
+import { MyAccountProvider } from '@polkadot/df-utils/MyAccountContext';
 
 type Props = I18nProps & ApiProps & {
   location: Location

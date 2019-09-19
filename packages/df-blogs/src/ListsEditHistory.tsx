@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { withMulti, withCalls } from '@polkadot/ui-api/with';
 import { Modal, Comment as SuiComment, Button } from 'semantic-ui-react';
 import _ from 'lodash';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
+import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord, ProfileHistoryRecord, ProfileData, Profile, VecProfileHistoryRecord } from './types';
 import { queryBlogsToProp } from './utils';
 import { Option, AccountId } from '@polkadot/types';
@@ -11,8 +11,7 @@ import IdentityIcon from '@polkadot/ui-identicon/Identicon';
 import { Link } from 'react-router-dom';
 import { CreatedBy } from './CreatedBy';
 import { getJsonFromIpfs } from './OffchainUtils';
-import { SocialAccount } from 'packages/df-types/lib/blogs';
-import { OptionText } from 'packages/df-types/lib';
+import { SocialAccount, OptionText } from 'packages/df-types/lib/blogs';
 
 type ModalController = {
   open: boolean,

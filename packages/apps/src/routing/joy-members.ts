@@ -1,16 +1,11 @@
 import { Routes } from '../types';
 
-import Members from '@polkadot/joy-members/index';
+import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
 
 export default ([
   {
-    Component: Members,
-    display: {
-      needsAccounts: true,
-      needsApi: [
-        'query.membership.firstMemberId'
-      ]
-    },
+    Component: AddressMiniDf,
+    display: {},
     i18n: {
       defaultValue: 'Membership'
     },

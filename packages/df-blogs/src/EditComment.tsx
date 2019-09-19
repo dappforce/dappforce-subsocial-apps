@@ -3,14 +3,13 @@ import { Button } from 'semantic-ui-react';
 import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 
-import TxButton from '@polkadot/joy-utils/TxButton';
+import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import * as JoyForms from '@polkadot/joy-utils/forms';
+import * as JoyForms from '@polkadot/df-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-import { withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import { queryBlogsToProp } from './utils';

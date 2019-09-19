@@ -5,20 +5,27 @@ import { queryBlogsToProp } from './utils';
 import { Modal, Button, Tab } from 'semantic-ui-react';
 import _ from 'lodash';
 import { Option } from '@polkadot/types';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
+import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { ReactionId, Reaction, CommentId, PostId } from './types';
 import { api } from '@polkadot/ui-api/Api';
 
 type VotersProps = {
   id: CommentId | PostId,
   reactions?: ReactionId[],
+  active?: number
   open: boolean,
   close: () => void
 };
 
+export enum ActiveVoters {
+  All = 0,
+  Upvote,
+  Downvote
+}
+
 const InnerModalVoters = (props: VotersProps) => {
 
-  const { reactions, open, close } = props;
+  const { reactions, open, close, active = ActiveVoters.All } = props;
   const votersCount = reactions && reactions.length;
   const [ reactionView, setReactionView ] = useState(new Array<Reaction>());
 
@@ -71,7 +78,7 @@ const InnerModalVoters = (props: VotersProps) => {
     >
       <Modal.Header><h1>Voters ({votersCount})</h1></Modal.Header>
       <Modal.Content scrolling>
-      <Tab panes={panes} />
+      <Tab panes={panes} activeIndex={active}/>
       </Modal.Content>
       <Modal.Actions>
         <Button content='Close' onClick={close} />

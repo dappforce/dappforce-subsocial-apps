@@ -2,9 +2,9 @@ import { Comment as SuiComment, Button, Dropdown } from 'semantic-ui-react';
 import React, { useState, useEffect } from 'react';
 
 import { withCalls, withMulti, withApi } from '@polkadot/ui-api/with';
-import Section from '@polkadot/joy-utils/Section';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import Section from '@polkadot/df-utils/Section';
+import AddressMini from '@polkadot/ui-app/AddressMiniDf';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { ApiProps } from '@polkadot/ui-api/types';
 import { ApiPromise } from '@polkadot/api';
 import { api } from '@polkadot/ui-api';
@@ -70,8 +70,10 @@ function InnerCommentsByPost (props: Props) {
 
   return (
       <Section title={`Comments (${commentsCount})`} className='DfCommentsByPost'>
-        <NewComment postId={postId} />
-        {renderComments()}
+        <div id={`commentsForPost${postId}`}>
+          <NewComment postId={postId}/>
+          {renderComments()}
+        </div>
       </Section>);
 }
 

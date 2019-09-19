@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import Section from '@polkadot/joy-utils/Section';
+import Section from '@polkadot/df-utils/Section';
 import { hexToNumber } from '@polkadot/util';
 import { PostId, CommentId, OptionComment, Comment, BlogId, Activity } from './types';
 import { ViewPost } from './ViewPost';
@@ -8,7 +8,7 @@ import { Segment } from 'semantic-ui-react';
 import { api, withMulti } from '@polkadot/ui-api';
 import ViewBlog from './ViewBlog';
 import moment from 'moment-timezone';
-import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
+import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import ActivityStreamItem from './ActivityStreamItem';
 import { getNewsFeed, getNotifications } from './OffchainUtils';
 
@@ -83,7 +83,7 @@ function ViewActivity (props: ActivityProps) {
       withName
       date={formatDate}
     />
-    <ViewPost id={postId} withCreatedBy={false} preview/>
+    <ViewPost id={postId} preview/>
   </Segment>;
 }
 

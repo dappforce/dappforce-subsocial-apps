@@ -7,12 +7,12 @@ import { Option, AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { getJsonFromIpfs } from './OffchainUtils';
-import { nonEmptyStr } from '@polkadot/joy-utils/index';
+import { nonEmptyStr } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
 import { queryBlogsToProp, withIdFromMyAddress } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
 import { AccountFollowersModal } from './FollowersModal';
 import { ProfileHistoryModal } from './ListsEditHistory';

@@ -321,6 +321,7 @@ export type CommentType = {
   upvotes_count: u16;
   downvotes_count: u16;
   shares_count: u16;
+  direct_replies_count: u16;
   edit_history: VecCommentHistoryRecord;
   score: i32;
 };
@@ -338,6 +339,7 @@ export class Comment extends Struct {
         upvotes_count: u16,
         downvotes_count: u16,
         shares_count: u16,
+        direct_replies_count: u16,
         edit_history: VecCommentHistoryRecord,
         score: i32
       },
@@ -380,6 +382,10 @@ export class Comment extends Struct {
 
   get shares_count (): u16 {
     return this.get('shares_count') as u16;
+  }
+
+  get direct_replies_count (): u16 {
+    return this.get('direct_replies_count') as u16;
   }
 
   get edit_history (): VecCommentHistoryRecord {
