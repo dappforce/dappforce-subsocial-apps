@@ -82,8 +82,8 @@ function AddressMini (props: Props) {
   const isMyProfile: boolean = address === myAddress;
 
   const renderFollowButton = (withFollowButton && !isMyProfile)
-                            ? <div className = "AddressMini follow"><FollowAccountButton address={address}/></div>
-                            : null;
+    ? <div className = 'AddressMini follow'><FollowAccountButton address={address}/></div>
+    : null;
 
   const renderAutorPreview = () => (
     <div
