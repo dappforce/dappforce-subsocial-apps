@@ -35,7 +35,6 @@ type Props = MyAccountProps & BareProps & {
   withAddress?: boolean,
   withBalance?: boolean,
   withName?: boolean,
-  withMemo?: boolean,
   withFollowButton?: boolean
 };
 
@@ -92,7 +91,7 @@ function AddressMini (props: Props) {
     >
       <div className='ui--AddressMini-info'>
         {hasAvatar
-          ? <img className='ui avatar image' src={avatar} />
+          ? <img className='ui avatar image' height={size || 36} width={size || 36} src={avatar} />
           : <IdentityIcon
             isHighlight={!!isValidator}
             size={size || 36}
