@@ -2,7 +2,7 @@ import React from 'react';
 import { Pagination as SuiPagination } from 'semantic-ui-react';
 
 import { AccountId, AccountIndex, Address } from '@polkadot/types';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
+import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { Options } from '@polkadot/ui-api/with/types';
 import { queryToProp } from '@polkadot/df-utils/index';
 import { SubmittableResult } from '@polkadot/api';

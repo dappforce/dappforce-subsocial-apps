@@ -5,7 +5,7 @@ import { AccountId } from '@polkadot/types';
 import { queryBlogsToProp } from './utils';
 import { Modal, Button } from 'semantic-ui-react';
 import _ from 'lodash';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
+import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 
 type Props = {
   following?: AccountId[],
