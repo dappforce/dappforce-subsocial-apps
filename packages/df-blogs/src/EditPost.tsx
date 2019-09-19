@@ -8,7 +8,7 @@ import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
 import { addJsonToIpfs, getJsonFromIpfs } from './OffchainUtils';
-import * as JoyForms from '@polkadot/df-utils/forms';
+import * as DfForms from '@polkadot/df-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
 import { PostId, Post, PostData, PostUpdate, BlogId } from './types';
@@ -53,9 +53,9 @@ type FormValues = PostData & {
 
 type FormProps = OuterProps & FormikProps<FormValues>;
 
-const LabelledField = JoyForms.LabelledField<FormValues>();
+const LabelledField = DfForms.LabelledField<FormValues>();
 
-const LabelledText = JoyForms.LabelledText<FormValues>();
+const LabelledText = DfForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
@@ -132,7 +132,7 @@ const InnerForm = (props: FormProps) => {
   };
 
   const form =
-    <Form className='ui form JoyForm EditEntityForm'>
+    <Form className='ui form DfForm EditEntityForm'>
 
       <LabelledText name='title' label='Post title' placeholder={`What is a title of you post?`} {...props} />
 

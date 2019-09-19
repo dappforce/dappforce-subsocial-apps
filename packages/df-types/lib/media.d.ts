@@ -1,6 +1,6 @@
 import { Enum, Struct, Option, Vector } from '@polkadot/types/codec';
 import { u64, Bool, Text, BlockNumber, Moment, AccountId, Hash } from '@polkadot/types';
-import { OptionText } from './index';
+import { OptionText } from './';
 export declare class ContentId extends Hash {
     static generate(): ContentId;
     /** This function is for backward-compatibility with content ids that were generated as UUID. */

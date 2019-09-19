@@ -11,7 +11,7 @@ import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
-import * as JoyForms from '@polkadot/df-utils/forms';
+import * as DfForms from '@polkadot/df-utils/forms';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
 import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
@@ -73,9 +73,9 @@ type FormValues = BlogData & {
 
 type FormProps = OuterProps & FormikProps<FormValues>;
 
-const LabelledField = JoyForms.LabelledField<FormValues>();
+const LabelledField = DfForms.LabelledField<FormValues>();
 
-const LabelledText = JoyForms.LabelledText<FormValues>();
+const LabelledText = DfForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
@@ -156,7 +156,7 @@ const InnerForm = (props: FormProps) => {
 
   return (
     <Section className='EditEntityBox' title={title}>
-    <Form className='ui form JoyForm EditEntityForm'>
+    <Form className='ui form DfForm EditEntityForm'>
 
       <LabelledText name='name' label='Blog name' placeholder='Name of your blog.' {...props} />
 

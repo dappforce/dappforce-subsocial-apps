@@ -155,7 +155,7 @@ function Component (props: Props) {
               </a>
             }
 
-            <ReactMarkdown className='JoyMemo--full' source={about} linkTarget='_blank' />
+            <ReactMarkdown className='DfMemo--full' source={about} linkTarget='_blank' />
           </div>
         </div>
       </div>

@@ -1,10 +1,10 @@
 {
   "name": "@polkadot/df-utils",
   "version": "0.1.1",
-  "description": "Joystream utils",
+  "description": "Dfstream utils",
   "main": "index.js",
   "scripts": {},
-  "author": "Joystream contributors",
+  "author": "Dfstream contributors",
   "maintainers": [],
   "dependencies": {
     "@babel/runtime": "^7.4.3",

@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import * as JoyForms from '@polkadot/df-utils/forms';
+import * as DfForms from '@polkadot/df-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
@@ -42,9 +42,9 @@ type FormValues = CommentData;
 
 type FormProps = OuterProps & FormikProps<FormValues>;
 
-const LabelledField = JoyForms.LabelledField<FormValues>();
+const LabelledField = DfForms.LabelledField<FormValues>();
 
-// const LabelledText = JoyForms.LabelledText<FormValues>();
+// const LabelledText = DfForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
@@ -125,7 +125,7 @@ const InnerForm = (props: FormProps) => {
   };
 
   const form = () => (
-    <Form className='ui form JoyForm EditEntityForm'>
+    <Form className='ui form DfForm EditEntityForm'>
       <LabelledField name='body' {...props}>
         <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write a comment...`} style={{ minWidth: '40rem', marginTop: '1rem' }} autoFocus={autoFocus}/>
       </LabelledField>
