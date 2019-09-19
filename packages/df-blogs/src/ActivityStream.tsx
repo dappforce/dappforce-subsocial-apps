@@ -162,10 +162,9 @@ function Notification (props: ActivityProps) {
   return <Segment className='DfActivity'>
     <ActivityStreamItem
       value={account}
-      isShort={false}
+      isShort={true}
       isPadded={false}
       size={48}
-      withName
       date={formatDate}
       event={message}
       subject={subject}

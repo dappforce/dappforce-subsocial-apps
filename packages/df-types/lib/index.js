@@ -154,7 +154,7 @@ function registerElectionAndProposalTypes() {
         });
     }
     catch (err) {
-        console.error('Failed to register custom types of Joystream node', err);
+        console.error('Failed to register custom types of DappForce node', err);
     }
 }
 function registerDfTypes() {

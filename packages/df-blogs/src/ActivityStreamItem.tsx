@@ -51,15 +51,18 @@ function ActivityStreamItem (props: Props) {
   : {} as Profile;
 
   const {
+    username,
     ipfs_hash
   } = profile;
   const [ profileData , setProfileData ] = useState({} as ProfileData);
   const {
+    fullname,
     avatar
   } = profileData;
 
   useEffect(() => {
     if (!ipfs_hash) return;
+
     getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
       setProfileData(json);
     }).catch(err => console.log(err));
@@ -85,7 +88,7 @@ function ActivityStreamItem (props: Props) {
           value={address}
         />
       }
-      <div>
+      <div className='DfActivityStreamItem-popup'>
         {myAddress !== address &&
           <Popup
               trigger={renderAddress(address)}
@@ -99,7 +102,6 @@ function ActivityStreamItem (props: Props) {
             </Grid>
           </Popup>
         }
-        <div className='DfActivityStreamItem-details'>
           {renderName(address)}
           {renderCount()}
           <div className='DfActivityStreamItem-details event'>
@@ -111,7 +113,6 @@ function ActivityStreamItem (props: Props) {
           <div className='DfActivityStreamItem-details date'>
             {date}
           </div>
-        </div>
       </div>
       {children}
       </div>
@@ -128,7 +129,7 @@ function ActivityStreamItem (props: Props) {
 
     return (
       <div className='DfActivityStreamItem-address'>
-        {isShort ? toShortAddress(address) : address}
+        <b>{fullname || username || (isShort ? toShortAddress(address) : address)}</b>
       </div>
     );
   }
