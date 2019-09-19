@@ -1,5 +1,5 @@
 {
-  "name": "@polkadot/joy-settings",
+  "name": "@polkadot/df-settings",
   "version": "1.0.0",
   "description": "Manages app settings",
   "main": "index.js",
