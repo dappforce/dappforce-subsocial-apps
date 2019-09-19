@@ -24,12 +24,8 @@
       "@polkadot/joy-help/*": [ "packages/joy-help/src/*" ],
       "@polkadot/joy-members/": [ "packages/joy-members/src/" ],
       "@polkadot/joy-members/*": [ "packages/joy-members/src/*" ],
-      "@polkadot/joy-pages/": [ "packages/joy-pages/src/" ],
-      "@polkadot/joy-pages/*": [ "packages/joy-pages/src/*" ],
       "@polkadot/joy-proposals/": [ "packages/joy-proposals/src/" ],
       "@polkadot/joy-proposals/*": [ "packages/joy-proposals/src/*" ],
-      "@polkadot/joy-roles/": [ "packages/joy-roles/src/" ],
-      "@polkadot/joy-roles/*": [ "packages/joy-roles/src/*" ],
 
       "@polkadot/app-123code": [ "packages/app-123code/src" ],
       "@polkadot/app-123code/*": [ "packages/app-123code/src/*" ],
