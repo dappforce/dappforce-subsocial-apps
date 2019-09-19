@@ -15,8 +15,6 @@
       "@polkadot/df-utils/*": [ "packages/df-utils/src/*" ],
       "@joystream/types/": [ "packages/joy-types/src/" ],
       "@joystream/types/*": [ "packages/joy-types/src/*" ],
-      "@polkadot/joy-election/": [ "packages/joy-election/src/" ],
-      "@polkadot/joy-election/*": [ "packages/joy-election/src/*" ],
       "@polkadot/joy-members/": [ "packages/joy-members/src/" ],
       "@polkadot/joy-members/*": [ "packages/joy-members/src/*" ],
 
