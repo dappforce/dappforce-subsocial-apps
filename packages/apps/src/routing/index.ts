@@ -7,7 +7,7 @@ import { Routing, Routes } from '../types';
 import appSettings from '@polkadot/df-settings/';
 
 // import election from './joy-election';
-import members from './joy-members';
+//import members from './joy-members';
 
 import blogs from './df-blogs';
 

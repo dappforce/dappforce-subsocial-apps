@@ -19,7 +19,8 @@ import { Option } from '@polkadot/types';
 import ReactTooltip from 'react-tooltip';
 import { queryToProp } from '@polkadot/df-utils/index';
 import { ElectionStage } from '@joystream/types/';
-import { councilSidebarName } from '../routing/joy-election';
+
+const councilSidebarName = 'council';
 
 type Props = I18nProps & ApiProps & {
   isCollapsed: boolean,
