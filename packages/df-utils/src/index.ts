@@ -63,40 +63,6 @@ export function findNameByAddress (address: string): string | undefined {
   }
 }
 
-export function isKnownAddress (address: string): boolean {
-  return isDefined(findNameByAddress(address));
-}
-
-// Joystream Stake utils
-// --------------------------------------
-
-import { Stake, Backer } from '@joystream/types/';
-
-export function calcTotalStake (stakes: Stake | Stake[] | undefined): BN {
-  if (typeof stakes === 'undefined') {
-    return ZERO;
-  }
-  const total = (stake: Stake) => stake.new.add(stake.transferred);
-  try {
-    if (Array.isArray(stakes)) {
-      return stakes.reduce((accum, stake) => {
-        return accum.add(total(stake));
-      }, ZERO);
-    } else {
-      return total(stakes);
-    }
-  } catch (err) {
-    console.log('Failed to calculate a total stake', stakes, err);
-    return ZERO;
-  }
-}
-
-export function calcBackersStake (backers: Backer[]): BN {
-  return backers.map(b => b.stake).reduce((accum, stake) => {
-    return accum.add(stake);
-  }, ZERO);
-}
-
 // Substrate/Polkadot API utils
 // --------------------------------------
 

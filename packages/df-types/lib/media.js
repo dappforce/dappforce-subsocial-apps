@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const codec_1 = require("@polkadot/types/codec");
 const types_1 = require("@polkadot/types");
-const index_1 = require("./index");
+const _1 = require("./");
 const util_crypto_1 = require("@polkadot/util-crypto");
 const keyring_1 = require("@polkadot/keyring");
 const util_1 = require("@polkadot/util");
@@ -121,7 +121,7 @@ class ContentMetadataUpdate extends codec_1.Struct {
             children_ids: OptionVecContentId,
             visibility: OptionContentVisibility,
             schema: OptionSchemaId,
-            json: index_1.OptionText
+            json: _1.OptionText
         }, value);
     }
 }

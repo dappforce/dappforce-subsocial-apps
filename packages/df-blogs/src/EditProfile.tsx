@@ -11,7 +11,7 @@ import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
-import * as JoyForms from '@polkadot/df-utils/forms';
+import * as DfForms from '@polkadot/df-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
 import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
@@ -82,9 +82,9 @@ type FormValues = ProfileData & {
 
 type FormProps = OuterProps & FormikProps<FormValues>;
 
-const LabelledField = JoyForms.LabelledField<FormValues>();
+const LabelledField = DfForms.LabelledField<FormValues>();
 
-const LabelledText = JoyForms.LabelledText<FormValues>();
+const LabelledText = DfForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
@@ -168,7 +168,7 @@ const InnerForm = (props: FormProps) => {
 
   return (
     <Section className='EditEntityBox' title={title}>
-    <Form className='ui form JoyForm EditEntityForm'>
+    <Form className='ui form DfForm EditEntityForm'>
 
       <LabelledText
         name='username'

@@ -7,9 +7,8 @@ export default ([
     Component: AddressMiniDf,
     display: {},
     i18n: {
-      defaultValue: 'Membership'
+      defaultValue: ''
     },
-    icon: 'users',
-    name: 'members'
+    name: '#'
   }
 ] as Routes);
