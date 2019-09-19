@@ -7,10 +7,7 @@ import { Routing, Routes } from '../types';
 import appSettings from '@polkadot/joy-settings/';
 
 // import election from './joy-election';
-// import help from './joy-help';
 import members from './joy-members';
-// import proposals from './joy-proposals';
-// import pages from './joy-pages';
 
 import blogs from './df-blogs';
 
