@@ -3,7 +3,7 @@ import { getTypeRegistry, BlockNumber, AccountId, Balance, Hash, u32, Text } fro
 import { registerMediaTypes } from './media';
 import { registerMembershipTypes } from './members';
 import { registerRolesTypes } from './roles';
-import { registerBlogsTypes } from './blogs'
+import { registerBlogsTypes } from './blogs';
 
 class Amount extends Balance {}
 
@@ -73,8 +73,6 @@ export type TallyResult = {
   status: ProposalStatus,
   finalized_at: BlockNumber
 };
-
-
 
 export class Announcing extends BlockNumber { }
 export class Voting extends BlockNumber { }
