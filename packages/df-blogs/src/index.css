@@ -26,12 +26,13 @@
 .ProfileDetails {
   display: flex !important;
   padding-left: 1rem !important;
-  .handle {
-    margin-right: 1rem;
-    .button {
-      padding: .5rem .75rem;
+    .handle {
+      display: inline-block;
+      margin-right: .6rem;
+      .button {
+        padding: .5rem .75rem;
+      }
     }
-  }
 }
 .ProfileDetailsTable {
   font-size: 1rem !important;
@@ -159,3 +160,4 @@ hr {
 .DfActivityStreamItem-details.name{
   text-transform: uppercase;
 }
+

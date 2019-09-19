@@ -58,10 +58,12 @@ function AddressMini (props: Props) {
     : {} as Profile;
 
   const {
+    username,
     ipfs_hash
   } = profile;
   const [ profileData , setProfileData ] = useState({} as ProfileData);
   const {
+    fullname,
     avatar
   } = profileData;
 
@@ -80,7 +82,7 @@ function AddressMini (props: Props) {
   const isMyProfile: boolean = address === myAddress;
 
   const renderFollowButton = (withFollowButton && !isMyProfile)
-                            ? <div className = "AddressMini follow"><FollowAccountButton address={address} size={'tiny'}/></div>
+                            ? <div className = "AddressMini follow"><FollowAccountButton address={address}/></div>
                             : null;
 
   const renderAutorPreview = () => (
@@ -106,7 +108,6 @@ function AddressMini (props: Props) {
             >
               <Grid centered divided columns={1}>
                 <Grid.Column textAlign='center'>
-                  {renderFollowButton}
                 </Grid.Column>
               </Grid>
             </Popup>
@@ -116,9 +117,9 @@ function AddressMini (props: Props) {
             {renderName(address)}
             {extraDetails}
             {renderBalance()}
-            {renderFollowButton}
           </div>
         </div>
+        {renderFollowButton}
         {children}
       </div>
     </div>
@@ -134,7 +135,7 @@ function AddressMini (props: Props) {
 
     return (
       <div className='ui--AddressMini-address'>
-        {isShort ? toShortAddress(address) : address}
+        <p>{fullname || username || (isShort ? toShortAddress(address) : address)}</p>
       </div>
     );
   }
