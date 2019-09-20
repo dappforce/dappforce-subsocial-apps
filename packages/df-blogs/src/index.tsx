@@ -19,7 +19,6 @@ import { NewPost, EditPost } from './EditPost';
 import { ViewPostById } from './ViewPost';
 import { ListFollowingBlogs } from './ListFollowingBlogs';
 import { ViewNewsFeed, ViewNotifications } from './ActivityStream';
-import { MyAccountContext, MyAccountContextProps } from '@polkadot/joy-utils/MyAccountContext';
 
 type Props = AppProps & ApiProps & I18nProps & {
   nextBlogId?: BN
@@ -27,12 +26,9 @@ type Props = AppProps & ApiProps & I18nProps & {
 
 class App extends PureComponent<Props> {
 
-  static contextType = MyAccountContext;
-
   private buildTabs (): TabItem[] {
     const { t, nextBlogId } = this.props;
     let blogCount = nextBlogId ? nextBlogId.sub(new BN(1)).toNumber() : 0;
-    const { state: { address: myAddress } } = (this.context as MyAccountContextProps);
 
     return [
       {
@@ -91,7 +87,6 @@ class App extends PureComponent<Props> {
 export default withMulti(
   App,
   translate,
-  // withMyAccount, // TODO on tabs 'My blogs'
   withCalls<Props>(
     queryBlogsToProp('nextBlogId')
   )

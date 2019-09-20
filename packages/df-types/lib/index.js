@@ -2,9 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const codec_1 = require("@polkadot/types/codec");
 const types_1 = require("@polkadot/types");
-const media_1 = require("./media");
-const members_1 = require("./members");
-const roles_1 = require("./roles");
 const blogs_1 = require("./blogs");
 class Amount extends types_1.Balance {
 }
@@ -158,10 +155,7 @@ function registerElectionAndProposalTypes() {
     }
 }
 function registerDfTypes() {
-    members_1.registerMembershipTypes();
     blogs_1.registerBlogsTypes();
-    roles_1.registerRolesTypes();
-    media_1.registerMediaTypes();
     registerElectionAndProposalTypes();
 }
 exports.registerDfTypes = registerDfTypes;
