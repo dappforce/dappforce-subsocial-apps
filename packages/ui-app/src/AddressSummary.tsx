@@ -57,7 +57,6 @@ class AddressSummary extends React.PureComponent<Props> {
           {this.renderBalance()}
           {this.renderBonded()}
           {this.renderNonce()}
-          {this.renderFaucet()}
         </div>
         {this.renderChildren()}
       </div>
@@ -199,12 +198,6 @@ class AddressSummary extends React.PureComponent<Props> {
         value={accountId}
       />
     );
-  }
-
-  protected renderFaucet () {
-    const { showFaucet = false, value } = this.props;
-    const url = 'https://testnet.joystream.org/faucet' + (value ? `?address=${value}` : '');
-    return showFaucet ? <a href={url} target='_blank'>Get free tokens</a> : null;
   }
 
   protected renderNonce () {
