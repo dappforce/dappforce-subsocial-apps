@@ -149,3 +149,45 @@
     margin-right: 0;
   }
 }
+
+.ui.top.left.flowing.popup.transition.visible{
+  .ui--AddressMini-address{
+    padding-top: .5rem;
+    font-size: 1.2rem;
+  }
+  .DfPopup-username{
+    font-size: .8rem;
+  }
+}
+
+.DfAvatar{
+  margin-right: .5rem;
+  display: inline-block;
+  border-radius: 500rem;
+  vertical-align: middle;
+}
+
+.ui.top.left.flowing.popup.transition.visible{
+  .DfAvatar{
+    margin: 0 .5rem .5rem 0;
+  }
+}
+.ui.top.left.flowing.popup.transition.visible{
+  .item.ProfileDetails.MyProfile{
+    padding-left: 0!important;
+  }
+}
+
+.DfPopup-username{
+  font-size: 11.2px;
+  color: #4e4e4e;
+}
+
+.DfMemo--full{
+  margin-top: .5rem;
+  font-size: 1rem;
+}
+
+.DfPopup-about{
+  margin-top: .5rem;
+}
