@@ -6,7 +6,7 @@ import { I18nProps } from '@polkadot/ui-app/types';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
 import Section from '@polkadot/df-utils/Section';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import translate from './translate';
 import ViewBlog from './ViewBlog';
 import { BlogId } from './types';

@@ -13,7 +13,8 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
-import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
+import { withIdFromMyAddress, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { SocialAccount } from '@dappforce/types/blogs';
 

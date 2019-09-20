@@ -10,7 +10,7 @@ import Tabs, { TabItem } from '@polkadot/ui-app/Tabs';
 
 import './index.css';
 
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import translate from './translate';
 import { ListBlogs, ListMyBlogs } from './ListBlogs';
 import { EditBlog, NewBlog } from './EditBlog';

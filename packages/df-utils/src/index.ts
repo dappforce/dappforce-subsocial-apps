@@ -91,6 +91,10 @@ export function queryToProp (
   return [ apiQuery, { paramName, propName } ];
 }
 
+export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | QueryOptions) => {
+  return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
+};
+
 // Parse URLs
 // --------------------------------------
 

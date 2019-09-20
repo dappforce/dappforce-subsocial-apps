@@ -9,7 +9,8 @@ import { Option } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { PostId, Post, CommentId, PostData } from './types';
-import { queryBlogsToProp, UrlHasIdProps, AuthorPreview } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
+import { UrlHasIdProps, AuthorPreview } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import { CommentsByPost } from './ViewComment';
 import { CreatedBy } from './CreatedBy';
