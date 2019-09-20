@@ -9,7 +9,7 @@ import { Option } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { PostId, Post, CommentId, PostData } from './types';
-import { queryBlogsToProp, UrlHasIdProps, AuthorPreview } from './utils';
+import { queryBlogsToProp, UrlHasIdProps } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import { CommentsByPost } from './ViewComment';
 import { CreatedBy } from './CreatedBy';
@@ -17,6 +17,10 @@ import { MutedSpan } from '@polkadot/df-utils/MutedText';
 import { Voter } from './Voter';
 import { PostHistoryModal } from './ListsEditHistory';
 import { PostVoters, ActiveVoters } from './ListVoters';
+import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
+import moment from 'moment-timezone';
+
+const LIMIT_SUMMARY = 150;
 
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
@@ -43,13 +47,13 @@ function ViewPostInternal (props: ViewPostProps) {
 
   const post = postById.unwrap();
   const {
-    created: { account },
+    created: { account, time, block },
     comments_count,
     upvotes_count,
     downvotes_count,
     ipfs_hash
   } = post;
-
+  const date = moment(time).format('lll');
   const [ content , setContent ] = useState({} as PostData);
   const [ summary, setSummary ] = useState('');
   const [ commentsSection, setCommentsSection ] = useState(false);
@@ -64,7 +68,7 @@ function ViewPostInternal (props: ViewPostProps) {
     if (!ipfs_hash) return;
     getJsonFromIpfs<PostData>(ipfs_hash).then(json => {
       setContent(json);
-      const summary = json.body.length > 150 ? json.body.substr(0,150) + '...' : json.body;
+      const summary = json.body.length > LIMIT_SUMMARY ? json.body.substr(0,LIMIT_SUMMARY) + '...' : json.body;
       setSummary(summary);
       console.log(content);
     }).catch(err => console.log(err));
@@ -101,7 +105,12 @@ function ViewPostInternal (props: ViewPostProps) {
           {renderNameOnly()}
           {renderDropDownMenu()}
         </h2>
-        {withCreatedBy && <AuthorPreview address={account} />}
+        {withCreatedBy && <AddressMiniDf
+              value={account}
+              isShort={true}
+              isPadded={false}
+              extraDetails={`${date.toLocaleString()} at block #${block.toNumber()}`}
+        />}
         <div style={{ margin: '1rem 0' }}>
           <ReactMarkdown className='DfMemo--full' source={summary} linkTarget='_blank' />
         </div>

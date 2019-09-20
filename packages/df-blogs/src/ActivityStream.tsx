@@ -74,17 +74,7 @@ function ViewActivity (props: ActivityProps) {
   const formatDate = moment(date).format('lll');
   const postId = new PostId(hexToNumber('0x' + post_id));
 
-  return <Segment className='DfActivity'>
-    <ActivityStreamItem
-      value={account}
-      isShort={false}
-      isPadded={false}
-      size={48}
-      withName
-      date={formatDate}
-    />
-    <ViewPost id={postId} preview/>
-  </Segment>;
+  return  <ViewPost id={postId} preview/>
 }
 
 function Notification (props: ActivityProps) {
