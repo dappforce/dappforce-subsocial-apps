@@ -6,8 +6,7 @@ import { Routing, Routes } from '../types';
 
 import appSettings from '@polkadot/joy-settings/';
 
-// import election from './joy-election';
-//import members from './joy-members';
+import members from './joy-members';
 
 import blogs from './df-blogs';
 
@@ -41,7 +40,7 @@ const routes: Routes = appSettings.isBasicMode
     null,
     // help,
     settings,
-    template//,
+    template,
     // null,
     // pages
   )
@@ -67,7 +66,7 @@ const routes: Routes = appSettings.isBasicMode
     settings,
     toolbox,
     js,
-    template//,
+    template
     // null,
     // pages
   );

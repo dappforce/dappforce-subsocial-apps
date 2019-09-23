@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import { withCalls, withMulti, withApi } from '@polkadot/ui-api/with';
 import Section from '@polkadot/df-utils/Section';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
+import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { ApiProps } from '@polkadot/ui-api/types';
 import { ApiPromise } from '@polkadot/api';

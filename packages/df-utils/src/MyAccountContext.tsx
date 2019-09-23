@@ -1,7 +1,7 @@
 import React, { useReducer, createContext, useContext, useEffect } from 'react';
 import store from 'store';
 
-export const MY_ADDRESS = 'joy.myAddress';
+export const MY_ADDRESS = 'df.myAddress';
 
 function readMyAddress (): string | undefined {
   const myAddress: string | undefined = store.get(MY_ADDRESS);

@@ -13,10 +13,8 @@
       "@dappforce/types/": [ "packages/df-types/src/" ],
       "@polkadot/df-utils/": [ "packages/df-utils/src" ],
       "@polkadot/df-utils/*": [ "packages/df-utils/src/*" ],
-      "@joystream/types/": [ "packages/joy-types/src/" ],
-      "@joystream/types/*": [ "packages/joy-types/src/*" ],
-      "@polkadot/joy-members/": [ "packages/joy-members/src/" ],
-      "@polkadot/joy-members/*": [ "packages/joy-members/src/*" ],
+      "@polkadot/df-settings/": [ "packages/df-settings/src/" ],
+      "@polkadot/df-settings/*": [ "packages/df-settings/src/*" ],
 
       "@polkadot/app-123code": [ "packages/app-123code/src" ],
       "@polkadot/app-123code/*": [ "packages/app-123code/src/*" ],

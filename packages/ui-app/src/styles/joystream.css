@@ -39,8 +39,7 @@
     text-align: left;
   }
   .ui--AddressSummary-name,
-  .ui--AddressSummary-balance,
-  .ui--AddressSummary-memo {
+  .ui--AddressSummary-balance {
     display: inline-block;
     margin-top: 0;
     padding-top: 0;
