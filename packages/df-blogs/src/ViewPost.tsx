@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { Segment, Dropdown } from 'semantic-ui-react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { Option } from '@polkadot/types';
+import { Option, bool } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { PostId, Post, CommentId, PostData } from './types';
@@ -22,6 +22,7 @@ import { PostVoters, ActiveVoters } from './ListVoters';
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
   nameOnly?: boolean,
+  withLink?: boolean,
   withCreatedBy?: boolean,
   id: PostId,
   postById?: Option<Post>,
@@ -38,6 +39,7 @@ function ViewPostInternal (props: ViewPostProps) {
     myAddress,
     preview = false,
     nameOnly = false,
+    withLink = true,
     id,
     withCreatedBy = true
   } = props;
@@ -86,13 +88,12 @@ function ViewPostInternal (props: ViewPostProps) {
     </Dropdown>);
   };
 
-  const renderNameOnly = () => (<>
+  const renderNameOnly = () => (withLink ?
     <Link
       to={`/blogs/posts/${id.toString()}`}
       style={{ marginRight: '.5rem' }}
     >{title}
-    </Link>
-  </>
+    </Link> : <>{title}</>
   );
 
   const renderPreview = () => {

@@ -153,7 +153,7 @@ export function ViewComment (props: ViewCommentProps) {
       content='Reply'
     />);
 
-  return <div>
+  return <div id={`comment${id}`}>
     <SuiComment.Group threaded>
     <SuiComment>
       <div className='DfCommentBox'>

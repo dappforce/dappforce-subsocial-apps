@@ -11,6 +11,7 @@ import moment from 'moment-timezone';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import ActivityStreamItem from './ActivityStreamItem';
 import { getNewsFeed, getNotifications } from './OffchainUtils';
+import { HashLink } from 'react-router-hash-link';
 
 type ActivityProps = {
   activity: Activity;
@@ -141,7 +142,7 @@ function Notification (props: ActivityProps) {
               setMessage(Events.CommentCreated);
             }
           }
-          setSubject(<ViewPost id={postId} withCreatedBy={false} nameOnly/>);
+          setSubject(<><HashLink to={`/blogs/posts/${postId.toString()}#comment${comment_id}`}><ViewPost id={postId} withCreatedBy={false} nameOnly withLink={false}/></HashLink></>);
           break;
         }
         case 'PostReactionCreated': {
