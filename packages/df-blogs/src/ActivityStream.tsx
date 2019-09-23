@@ -70,11 +70,10 @@ const InnerViewNotifications = (props: MyAccountProps) => {
 
 function ViewActivity (props: ActivityProps) {
   const { activity } = props;
-  const { account, date, post_id } = activity;
-  const formatDate = moment(date).format('lll');
+  const { post_id } = activity;
   const postId = new PostId(hexToNumber('0x' + post_id));
 
-  return  <ViewPost id={postId} preview/>
+  return <ViewPost id={postId} preview/>;
 }
 
 function Notification (props: ActivityProps) {

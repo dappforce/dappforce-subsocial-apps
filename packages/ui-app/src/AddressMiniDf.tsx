@@ -23,7 +23,6 @@ import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
 import ReactMarkdown from 'react-markdown';
 import { MutedSpan } from '@polkadot/df-utils/MutedText';
 import { Link } from 'react-router-dom';
-import { ActiveVoters } from '@dappforce/blogs/ListVoters';
 import { AccountFollowersModal } from '@dappforce/blogs/FollowersModal';
 import { AccountFollowingModal } from '@dappforce/blogs/FollowingModal';
 
@@ -49,7 +48,6 @@ type Props = MyAccountProps & BareProps & {
 function AddressMini (props: Props) {
 
   const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value, socialAccountOpt, withFollowButton } = props;
-
   if (!value) {
     return null;
   }
@@ -156,8 +154,8 @@ function AddressMini (props: Props) {
       <div className='DfPopup-about'>
         <ReactMarkdown source={summary} linkTarget='_blank' />
       </div>
-      <MutedSpan><Link to='#' onClick={() => <AccountFollowersModal id={address} followersCount={followers}/>}>Followers: <b>{followers}</b></Link></MutedSpan>
-      <MutedSpan><Link to='#' onClick={() => <AccountFollowingModal id={address} followingCount={following}/>}>Following: <b>{following}</b></Link></MutedSpan>
+      <AccountFollowersModal id={address} followersCount={followers} asLink />
+      <AccountFollowingModal id={address} followingCount={following} asLink/>
     </div>;
   }
 
