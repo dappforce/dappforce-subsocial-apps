@@ -157,11 +157,11 @@ function registerElectionAndProposalTypes() {
         console.error('Failed to register custom types of Joystream node', err);
     }
 }
-function registerJoystreamTypes() {
+function registerDfTypes() {
     members_1.registerMembershipTypes();
+    blogs_1.registerBlogsTypes();
     roles_1.registerRolesTypes();
     media_1.registerMediaTypes();
     registerElectionAndProposalTypes();
-    blogs_1.registerBlogsTypes();
 }
-exports.registerJoystreamTypes = registerJoystreamTypes;
+exports.registerDfTypes = registerDfTypes;

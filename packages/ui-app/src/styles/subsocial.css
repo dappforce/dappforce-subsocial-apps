@@ -3,3 +3,149 @@
   color: #fff;
   padding: 2rem;
 }
+
+.text.muted,
+.text.grey {
+  color: #999999;
+}
+
+.text.smaller {
+  font-size: 0.9rem;
+}
+
+.ui.button:disabled,
+.ui.buttons .disabled.button,
+.ui.disabled.active.button,
+.ui.disabled.button,
+.ui.disabled.button:hover {
+  opacity: 0.45 !important;
+}
+
+.ui--row {
+  .ui.message {
+    margin: 0;
+    padding: .7rem 1rem;
+  }
+  textarea,
+  .ui--InputFile {
+    margin: .25rem 0 !important;
+    height: 5rem;
+  }
+}
+
+.modal {
+  .ui--AddressMini {
+    width: 100%;
+  }
+  .AddressMini{
+    .button{
+      min-width: 8rem;
+    }
+  }
+}
+
+.ui--AddressMini {
+  .ui--IdentityIcon {
+    margin-left: 0;
+  }
+  .ui--AddressMini-info {
+    display: block;
+    .AddressMini.follow{
+      float: right;
+    }
+  }
+  .ui--AddressMini-details {
+    display: block;
+    text-align: left;
+  }
+  .ui--AddressSummary-name,
+  .ui--AddressSummary-balance {
+    display: inline-block;
+    margin-top: 0;
+    padding-top: 0;
+    font-size: .80rem !important;
+    margin-right: 1rem;
+    font-weight: 100;
+    opacity: .80;
+    overflow: hidden;
+  }
+}
+
+.ui--Bubble.ui.label {
+  background-color: #f2f2f2;
+  margin: .25rem 0;
+  margin-right: .5rem;
+
+  &.pointing:before {
+    background-color: #e6e6e6;
+  }
+  &.warn {
+    color: #f2711c !important;
+    border: 1px solid;
+  }
+  &.ok {
+    color: #21ba45 !important;
+    border: 1px solid;
+  }
+}
+
+.SidebarItem {
+  display: inline-flex;
+  flex-direction: column;
+
+  .SidebarSubtitle {
+    display: block;
+    font-size: 0.85rem;
+    color: grey;
+  }
+}
+
+.DfSection {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+
+  .DfSection-title {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 1rem;
+    padding: .5rem 0;
+    display: flex;
+  }
+}
+
+.apps--SideBar-logo {
+  max-height: 26px !important;
+  margin: 1rem 1.5rem 1rem .75rem !important;
+}
+.collapsed .apps--SideBar-logo {
+  margin: 1rem .75rem 1rem .5rem !important
+}
+
+.DfForm .ui--Labelled {
+  align-items: end;
+  &>label {
+    padding-top: .75rem;
+  }
+}
+
+/* MD = markdown */
+.DfViewMD {
+  img {
+    max-width: 100%;
+  }
+  code {
+    background-color: #e0e0e0;
+    padding: 0 .25rem;
+    border-radius: 2px;
+  }
+}
+
+.DfMainStatus {
+  margin: 1rem auto !important;
+  max-width: 500px !important;
+  width: 100% !important;
+  text-align: center;
+
+  .button {
+    margin-right: 0;
+  }
+}

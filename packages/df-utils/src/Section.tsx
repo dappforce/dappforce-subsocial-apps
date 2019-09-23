@@ -11,7 +11,7 @@ export default class Section extends React.PureComponent<Props> {
 
   render () {
     let { className, children } = this.props;
-    className = (className || '') + ' JoySection';
+    className = (className || '') + ' DfSection';
 
     return (
       <section className={className}>
@@ -25,7 +25,7 @@ export default class Section extends React.PureComponent<Props> {
     const { title, level = 2 } = this.props;
     if (!title) return null;
 
-    const className = 'JoySection-title';
+    const className = 'DfSection-title';
     return React.createElement(
       `h${level}`,
       { className },

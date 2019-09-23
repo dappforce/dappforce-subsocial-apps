@@ -1,1 +1,1 @@
-# Utils for Joystream node
+# Utils for Dfstream node

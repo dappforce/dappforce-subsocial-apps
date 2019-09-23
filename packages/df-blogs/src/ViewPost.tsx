@@ -110,7 +110,7 @@ function ViewPostInternal (props: ViewPostProps) {
       {withCreatedBy && <CreatedBy created={post.created} />}
       <div style={{ margin: '1rem 0' }}>
         {image && <img src={image} className='DfPostImage' /* add onError handler */ />}
-        <ReactMarkdown className='JoyMemo--full' source={body} linkTarget='_blank' />
+        <ReactMarkdown className='DfMemo--full' source={body} linkTarget='_blank' />
         {/* TODO render tags */}
       </div>
       <Voter struct={post} />

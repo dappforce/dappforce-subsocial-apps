@@ -81,5 +81,5 @@ export declare class VoteKind extends Enum {
     constructor(value?: any);
 }
 export declare type ProposalVotes = [AccountId, VoteKind][];
-export declare function registerJoystreamTypes(): void;
+export declare function registerDfTypes(): void;
 export {};

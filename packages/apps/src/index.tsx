@@ -16,7 +16,7 @@ import { Api } from '@polkadot/ui-api';
 import { QueueConsumer } from '@polkadot/ui-app/Status/Context';
 import Queue from '@polkadot/ui-app/Status/Queue';
 import Apps from './Apps';
-import { registerBlogsTypes } from '@dappforce/blogs/types';
+import { registerDfTypes } from '@dappforce/types/';
 
 const rootId = 'root';
 const rootElement = document.getElementById(rootId);
@@ -29,9 +29,7 @@ if (!rootElement) {
 console.log('Web socket url=', url);
 
 try {
-  require('@joystream/types/').registerJoystreamTypes();
-  registerBlogsTypes();
-
+  registerDfTypes();
   const types = store.get('types') || {};
   const names = Object.keys(types);
 
