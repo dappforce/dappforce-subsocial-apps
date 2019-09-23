@@ -66,7 +66,7 @@ function ActivityStreamItem (props: Props) {
 
   const hasAvatar = avatar && nonEmptyStr(avatar);
 
-  const renderCount = () => (count && `and ${count} people `);
+  const renderCount = () => (count && count > 0 && `and ${count} people `);
 
   const renderFollowButton = <div className='DfFollowButton'><FollowAccountButton address={address} /> </div>;
 

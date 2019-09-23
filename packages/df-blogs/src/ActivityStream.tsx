@@ -98,6 +98,7 @@ function Notification (props: ActivityProps) {
   enum Events {
     AccountFollowed = 'followed your account',
     BlogFollowed = 'followed your blog',
+    BlogCreated = 'created blog',
     CommentCreated = 'commented your post',
     CommentReply = 'replied to your comment',
     PostReactionCreated = 'reacted to your post',
@@ -115,6 +116,12 @@ function Notification (props: ActivityProps) {
         case 'BlogFollowed': {
           const blogId = new BlogId(hexToNumber('0x' + blog_id));
           setMessage(Events.BlogFollowed);
+          setSubject(<ViewBlog id={blogId} nameOnly/>);
+          break;
+        }
+        case 'BlogCreated' : {
+          const blogId = new BlogId(hexToNumber('0x' + blog_id));
+          setMessage(Events.BlogCreated);
           setSubject(<ViewBlog id={blogId} nameOnly/>);
           break;
         }
@@ -158,7 +165,7 @@ function Notification (props: ActivityProps) {
     };
     loadActivity().catch(err => new Error(err));
   }, [ postId > new PostId(0) ]);
-
+  console.log(agg_count);
   return <Segment className='DfActivity'>
     <ActivityStreamItem
       value={account}
