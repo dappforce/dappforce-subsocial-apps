@@ -71,8 +71,6 @@ export type TallyResult = {
   finalized_at: BlockNumber
 };
 
-
-
 export class Announcing extends BlockNumber { }
 export class Voting extends BlockNumber { }
 export class Revealing extends BlockNumber { }

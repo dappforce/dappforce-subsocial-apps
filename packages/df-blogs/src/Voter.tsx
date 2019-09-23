@@ -6,7 +6,7 @@ import { api } from '@polkadot/ui-api';
 import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
-import { PostId, Comment, Post, ReactionKind, Reaction, CommentId } from './types';
+import { PostId, Comment, Post, ReactionKind, Reaction, CommentId } from '@dappforce/types/blogs';
 import { CommentVoters, PostVoters } from './ListVoters';
 
 type VoterValue = {
@@ -31,7 +31,6 @@ export const Voter = (props: VoterProps) => {
   const [ state , setState ] = useState(struct);
   const { id } = state;
   const isComment = struct instanceof Comment;
-
   const Id = isComment ? CommentId : PostId;
 
   const dataForQuery = new Tuple([AccountId, Id], [new AccountId(address), id]);
@@ -77,7 +76,7 @@ export const Voter = (props: VoterProps) => {
 
   const VoterRender = () => {
 
-    const orientation = isComment ? 'vertical' : '';
+    const orientation = isComment ? true : false;
     const count = (state.upvotes_count.toNumber() - state.downvotes_count.toNumber()).toString();
     const colorCount = count > '0' ? 'green' : count < '0' ? 'red' : '';
     const [open, setOpen] = useState(false);
@@ -105,7 +104,7 @@ export const Voter = (props: VoterProps) => {
       />);
     };
 
-    return <><Button.Group className={`DfVoter ${orientation}`}>
+    return <><Button.Group vertical={orientation} className={`DfVoter`}>
         {renderTxButton(true)}
         <Button content={count} variant='primary' className={`${colorCount} active`} onClick={() => setOpen(true)}/>
         {renderTxButton(false)}

@@ -18,7 +18,7 @@ import { Option } from '@polkadot/types';
 
 import ReactTooltip from 'react-tooltip';
 import { queryToProp } from '@polkadot/df-utils/index';
-import { ElectionStage } from '@joystream/types/';
+import { ElectionStage } from '@dappforce/types/';
 
 const councilSidebarName = 'council';
 

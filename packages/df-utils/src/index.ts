@@ -65,7 +65,6 @@ export function findNameByAddress (address: string): string | undefined {
 
 // Substrate/Polkadot API utils
 // --------------------------------------
-
 import { Options as QueryOptions } from '@polkadot/ui-api/with/types';
 
 /** Example of apiQuery: 'query.councilElection.round' */

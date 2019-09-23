@@ -14,7 +14,7 @@ type AuthorPreviewProps = {
 // TODO show member instead of address.
 export function AuthorPreview ({ address }: AuthorPreviewProps) {
   return (
-    <AddressMini value={address} isShort={false} isPadded={false} withBalance={true} withName={true} withMemo={false} size={36} />
+    <AddressMini value={address} isShort={false} isPadded={false} withBalance={true} withName={true} size={36} />
   );
 }
 
