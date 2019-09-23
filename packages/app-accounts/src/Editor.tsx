@@ -17,8 +17,8 @@ import Backup from './Backup';
 import ChangePass from './ChangePass';
 import Forgetting from './Forgetting';
 import translate from './translate';
-import MemoView from '@polkadot/joy-utils/memo/MemoView';
-import { MyAccountContext, MyAccountContextProps } from '@polkadot/joy-utils/MyAccountContext';
+import MemoView from '@polkadot/df-utils/memo/MemoView';
+import { MyAccountContext, MyAccountContextProps } from '@polkadot/df-utils/MyAccountContext';
 
 type Props = ComponentProps & I18nProps & {
   allAccounts?: SubjectInfo

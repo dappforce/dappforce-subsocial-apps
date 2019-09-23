@@ -13,7 +13,7 @@ import keyring from '@polkadot/ui-keyring';
 
 import Forgetting from './Forgetting';
 import translate from './translate';
-import MemoView from '@polkadot/joy-utils/memo/MemoView';
+import MemoView from '@polkadot/df-utils/memo/MemoView';
 
 type Props = ComponentProps & I18nProps;
 

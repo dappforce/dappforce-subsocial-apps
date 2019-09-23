@@ -5,13 +5,13 @@ import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 
 import { Option, Vector } from '@polkadot/types';
-import Section from '@polkadot/joy-utils/Section';
-import TxButton from '@polkadot/joy-utils/TxButton';
-import * as JoyForms from '@polkadot/joy-utils/forms';
+import Section from '@polkadot/df-utils/Section';
+import TxButton from '@polkadot/df-utils/TxButton';
+import * as JoyForms from '@polkadot/df-utils/forms';
 import { SubmittableResult } from '@polkadot/api';
 import { MemberId, UserInfo, Profile, PaidTermId, PaidMembershipTerms } from '@joystream/types/members';
 import { OptionText } from '@joystream/types/';
-import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
+import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import { queryMembershipToProp } from './utils';
 import { withCalls } from '@polkadot/ui-api/index';
 import { Button, Message } from 'semantic-ui-react';

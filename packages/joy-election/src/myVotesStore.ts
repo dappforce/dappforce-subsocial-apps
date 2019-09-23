@@ -1,5 +1,5 @@
 import store from 'store';
-import { nonEmptyArr } from '@polkadot/joy-utils/index';
+import { nonEmptyArr } from '@polkadot/df-utils/index';
 
 const MY_VOTES = 'joy.myVotes';
 

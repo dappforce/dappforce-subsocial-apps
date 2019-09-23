@@ -1,10 +1,10 @@
 import React from 'react';
 import { Labelled } from '@polkadot/ui-app/index';
 
-import MemoEdit from '@polkadot/joy-utils/memo/MemoEdit';
-import TxButton from '@polkadot/joy-utils/TxButton';
-import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
-import { nonEmptyStr } from '@polkadot/joy-utils/index';
+import MemoEdit from '@polkadot/df-utils/memo/MemoEdit';
+import TxButton from '@polkadot/df-utils/TxButton';
+import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
+import { nonEmptyStr } from '@polkadot/df-utils/index';
 
 type Props = MyAccountProps & {};
 

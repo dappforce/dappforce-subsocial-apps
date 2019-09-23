@@ -7,10 +7,10 @@ import { Table } from 'semantic-ui-react';
 import { formatBalance } from '@polkadot/util';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 
-import { calcBackersStake } from '@polkadot/joy-utils/index';
+import { calcBackersStake } from '@polkadot/df-utils/index';
 import { Seat } from '@joystream/types/';
 import translate from './translate';
-import Section from '@polkadot/joy-utils/Section';
+import Section from '@polkadot/df-utils/Section';
 
 type Props = ApiProps & I18nProps & {
   council?: Seat[]

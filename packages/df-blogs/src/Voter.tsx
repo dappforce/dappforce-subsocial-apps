@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'semantic-ui-react';
 
-import TxButton from '@polkadot/joy-utils/TxButton';
+import TxButton from '@polkadot/df-utils/TxButton';
 import { api } from '@polkadot/ui-api';
 import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { PostId, Comment, Post, ReactionKind, Reaction, CommentId } from './types';
 import { CommentVoters, PostVoters } from './ListVoters';
 

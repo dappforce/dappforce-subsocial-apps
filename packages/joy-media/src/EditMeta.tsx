@@ -4,18 +4,18 @@ import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import BN from 'bn.js';
 
-import TxButton from '@polkadot/joy-utils/TxButton';
+import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
-import * as JoyForms from '@polkadot/joy-utils/forms';
+import * as JoyForms from '@polkadot/df-utils/forms';
 import { Option } from '@polkadot/types/codec';
 import { ContentId, ContentMetadata, ContentMetadataUpdate, SchemaId, ContentVisibility, VecContentId } from '@joystream/types/media';
 import { OptionText } from '@joystream/types/';
-import { withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
-import Section from '@polkadot/joy-utils/Section';
+import { withOnlyMembers } from '@polkadot/df-utils/MyAccount';
+import Section from '@polkadot/df-utils/Section';
 import { onImageError } from './utils';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   name: Yup.string()

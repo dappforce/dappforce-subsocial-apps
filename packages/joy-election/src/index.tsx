@@ -17,7 +17,7 @@ import Council from './Council';
 import Applicants from './Applicants';
 import Votes from './Votes';
 import Reveals from './Reveals';
-import { queryToProp } from '@polkadot/joy-utils/index';
+import { queryToProp } from '@polkadot/df-utils/index';
 import { Seat } from '@joystream/types/';
 
 // define out internal types

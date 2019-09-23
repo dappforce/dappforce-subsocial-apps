@@ -10,7 +10,7 @@ import { formatBalance } from '@polkadot/util';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
 
 import translate from './translate';
-import { calcTotalStake } from '@polkadot/joy-utils/index';
+import { calcTotalStake } from '@polkadot/df-utils/index';
 import { Stake } from '@joystream/types/';
 
 type Props = ApiProps & I18nProps & {

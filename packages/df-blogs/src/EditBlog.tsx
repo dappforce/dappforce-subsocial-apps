@@ -5,16 +5,16 @@ import * as Yup from 'yup';
 import { History } from 'history';
 
 import { Option, Text } from '@polkadot/types';
-import Section from '@polkadot/joy-utils/Section';
-import TxButton from '@polkadot/joy-utils/TxButton';
+import Section from '@polkadot/df-utils/Section';
+import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
-import * as JoyForms from '@polkadot/joy-utils/forms';
+import * as JoyForms from '@polkadot/df-utils/forms';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
 import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;

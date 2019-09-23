@@ -10,7 +10,7 @@ export type HashedVote = {
 // -----------------------------------
 
 import createItem from '@polkadot/ui-keyring/options/item';
-import { findNameByAddress } from '@polkadot/joy-utils/index';
+import { findNameByAddress } from '@polkadot/df-utils/index';
 
 const createAddressOption = (address: string) => {
   let name = findNameByAddress(address);

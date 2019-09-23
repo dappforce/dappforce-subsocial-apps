@@ -16,7 +16,7 @@ import Dashboard from './Dashboard';
 import List from './List';
 import DetailsByHandle from './DetailsByHandle';
 import EditForm from './EditForm';
-import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
+import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 
 // define out internal types
 type Props = AppProps & ApiProps & I18nProps & MyAccountProps & {

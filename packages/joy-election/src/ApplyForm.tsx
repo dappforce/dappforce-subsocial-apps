@@ -8,11 +8,11 @@ import { Labelled } from '@polkadot/ui-app/index';
 import { Balance } from '@polkadot/types';
 
 import translate from './translate';
-import TxButton from '@polkadot/joy-utils/TxButton';
-import InputStake from '@polkadot/joy-utils/InputStake';
+import TxButton from '@polkadot/df-utils/TxButton';
+import InputStake from '@polkadot/df-utils/InputStake';
 import { Stake } from '@joystream/types/';
-import { calcTotalStake, ZERO } from '@polkadot/joy-utils/index';
-import { MyAddressProps, withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
+import { calcTotalStake, ZERO } from '@polkadot/df-utils/index';
+import { MyAddressProps, withOnlyMembers } from '@polkadot/df-utils/MyAccount';
 
 type Props = ApiProps & I18nProps & MyAddressProps & {
   minStake?: Balance,

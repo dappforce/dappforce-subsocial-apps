@@ -4,7 +4,7 @@ import React from 'react';
 import { ApiProps } from '@polkadot/ui-api/types';
 import { I18nProps } from '@polkadot/ui-app/types';
 
-import Section from '@polkadot/joy-utils/Section';
+import Section from '@polkadot/df-utils/Section';
 import translate from './translate';
 import Details from './Details';
 import { MemberId } from '@joystream/types/members';

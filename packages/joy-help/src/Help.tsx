@@ -9,7 +9,7 @@ import './index.css';
 
 // local imports and components
 import translate from './translate';
-import MemoView from '@polkadot/joy-utils/memo/MemoView';
+import MemoView from '@polkadot/df-utils/memo/MemoView';
 import { Link } from 'react-router-dom';
 
 const validatorsAccId = '5EoFVV4HrmyxF8xWNYL7rYJPEcDrW8kv3bHkb1ueGchBcZ1k';

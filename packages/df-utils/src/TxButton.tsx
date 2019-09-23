@@ -6,7 +6,7 @@ import { Button } from '@polkadot/ui-app/index';
 import { QueueConsumer } from '@polkadot/ui-app/Status/Context';
 import { withApi } from '@polkadot/ui-api/index';
 import { assert } from '@polkadot/util';
-import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
+import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 
 type InjectedProps = {
   queueExtrinsic: QueueTx$ExtrinsicAdd;

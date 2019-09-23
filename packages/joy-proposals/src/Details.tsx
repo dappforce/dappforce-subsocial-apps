@@ -9,14 +9,14 @@ import { withCalls } from '@polkadot/ui-api/with';
 import { Labelled } from '@polkadot/ui-app/index';
 import { formatNumber, formatBalance } from '@polkadot/util';
 
-import { queryToProp, ZERO } from '@polkadot/joy-utils/index';
+import { queryToProp, ZERO } from '@polkadot/df-utils/index';
 import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
-import Section from '@polkadot/joy-utils/Section';
+import Section from '@polkadot/df-utils/Section';
 import translate from './translate';
 import FilterProps from './FilterProps';
 import { Seat, VoteKind, VoteKinds, Proposal, ProposalVotes, ProposalStatuses as Status } from '@joystream/types/';
-import TxButton from '@polkadot/joy-utils/TxButton';
-import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
+import TxButton from '@polkadot/df-utils/TxButton';
+import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import { Link } from 'react-router-dom';
 
 const allVoteKinds = [

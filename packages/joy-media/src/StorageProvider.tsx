@@ -4,7 +4,7 @@ import { Message } from 'semantic-ui-react';
 import { Bytes } from '@polkadot/types';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
-import { queryToProp, nonEmptyStr } from '@polkadot/joy-utils/index';
+import { queryToProp, nonEmptyStr } from '@polkadot/df-utils/index';
 import { u8aToString } from '@polkadot/util';
 
 function isEmptyText (bytes?: Bytes): boolean {

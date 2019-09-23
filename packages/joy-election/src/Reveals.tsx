@@ -7,11 +7,11 @@ import { AccountId } from '@polkadot/types';
 import { Input, Labelled, InputAddress } from '@polkadot/ui-app/index';
 
 import translate from './translate';
-import { nonEmptyStr, queryToProp, getUrlParam } from '@polkadot/joy-utils/index';
+import { nonEmptyStr, queryToProp, getUrlParam } from '@polkadot/df-utils/index';
 import { accountIdsToOptions, hashVote } from './utils';
-import TxButton from '@polkadot/joy-utils/TxButton';
+import TxButton from '@polkadot/df-utils/TxButton';
 import { findVoteByHash } from './myVotesStore';
-import { withOnlyMembers } from '@polkadot/joy-utils/MyAccount';
+import { withOnlyMembers } from '@polkadot/df-utils/MyAccount';
 
 // AppsProps is needed to get a location from the route.
 type Props = AppProps & ApiProps & I18nProps & {

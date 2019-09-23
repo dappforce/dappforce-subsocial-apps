@@ -1,5 +1,5 @@
 {
-  "name": "@polkadot/joy-utils",
+  "name": "@polkadot/df-utils",
   "version": "0.1.1",
   "description": "Joystream utils",
   "main": "index.js",
