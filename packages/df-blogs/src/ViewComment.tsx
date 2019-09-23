@@ -13,7 +13,7 @@ import { getJsonFromIpfs } from './OffchainUtils';
 import { partition } from 'lodash';
 import { PostId, CommentId, Comment, OptionComment, Post, CommentData } from './types';
 import { NewComment } from './EditComment';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Voter } from './Voter';
 import { CommentHistoryModal } from './ListsEditHistory';
 

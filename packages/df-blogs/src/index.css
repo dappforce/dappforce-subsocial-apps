@@ -99,6 +99,10 @@
     .comment .text {
       margin-top: .5rem;
     }
+    .comment img.avatar{
+      width: 2.5rem;
+      height: 2.5rem;
+    }
   }
 }
 

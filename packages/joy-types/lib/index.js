@@ -5,7 +5,6 @@ const types_1 = require("@polkadot/types");
 const media_1 = require("./media");
 const members_1 = require("./members");
 const roles_1 = require("./roles");
-const blogs_1 = require("./blogs");
 class Amount extends types_1.Balance {
 }
 class OptionText extends codec_1.Option.with(types_1.Text) {
@@ -154,14 +153,13 @@ function registerElectionAndProposalTypes() {
         });
     }
     catch (err) {
-        console.error('Failed to register custom types of DappForce node', err);
+        console.error('Failed to register custom types of Joystream node', err);
     }
 }
-function registerDfTypes() {
+function registerJoystreamTypes() {
     members_1.registerMembershipTypes();
-    blogs_1.registerBlogsTypes();
     roles_1.registerRolesTypes();
     media_1.registerMediaTypes();
     registerElectionAndProposalTypes();
 }
-exports.registerDfTypes = registerDfTypes;
+exports.registerJoystreamTypes = registerJoystreamTypes;

@@ -13,11 +13,10 @@ import classes from './util/classes';
 import toShortAddress from './util/toShortAddress';
 import BalanceDisplay from './Balance';
 import IdentityIcon from './IdentityIcon';
-import { findNameByAddress, nonEmptyStr } from '@polkadot/df-utils/index';
+import { findNameByAddress, nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
 import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
 import { Popup, Grid } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
-import { queryBlogsToProp } from '@dappforce/blogs/utils';
 import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
 import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
 

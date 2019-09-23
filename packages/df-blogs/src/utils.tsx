@@ -3,17 +3,9 @@ import { Pagination as SuiPagination } from 'semantic-ui-react';
 
 import { AccountId, AccountIndex, Address } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
-import { Options } from '@polkadot/ui-api/with/types';
-import { queryToProp } from '@polkadot/df-utils/index';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId } from './types';
 import { OuterProps } from './EditProfile';
-
-export const host = 'http://localhost:3001/v1';
-
-export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
-  return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
-};
 
 type AuthorPreviewProps = {
   address: AccountId | AccountIndex | Address | string

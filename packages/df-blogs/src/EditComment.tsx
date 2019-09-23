@@ -12,7 +12,7 @@ import { Option } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { PostId, CommentId, Comment, CommentUpdate, CommentData } from './types';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({

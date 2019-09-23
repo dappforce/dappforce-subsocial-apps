@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Modal, Button, Tab } from 'semantic-ui-react';
 import _ from 'lodash';
 import { Option } from '@polkadot/types';
