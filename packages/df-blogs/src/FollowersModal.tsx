@@ -6,19 +6,18 @@ import { queryBlogsToProp } from './utils';
 import { Modal, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
-import { Link } from 'react-router-dom';
 
 type Props = {
   followers?: AccountId[],
   followersCount: Number,
-  asLink?: boolean
+  open: boolean,
+  close: () => void
 };
 
 const InnerFollowersModal = (props: Props) => {
 
-  const { followers, followersCount, asLink = false } = props;
+  const { followers, followersCount, open, close } = props;
   console.log(followers);
-  const [open, setOpen] = useState(false);
 
   const renderFollowers = () => {
     return followers && followers.map((account, index) =>
@@ -36,16 +35,15 @@ const InnerFollowersModal = (props: Props) => {
     );
   };
 
-  const renderAsLink = () => (
-    asLink
-    ? <Link to='# ' onClick={() => setOpen(true)}>Followers ({followersCount})</Link>
-    : <Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>
-  );
+  // const renderAsLink = () => (
+  //   asLink
+  //   ? <Link to='# ' onClick={() => setOpen(true)}>Followers ({followersCount})</Link>
+  //   : <Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>
+  // );
 
   return (
     <Modal
       open={open}
-      trigger={renderAsLink()}
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -54,7 +52,7 @@ const InnerFollowersModal = (props: Props) => {
         {renderFollowers()}
       </Modal.Content>
       <Modal.Actions>
-        <Button content='Close' onClick={() => setOpen(false)} />
+        <Button content='Close' onClick={close} />
       </Modal.Actions>
     </Modal>
   );

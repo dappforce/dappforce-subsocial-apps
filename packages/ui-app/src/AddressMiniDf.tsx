@@ -91,6 +91,10 @@ function AddressMini (props: Props) {
     }).catch(err => console.log(err));
   }, [address, ipfs_hash]);
 
+  const [ openPopup, setOpenPopup ] = useState(false);
+  const [ openFollowers, setOpenFollowers ] = useState(false);
+  const [ openFollowing, setOpenFollowing ] = useState(false);
+
   const hasAvatar = avatar && nonEmptyStr(avatar);
   const isMyProfile: boolean = address === myAddress;
 
@@ -154,8 +158,12 @@ function AddressMini (props: Props) {
       <div className='DfPopup-about'>
         <ReactMarkdown source={summary} linkTarget='_blank' />
       </div>
-      <AccountFollowersModal id={address} followersCount={followers} asLink />
-      <AccountFollowingModal id={address} followingCount={following} asLink/>
+      <div>
+      <Link to='#' onClick={() => setOpenFollowers(true)}>Followers: {followers} </Link>
+      <Link to='#' onClick={() => setOpenFollowing(true)}>Following: {following} </Link>
+      </div>
+      {openFollowers && <AccountFollowersModal id={address} followersCount={followers} open={openFollowers} close={() => setOpenFollowers(false)}/>}
+      {openFollowing && <AccountFollowingModal id={address} followingCount={following} open={openFollowing} close={() => setOpenFollowing(false)}/>}
     </div>;
   }
 

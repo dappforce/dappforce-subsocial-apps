@@ -11,14 +11,14 @@ import { Link } from 'react-router-dom';
 type Props = {
   following?: AccountId[],
   followingCount: Number,
-  asLink?: boolean
+  open: boolean,
+  close: () => void
 };
 
 const InnerFollowingModal = (props: Props) => {
 
-  const { following, followingCount, asLink = false } = props;
+  const { following, followingCount, open, close } = props;
   console.log(following);
-  const [open, setOpen] = useState(false);
 
   const renderFollowing = () => {
     return following && following.map((account, index) =>
@@ -36,16 +36,9 @@ const InnerFollowingModal = (props: Props) => {
     );
   };
 
-  const renderAsLink = () => (
-    asLink
-    ? <Link to='# ' onClick={() => setOpen(true)}>Followers ({followingCount})</Link>
-    : <Button basic onClick={() => setOpen(true)}>Followers ({followingCount})</Button>
-  );
-
   return (
     <Modal
       open={open}
-      trigger={renderAsLink()}
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -54,7 +47,7 @@ const InnerFollowingModal = (props: Props) => {
         {renderFollowing()}
       </Modal.Content>
       <Modal.Actions>
-        <Button content='Close' onClick={() => setOpen(false)} />
+        <Button content='Close' onClick={close}/>
       </Modal.Actions>
     </Modal>
   );

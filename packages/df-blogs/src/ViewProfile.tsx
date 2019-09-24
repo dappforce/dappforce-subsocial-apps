@@ -46,7 +46,7 @@ function Component (props: Props) {
     id,
     preview = false,
     nameOnly = false,
-    size = 48
+    size
   } = props;
 
   const {
