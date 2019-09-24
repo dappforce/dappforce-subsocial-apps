@@ -91,9 +91,14 @@ function AddressMini (props: Props) {
     }).catch(err => console.log(err));
   }, [address, ipfs_hash]);
 
-  const [ openPopup, setOpenPopup ] = useState(false);
+  const [ open, setOpen ] = useState(false);
   const [ openFollowers, setOpenFollowers ] = useState(false);
   const [ openFollowing, setOpenFollowing ] = useState(false);
+
+  const openFollowersModal = () => {
+    setOpenFollowers(true);
+    setOpen(false);
+  };
 
   const hasAvatar = avatar && nonEmptyStr(avatar);
   const isMyProfile: boolean = address === myAddress;
@@ -119,9 +124,12 @@ function AddressMini (props: Props) {
         <div>
           {myAddress !== address
             ? <Popup
-                trigger={renderAddress(address)}
-                flowing
-                hoverable
+              trigger={renderAddress(address)}
+              onClose={() => setOpen(false)}
+              onOpen={() => setOpen(true)}
+              open={open}
+              flowing
+              hoverable
             >
             {renderProfilePreview()}
             </Popup>
@@ -159,7 +167,7 @@ function AddressMini (props: Props) {
         <ReactMarkdown source={summary} linkTarget='_blank' />
       </div>
       <div>
-      <Link to='#' onClick={() => setOpenFollowers(true)}>Followers: {followers} </Link>
+      <Link to='#' onClick={() => openFollowersModal()}>Followers: {followers} </Link>
       <Link to='#' onClick={() => setOpenFollowing(true)}>Following: {following} </Link>
       </div>
       {openFollowers && <AccountFollowersModal id={address} followersCount={followers} open={openFollowers} close={() => setOpenFollowers(false)}/>}
