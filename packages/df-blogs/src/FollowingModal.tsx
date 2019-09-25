@@ -6,17 +6,19 @@ import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Modal, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
+import { Link } from 'react-router-dom';
 
 type Props = {
   following?: AccountId[],
-  followingCount: Number
+  followingCount: Number,
+  open: boolean,
+  close: () => void
 };
 
 const InnerFollowingModal = (props: Props) => {
 
-  const { following, followingCount } = props;
+  const { following, followingCount, open, close } = props;
   console.log(following);
-  const [open, setOpen] = useState(false);
 
   const renderFollowing = () => {
     return following && following.map((account, index) =>
@@ -37,7 +39,6 @@ const InnerFollowingModal = (props: Props) => {
   return (
     <Modal
       open={open}
-      trigger={<Button basic onClick={() => setOpen(true)}>Following ({followingCount})</Button>}
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -46,7 +47,7 @@ const InnerFollowingModal = (props: Props) => {
         {renderFollowing()}
       </Modal.Content>
       <Modal.Actions>
-        <Button content='Close' onClick={() => setOpen(false)} />
+        <Button content='Close' onClick={close}/>
       </Modal.Actions>
     </Modal>
   );

@@ -23,7 +23,8 @@ type Props = {
   nameOnly?: boolean,
   id: AccountId,
   socialAccountOpt?: Option<SocialAccount>,
-  followers?: AccountId[]
+  followers?: AccountId[],
+  size?: number
 };
 
 function Component (props: Props) {
@@ -44,7 +45,8 @@ function Component (props: Props) {
   const {
     id,
     preview = false,
-    nameOnly = false
+    nameOnly = false,
+    size
   } = props;
 
   const {
@@ -100,8 +102,8 @@ function Component (props: Props) {
     return <>
       <div className={`item ProfileDetails MyProfile`}>
         {hasAvatar
-          ? <img className='ui avatar image' src={avatar} />
-          : <IdentityIcon className='image' value={account} size={40} />
+          ? <img className='DfAvatar' height={size || 48} width={size || 48} src={avatar} />
+          : <IdentityIcon className='image' value={account} size={size || 48} />
         }
         <div className='content'>
           <div className='header'>

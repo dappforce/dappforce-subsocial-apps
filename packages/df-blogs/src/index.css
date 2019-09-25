@@ -135,9 +135,19 @@ hr {
   padding-right: .25rem;
 }
 
+.DfActivityStreamItem-popup{
+  line-height: 1.5rem;
+  padding-top: .5rem;
+}
+
 .DfActivityStreamItem-info {
   display: flex;
   flex-direction: row;
+}
+
+.DfActivityStreamItem-address{
+  display: inline-block;
+  margin-right: .3rem;
 }
 
 .DfActivityStreamItem-info .ui--IdentityIcon {

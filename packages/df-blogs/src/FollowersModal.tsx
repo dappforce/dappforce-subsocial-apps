@@ -9,14 +9,15 @@ import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 
 type Props = {
   followers?: AccountId[],
-  followersCount: Number
+  followersCount: Number,
+  open: boolean,
+  close: () => void
 };
 
 const InnerFollowersModal = (props: Props) => {
 
-  const { followers, followersCount } = props;
+  const { followers, followersCount, open, close } = props;
   console.log(followers);
-  const [open, setOpen] = useState(false);
 
   const renderFollowers = () => {
     return followers && followers.map((account, index) =>
@@ -34,10 +35,15 @@ const InnerFollowersModal = (props: Props) => {
     );
   };
 
+  // const renderAsLink = () => (
+  //   asLink
+  //   ? <Link to='# ' onClick={() => setOpen(true)}>Followers ({followersCount})</Link>
+  //   : <Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>
+  // );
+
   return (
     <Modal
       open={open}
-      trigger={<Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>}
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -46,7 +52,7 @@ const InnerFollowersModal = (props: Props) => {
         {renderFollowers()}
       </Modal.Content>
       <Modal.Actions>
-        <Button content='Close' onClick={() => setOpen(false)} />
+        <Button content='Close' onClick={close} />
       </Modal.Actions>
     </Modal>
   );
