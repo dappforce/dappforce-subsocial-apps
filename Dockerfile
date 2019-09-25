@@ -1,16 +1,19 @@
-FROM node:10.13 as builder
+FROM node:10.13-slim as builder
 
-RUN git clone -b df-pre-ipfs https://github.com/dappforce/dappforce-subsocial-ui.git
+WORKDIR /subsocial-ui
 
-WORKDIR /dappforce-subsocial-ui
-RUN yarn
+COPY package.json package-lock.json* ./
+RUN yarn install --no-optional
+
+COPY . .
+RUN yarn && yarn cache clean --force
 RUN NODE_ENV=production yarn build
 
-FROM node:10.13
+FROM node:10.13-slim
 
 RUN apt-get update && apt-get -y install nginx
 
-COPY --from=builder /dappforce-subsocial-ui/packages/apps/build /var/www/html
+COPY --from=builder /subsocial-ui/packages/apps/build /var/www/html
 
 EXPOSE 80
 
