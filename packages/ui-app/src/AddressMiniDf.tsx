@@ -21,7 +21,6 @@ import { queryBlogsToProp } from '@dappforce/blogs/utils';
 import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
 import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
 import ReactMarkdown from 'react-markdown';
-import { MutedSpan } from '@polkadot/df-utils/MutedText';
 import { Link } from 'react-router-dom';
 import { AccountFollowersModal } from '@dappforce/blogs/FollowersModal';
 import { AccountFollowingModal } from '@dappforce/blogs/FollowingModal';
@@ -100,6 +99,11 @@ function AddressMini (props: Props) {
     setOpen(false);
   };
 
+  const openFollowingModal = () => {
+    setOpenFollowing(true);
+    setOpen(false);
+  };
+
   const hasAvatar = avatar && nonEmptyStr(avatar);
   const isMyProfile: boolean = address === myAddress;
 
@@ -167,8 +171,8 @@ function AddressMini (props: Props) {
         <ReactMarkdown source={summary} linkTarget='_blank' />
       </div>
       <div>
-      <Link to='#' onClick={() => openFollowersModal()}>Followers: {followers} </Link>
-      <Link to='#' onClick={() => setOpenFollowing(true)}>Following: {following} </Link>
+      <Link to='#' onClick={openFollowersModal}>Followers: {followers} </Link>
+      <Link to='#' onClick={openFollowingModal}>Following: {following} </Link>
       </div>
       {openFollowers && <AccountFollowersModal id={address} followersCount={followers} open={openFollowers} close={() => setOpenFollowers(false)}/>}
       {openFollowing && <AccountFollowingModal id={address} followingCount={following} open={openFollowing} close={() => setOpenFollowing(false)}/>}
