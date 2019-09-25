@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
@@ -6,10 +6,9 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { Option, AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
-import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
-import { queryBlogsToProp, withIdFromMyAddress } from './utils';
+import { queryBlogsToProp, withIdFromMyAddress, LoadSocialAccount } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
@@ -30,34 +29,26 @@ export type Props = {
 };
 
 function Component (props: Props) {
-  const { socialAccountOpt } = props;
-
-  if (socialAccountOpt === undefined) return <em>Loading...</em>;
-  else if (socialAccountOpt.isNone) return <em>Social account not found yet.</em>;
-
-  const socialAccount = socialAccountOpt.unwrap();
-  const profileOpt = socialAccount.profile;
-
-  if (profileOpt.isNone) return <em>Profile is not created yet.</em>;
-
-  const profile = profileOpt.unwrap() as Profile;
-
-  const { followers_count, following_accounts_count } = socialAccount;
 
   const {
     id,
     preview = false,
     nameOnly = false,
-    size
+    size,
+    socialAccount,
+    profile,
+    profileData
   } = props;
+
+  if (!socialAccount || !profile || !profileData) return <em>SocialAccount not create yet</em>;
+
+  const { followers_count, following_accounts_count } = socialAccount;
 
   const {
     created: { account },
-    username,
-    ipfs_hash
+    username
   } = profile;
 
-  const [ profileData , setProfileData ] = useState({} as ProfileData);
   const {
     fullname,
     avatar,
@@ -68,13 +59,6 @@ function Component (props: Props) {
     github,
     instagram
   } = profileData;
-
-  useEffect(() => {
-    if (!ipfs_hash) return;
-    getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
-      setProfileData(json);
-    }).catch(err => console.log(err));
-  }, [ false ]);
 
   const hasAvatar = avatar && nonEmptyStr(avatar);
   const hasFacebookLink = facebook && nonEmptyStr(facebook);
@@ -196,5 +180,6 @@ export default withMulti(
   withCalls<Props>(
     queryBlogsToProp('socialAccountById',
       { paramName: 'id', propName: 'socialAccountOpt' })
-  )
+  ),
+  LoadSocialAccount
 );

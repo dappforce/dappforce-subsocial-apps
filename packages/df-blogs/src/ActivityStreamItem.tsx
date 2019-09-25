@@ -5,7 +5,7 @@ import { withCall, withMulti, withCalls } from '@polkadot/ui-api/index';
 
 import { findNameByAddress, nonEmptyStr } from '@polkadot/df-utils/index';
 import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
-import { Popup, Grid } from 'semantic-ui-react';
+import { Popup } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import { BareProps } from '@polkadot/ui-app/types';
 import { classes, toShortAddress } from '@polkadot/ui-app/util';
@@ -13,6 +13,11 @@ import IdentityIcon from '@polkadot/ui-identicon/Identicon';
 import { queryBlogsToProp } from './utils';
 import { ProfileData, Profile, SocialAccount } from './types';
 import { getJsonFromIpfs } from './OffchainUtils';
+import ReactMarkdown from 'react-markdown';
+import { Link } from 'react-router-dom';
+import { AccountFollowersModal, AccountFollowingModal } from '@dappforce/blogs/FollowModal';
+
+const LIMIT_SUMMARY = 40;
 
 type Props = MyAccountProps & BareProps & {
   socialAccountOpt?: Option<SocialAccount>,
@@ -45,11 +50,16 @@ function ActivityStreamItem (props: Props) {
       validator.toString() === address
     );
 
-  const profile: Profile =
-  socialAccountOpt && socialAccountOpt.isSome
-  ? socialAccountOpt.unwrap().profile.unwrapOr({}) as Profile
-  : {} as Profile;
+  let socialAccount: SocialAccount | undefined = undefined;
+  let profile: Profile = {} as Profile;
 
+  if (socialAccountOpt && socialAccountOpt.isSome) {
+    socialAccount = socialAccountOpt.unwrap();
+    profile = socialAccount.profile.unwrapOr({}) as Profile;
+  }
+
+  const followers = socialAccount && socialAccount.followers_count.toNumber();
+  const following = socialAccount && socialAccount.following_accounts_count.toNumber();
   const {
     username,
     ipfs_hash
@@ -59,14 +69,31 @@ function ActivityStreamItem (props: Props) {
     fullname,
     avatar
   } = profileData;
+  const [ summary, setSummary ] = useState('');
 
   useEffect(() => {
     if (!ipfs_hash) return;
 
     getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
       setProfileData(json);
+      const summary = json.about.length > LIMIT_SUMMARY ? json.about.substr(0,LIMIT_SUMMARY) + '...' : json.about;
+      setSummary(summary);
     }).catch(err => console.log(err));
   }, [address, ipfs_hash]);
+
+  const [ popupOpen, setPopupOpen ] = useState(false);
+  const [ followersOpen, setFollowersOpen ] = useState(false);
+  const [ followingOpen, setFollowingOpen ] = useState(false);
+
+  const openFollowersModal = () => {
+    setFollowersOpen(true);
+    setPopupOpen(false);
+  };
+
+  const openFollowingModal = () => {
+    setFollowingOpen(true);
+    setPopupOpen(false);
+  };
 
   const hasAvatar = avatar && nonEmptyStr(avatar);
 
@@ -91,17 +118,18 @@ function ActivityStreamItem (props: Props) {
       <div className='DfActivityStreamItem-popup'>
         {myAddress !== address &&
           <Popup
-              trigger={renderAddress(address)}
-              flowing
-              hoverable
+            trigger={renderAddress(address)}
+            onClose={() => setPopupOpen(false)}
+            onOpen={() => setPopupOpen(true)}
+            open={popupOpen}
+            flowing
+            hoverable
           >
-          <Grid centered divided columns={1}>
-            <Grid.Column textAlign='center'>
-              {renderFollowButton}
-            </Grid.Column>
-            </Grid>
+          {renderProfilePreview()}
           </Popup>
         }
+          {followersOpen && <AccountFollowersModal id={address} followersCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={'Followers'}/>}
+          {followingOpen && <AccountFollowingModal id={address} followingCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'Following'}/>}
           {renderName(address)}
           {renderCount()}
           <div className='DfActivityStreamItem-details event'>
@@ -120,6 +148,44 @@ function ActivityStreamItem (props: Props) {
   );
 
   return renderPreview();
+
+  function renderProfilePreview () {
+    return <div>
+      <div className={`item ProfileDetails MyProfile`}>
+        {hasAvatar
+          ? <img className='DfAvatar' height={size || 48} width={size || 48} src={avatar} />
+          : <IdentityIcon className='image' value={address} size={40} />
+        }
+        <div className='content'>
+          <div className='header'>
+            {renderAddressForProfile(address)}
+          </div>
+        </div>
+        {renderFollowButton}
+      </div>
+      <div className='DfPopup-about'>
+        <ReactMarkdown source={summary} linkTarget='_blank' />
+      </div>
+      <div>
+      <Link to='#' onClick={openFollowersModal}>Followers: {followers}</Link>
+      <Link to='#' onClick={openFollowingModal}>Following: {following}</Link>
+      </div>
+    </div>;
+  }
+
+  function renderAddressForProfile (address: string) {
+    const { withAddress = true } = props;
+    if (!withAddress) {
+      return null;
+    }
+
+    return (
+      <div className='ui--AddressMini-address'>
+        <b>{fullname || toShortAddress(address)}</b>
+        <div className='DfPopup-username'>{username}</div>
+      </div>
+    );
+  }
 
   function renderAddress (address: string) {
     const { isShort = true, withAddress = true } = props;

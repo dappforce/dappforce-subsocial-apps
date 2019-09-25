@@ -5,7 +5,7 @@
 import { BareProps } from './types';
 
 import BN from 'bn.js';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AccountId, AccountIndex, Address, Balance, Option } from '@polkadot/types';
 import { withCall, withMulti, withCalls } from '@polkadot/ui-api/index';
 
@@ -17,17 +17,19 @@ import { findNameByAddress, nonEmptyStr } from '@polkadot/df-utils/index';
 import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
 import { Popup } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
-import { queryBlogsToProp } from '@dappforce/blogs/utils';
+import { queryBlogsToProp, LoadSocialAccount } from '@dappforce/blogs/utils';
 import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
-import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import { AccountFollowersModal, AccountFollowingModal } from '@dappforce/blogs/FollowModal';
 
 const LIMIT_SUMMARY = 40;
 
-type Props = MyAccountProps & BareProps & {
+export type Props = MyAccountProps & BareProps & {
   socialAccountOpt?: Option<SocialAccount>,
+  socialAccount?: SocialAccount,
+  profile?: Profile,
+  profileData?: ProfileData,
   balance?: Balance | Array<Balance> | BN,
   children?: React.ReactNode,
   isPadded?: boolean,
@@ -45,7 +47,20 @@ type Props = MyAccountProps & BareProps & {
 
 function AddressMini (props: Props) {
 
-  const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value, socialAccountOpt, withFollowButton } = props;
+  const {
+    children,
+    myAddress,
+    className,
+    isPadded = true,
+    extraDetails,
+    session_validators,
+    style,
+    size,
+    value,
+    socialAccount,
+    profile = {} as Profile,
+    profileData = {} as ProfileData,
+    withFollowButton } = props;
   if (!value) {
     return null;
   }
@@ -55,39 +70,18 @@ function AddressMini (props: Props) {
     validator.toString() === address
   );
 
-  let socialAccount: SocialAccount | undefined = undefined;
-  let profile: Profile = {} as Profile;
-
-  if (socialAccountOpt && socialAccountOpt.isSome) {
-    socialAccount = socialAccountOpt.unwrap();
-    profile = socialAccount.profile.unwrapOr({}) as Profile;
-  }
-
   const followers = socialAccount && socialAccount.followers_count.toNumber();
   const following = socialAccount && socialAccount.following_accounts_count.toNumber();
   const {
-    username,
-    ipfs_hash
+    username
   } = profile;
-  const [ profileData , setProfileData ] = useState({} as ProfileData);
+
   const {
     fullname,
-    avatar
+    avatar,
+    about = ''
   } = profileData;
-  const [ summary, setSummary ] = useState('');
-
-  useEffect(() => {
-    if (!ipfs_hash) {
-      setProfileData({} as ProfileData);
-      return;
-    }
-
-    getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
-      setProfileData(json);
-      const summary = json.about.length > LIMIT_SUMMARY ? json.about.substr(0,LIMIT_SUMMARY) + '...' : json.about;
-      setSummary(summary);
-    }).catch(err => console.log(err));
-  }, [address, ipfs_hash]);
+  const summary = about.length > LIMIT_SUMMARY ? about.substr(0,LIMIT_SUMMARY) + '...' : about;
 
   const [ popupOpen, setPopupOpen ] = useState(false);
   const [ followersOpen, setFollowersOpen ] = useState(false);
@@ -243,5 +237,6 @@ export default withMulti(
   withCalls<Props>(
     queryBlogsToProp('socialAccountById',
       { paramName: 'value', propName: 'socialAccountOpt' })
-  )
+  ),
+  LoadSocialAccount
 );
