@@ -93,7 +93,7 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='description'>
-            <ReactMarkdown className='DfMemo--full' source={desc} linkTarget='_blank' />
+            <ReactMarkdown className='DfMd--full' source={desc} linkTarget='_blank' />
           </div>
         </div>
       </div>
