@@ -15,7 +15,7 @@ import Section from '@polkadot/df-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
 import _ from 'lodash';
-import { BlogFollowersModal } from './FollowersModal';
+import { BlogFollowersModal } from './FollowModal';
 import { BlogHistoryModal } from './ListsEditHistory';
 import { Dropdown } from 'semantic-ui-react';
 import { FollowBlogButton } from './FollowButton';
@@ -132,7 +132,7 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <BlogFollowersModal id={id} followersCount={blog.followers_count.toNumber()} />
+    <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} title={'Followers'} />
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>

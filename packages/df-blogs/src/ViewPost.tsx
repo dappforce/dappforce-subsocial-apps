@@ -46,7 +46,7 @@ function ViewPostInternal (props: ViewPostProps) {
 
   const post = postById.unwrap();
   const {
-    created: { account, time, block },
+    created: { account },
     comments_count,
     upvotes_count,
     downvotes_count,
@@ -55,10 +55,10 @@ function ViewPostInternal (props: ViewPostProps) {
   const [ content , setContent ] = useState({} as PostData);
   const [ summary, setSummary ] = useState('');
   const [ commentsSection, setCommentsSection ] = useState(false);
-  const [ openPostVoters, setOpenPostVoters ] = useState(false);
+  const [ postVotersOpen, serPostVotersOpen ] = useState(false);
   const [ activeVoters, setActiveVoters ] = useState(0);
   const openVoters = (type: ActiveVoters) => {
-    setOpenPostVoters(true);
+    serPostVotersOpen(true);
     setActiveVoters(type);
   };
   const { title, body, image } = content;
@@ -119,7 +119,7 @@ function ViewPostInternal (props: ViewPostProps) {
           <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)}>Downvotes: <b>{downvotes_count.toString()}</b></Link></MutedSpan>
         </div>
         {commentsSection && <CommentsByPost postId={post.id} post={post} />}
-        {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
+        {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => serPostVotersOpen(false)}/>}
       </Segment>
     </>;
   };

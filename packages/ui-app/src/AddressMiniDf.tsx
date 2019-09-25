@@ -22,8 +22,7 @@ import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
 import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
-import { AccountFollowersModal } from '@dappforce/blogs/FollowersModal';
-import { AccountFollowingModal } from '@dappforce/blogs/FollowingModal';
+import { AccountFollowersModal, AccountFollowingModal } from '@dappforce/blogs/FollowModal';
 
 const LIMIT_SUMMARY = 40;
 
@@ -90,18 +89,18 @@ function AddressMini (props: Props) {
     }).catch(err => console.log(err));
   }, [address, ipfs_hash]);
 
-  const [ open, setOpen ] = useState(false);
-  const [ openFollowers, setOpenFollowers ] = useState(false);
-  const [ openFollowing, setOpenFollowing ] = useState(false);
+  const [ popupOpen, setPopupOpen ] = useState(false);
+  const [ followersOpen, setFollowersOpen ] = useState(false);
+  const [ followingOpen, setFollowingOpen ] = useState(false);
 
   const openFollowersModal = () => {
-    setOpenFollowers(true);
-    setOpen(false);
+    setFollowersOpen(true);
+    setPopupOpen(false);
   };
 
   const openFollowingModal = () => {
-    setOpenFollowing(true);
-    setOpen(false);
+    setFollowingOpen(true);
+    setPopupOpen(false);
   };
 
   const hasAvatar = avatar && nonEmptyStr(avatar);
@@ -129,9 +128,9 @@ function AddressMini (props: Props) {
           {myAddress !== address
             ? <Popup
               trigger={renderAddress(address)}
-              onClose={() => setOpen(false)}
-              onOpen={() => setOpen(true)}
-              open={open}
+              onClose={() => setPopupOpen(false)}
+              onOpen={() => setPopupOpen(true)}
+              open={popupOpen}
               flowing
               hoverable
             >
@@ -139,8 +138,8 @@ function AddressMini (props: Props) {
             </Popup>
             : renderAddress(address)
           }
-            {openFollowers && <AccountFollowersModal id={address} followersCount={followers} open={openFollowers} close={() => setOpenFollowers(false)}/>}
-            {openFollowing && <AccountFollowingModal id={address} followingCount={following} open={openFollowing} close={() => setOpenFollowing(false)}/>}
+            {followersOpen && <AccountFollowersModal id={address} followersCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={'Followers'}/>}
+            {followingOpen && <AccountFollowingModal id={address} followingCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'Following'}/>}
           <div className='ui--AddressMini-details'>
             {renderName(address)}
             {extraDetails}
@@ -173,8 +172,8 @@ function AddressMini (props: Props) {
         <ReactMarkdown source={summary} linkTarget='_blank' />
       </div>
       <div>
-      <Link to='#' onClick={openFollowersModal}>Followers: {followers} </Link>
-      <Link to='#' onClick={openFollowingModal}>Following: {following} </Link>
+      <Link to='#' onClick={openFollowersModal}>Followers: {followers}</Link>
+      <Link to='#' onClick={openFollowingModal}>Following: {following}</Link>
       </div>
     </div>;
   }

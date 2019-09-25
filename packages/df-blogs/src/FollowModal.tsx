@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
@@ -6,22 +6,22 @@ import { queryBlogsToProp } from './utils';
 import { Modal, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
-import { Link } from 'react-router-dom';
 
 type Props = {
-  following?: AccountId[],
-  followingCount: Number,
+  accounts?: AccountId[],
+  accountsCount: Number,
+  title: string,
   open: boolean,
   close: () => void
 };
 
-const InnerFollowingModal = (props: Props) => {
+const InnerFollowModal = (props: Props) => {
 
-  const { following, followingCount, open, close } = props;
-  console.log(following);
+  const { accounts, accountsCount = 0, open, close, title } = props;
+  console.log(accounts);
 
-  const renderFollowing = () => {
-    return following && following.map((account, index) =>
+  const renderAccounts = () => {
+    return accounts && accounts.map((account, index) =>
       <div key={index} style={{ textAlign: 'left', margin: '1rem' }}>
         <AddressMini
           value={account}
@@ -42,20 +42,34 @@ const InnerFollowingModal = (props: Props) => {
       centered={true}
       style={{ marginTop: '3rem' }}
     >
-      <Modal.Header><h1>Following ({followingCount})</h1></Modal.Header>
+      <Modal.Header><h1>{title} ({accountsCount})</h1></Modal.Header>
       <Modal.Content scrolling>
-        {renderFollowing()}
+        {renderAccounts()}
       </Modal.Content>
       <Modal.Actions>
-        <Button content='Close' onClick={close}/>
+        <Button content='Close' onClick={close} />
       </Modal.Actions>
     </Modal>
   );
 };
 
-export const AccountFollowingModal = withMulti(
-  InnerFollowingModal,
+export const BlogFollowersModal = withMulti(
+  InnerFollowModal,
   withCalls<Props>(
-    queryBlogsToProp('accountsFollowedByAccount', { paramName: 'id', propName: 'following' })
+    queryBlogsToProp('blogFollowers', { paramName: 'id', propName: 'accounts' })
+  )
+);
+
+export const AccountFollowersModal = withMulti(
+  InnerFollowModal,
+  withCalls<Props>(
+    queryBlogsToProp('accountFollowers', { paramName: 'id', propName: 'accounts' })
+  )
+);
+
+export const AccountFollowingModal = withMulti(
+  InnerFollowModal,
+  withCalls<Props>(
+    queryBlogsToProp('accountsFollowedByAccount', { paramName: 'id', propName: 'accounts' })
   )
 );

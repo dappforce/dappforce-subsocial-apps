@@ -14,15 +14,17 @@ import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
-import { AccountFollowersModal } from './FollowersModal';
+import { AccountFollowersModal, AccountFollowingModal } from './FollowModal';
 import { ProfileHistoryModal } from './ListsEditHistory';
-import { AccountFollowingModal } from './FollowingModal';
 
-type Props = {
+export type Props = {
   preview?: boolean,
   nameOnly?: boolean,
   id: AccountId,
   socialAccountOpt?: Option<SocialAccount>,
+  profile?: Profile,
+  profileData?: ProfileData,
+  socialAccount?: SocialAccount,
   followers?: AccountId[],
   size?: number
 };
@@ -183,8 +185,8 @@ function Component (props: Props) {
       {renderPreview()}
     </div>
     {renderFollowButton()}
-    <AccountFollowersModal id={id} followersCount={followers_count.toNumber()} />
-    <AccountFollowingModal id={id} followingCount={following_accounts_count.toNumber()}/>
+    <AccountFollowersModal id={id} accountsCount={followers_count.toNumber()} title={'Followers'}/>
+    <AccountFollowingModal id={id} accountsCount={following_accounts_count.toNumber()} title={'Following'}/>
   </>;
 }
 
