@@ -11,7 +11,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { media } from '@polkadot/ui-app';
 import { classes } from '@polkadot/ui-app/util';
 import Signer from '@polkadot/ui-signer';
-import settings from '@polkadot/joy-settings/';
+import settings from '@polkadot/df-settings/';
 
 import { hot } from 'react-hot-loader/root';
 
