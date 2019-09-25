@@ -139,6 +139,8 @@ function AddressMini (props: Props) {
             </Popup>
             : renderAddress(address)
           }
+            {openFollowers && <AccountFollowersModal id={address} followersCount={followers} open={openFollowers} close={() => setOpenFollowers(false)}/>}
+            {openFollowing && <AccountFollowingModal id={address} followingCount={following} open={openFollowing} close={() => setOpenFollowing(false)}/>}
           <div className='ui--AddressMini-details'>
             {renderName(address)}
             {extraDetails}
@@ -174,8 +176,6 @@ function AddressMini (props: Props) {
       <Link to='#' onClick={openFollowersModal}>Followers: {followers} </Link>
       <Link to='#' onClick={openFollowingModal}>Following: {following} </Link>
       </div>
-      {openFollowers && <AccountFollowersModal id={address} followersCount={followers} open={openFollowers} close={() => setOpenFollowers(false)}/>}
-      {openFollowing && <AccountFollowingModal id={address} followingCount={following} open={openFollowing} close={() => setOpenFollowing(false)}/>}
     </div>;
   }
 
