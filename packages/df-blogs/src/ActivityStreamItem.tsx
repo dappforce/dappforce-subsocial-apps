@@ -3,7 +3,7 @@ import React from 'react';
 import { AccountId, AccountIndex, Address, Balance } from '@polkadot/types';
 import { withCall, withMulti } from '@polkadot/ui-api/index';
 
-import { findNameByAddress, nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
+import { findNameByAddress, nonEmptyStr } from '@polkadot/df-utils/index';
 import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
 import { Popup, Grid } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';

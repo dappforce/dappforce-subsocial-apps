@@ -5,7 +5,6 @@ import { AccountId, AccountIndex, Address } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId } from './types';
-import { OuterProps } from './EditProfile';
 
 type AuthorPreviewProps = {
   address: AccountId | AccountIndex | Address | string
@@ -73,14 +72,3 @@ export type UrlHasAddressProps = {
     }
   }
 };
-
-export function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
-  return function (props: UrlHasAddressProps) {
-    const { match: { params: { address } } } = props;
-    try {
-      return <Component id={new AccountId(address)} {...props}/>;
-    } catch (err) {
-      return <em>Invalid address: {address}</em>;
-    }
-  };
-}
