@@ -20,8 +20,6 @@ import ReactTooltip from 'react-tooltip';
 import { queryToProp } from '@polkadot/df-utils/index';
 import { ElectionStage } from '@dappforce/types/';
 
-const councilSidebarName = 'council';
-
 type Props = I18nProps & ApiProps & {
   isCollapsed: boolean,
   onClick: () => void,
@@ -92,19 +90,17 @@ class Item extends React.PureComponent<Props> {
   }
 
   private getSubtitle (name: string): Subtitle | undefined {
-    if (name === councilSidebarName) {
-      const { electionStage: stage } = this.props;
-      if (stage && stage.isSome) {
-        const classes: string[] = [];
-        let text = 'No active election';
-        if (stage.isSome) {
-          const stageValue = stage.value as ElectionStage;
-          const stageName = stageValue.type;
-          text = `${stageName} stage`;
-          classes.push(stageName);
-        }
-        return { text, classes };
+    const { electionStage: stage } = this.props;
+    if (stage && stage.isSome) {
+      const classes: string[] = [];
+      let text = 'No active election';
+      if (stage.isSome) {
+        const stageValue = stage.value as ElectionStage;
+        const stageName = stageValue.type;
+        text = `${stageName} stage`;
+        classes.push(stageName);
       }
+      return { text, classes };
     }
     return undefined;
   }

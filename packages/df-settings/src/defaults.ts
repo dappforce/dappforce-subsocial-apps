@@ -4,11 +4,10 @@
 
 import { Options } from './types';
 
-const WSS_JOYSTREAM = 'wss://testnet.joystream.org/athens/rpc/';
+const WSS_LOCALHOST = 'ws://127.0.0.1:9944/';
 
 const ENDPOINTS: Options = [
-  { text: 'Local Node (127.0.0.1:9944)', value: 'ws://127.0.0.1:9944/' },
-  { text: 'Joystream Testnet (hosted by joystream.org)', value: WSS_JOYSTREAM }
+  { text: 'Local Node (127.0.0.1:9944)', value: WSS_LOCALHOST }
 ];
 
 const LANGUAGE_DEFAULT = 'default';
@@ -31,7 +30,7 @@ const UITHEMES: Options = [
   { value: 'substrate', text: 'Substrate' }
 ];
 
-const ENDPOINT_DEFAULT = WSS_JOYSTREAM;
+const ENDPOINT_DEFAULT = WSS_LOCALHOST;
 
 const UITHEME_DEFAULT = 'substrate';
 
