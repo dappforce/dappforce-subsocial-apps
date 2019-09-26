@@ -8,8 +8,6 @@ import { queryToProp } from '@polkadot/df-utils/index';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId, Profile, ProfileData } from './types';
 import { OuterProps as PropsWithEditProfile } from './EditProfile';
-import { Props as PropsWithViewProfile } from './ViewProfile';
-import { Props as PropsWithAddressMini } from '@polkadot/ui-app/AddressMiniDf';
 import { getJsonFromIpfs } from './OffchainUtils';
 import { SocialAccount } from '@dappforce/types/blogs';
 

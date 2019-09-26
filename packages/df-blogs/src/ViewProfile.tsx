@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { Option, AccountId } from '@polkadot/types';
+import { AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
-import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
 import { queryBlogsToProp, withIdFromMyAddress, withSocialAccount, withRequireProfile } from './utils';
@@ -14,8 +13,9 @@ import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
-import { AccountFollowersModal, AccountFollowingModal } from './FollowModal';
+import { AccountFollowersModal, AccountFollowingModal } from './AccountsListModal';
 import { ProfileHistoryModal } from './ListsEditHistory';
+import TxButton from '@polkadot/df-utils/TxButton';
 
 export type Props = {
   preview?: boolean,
@@ -43,6 +43,9 @@ function Component (props: Props) {
 
   const followers = socialAccount && socialAccount.followers_count.toNumber();
   const following = socialAccount && socialAccount.following_accounts_count.toNumber();
+
+  const [ followersOpen, setFollowersOpen ] = useState(false);
+  const [ followingOpen, setFollowingOpen ] = useState(false);
 
   if (!profileData || !profile) return null;
 
@@ -171,8 +174,10 @@ function Component (props: Props) {
       {renderPreview()}
     </div>
     {renderFollowButton()}
-    <AccountFollowersModal id={id} accountsCount={followers} title={'Followers'}/>
-    <AccountFollowingModal id={id} accountsCount={following} title={'Following'}/>
+    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)}>Followers: {followers}</TxButton>
+    <TxButton isBasic={true} onClick={() => setFollowingOpen(true)}>Following: {following}</TxButton>
+    {followersOpen && <AccountFollowersModal id={id} accountsCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={'Followers'}/>}
+    {followingOpen && <AccountFollowingModal id={id} accountsCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'Following'}/>}
   </>;
 }
 

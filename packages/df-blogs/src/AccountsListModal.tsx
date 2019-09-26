@@ -15,7 +15,7 @@ type Props = {
   close: () => void
 };
 
-const InnerFollowModal = (props: Props) => {
+const InnerAccountsListModal = (props: Props) => {
 
   const { accounts, accountsCount = 0, open, close, title } = props;
   console.log(accounts);
@@ -54,21 +54,21 @@ const InnerFollowModal = (props: Props) => {
 };
 
 export const BlogFollowersModal = withMulti(
-  InnerFollowModal,
+  InnerAccountsListModal,
   withCalls<Props>(
     queryBlogsToProp('blogFollowers', { paramName: 'id', propName: 'accounts' })
   )
 );
 
 export const AccountFollowersModal = withMulti(
-  InnerFollowModal,
+  InnerAccountsListModal,
   withCalls<Props>(
     queryBlogsToProp('accountFollowers', { paramName: 'id', propName: 'accounts' })
   )
 );
 
 export const AccountFollowingModal = withMulti(
-  InnerFollowModal,
+  InnerAccountsListModal,
   withCalls<Props>(
     queryBlogsToProp('accountsFollowedByAccount', { paramName: 'id', propName: 'accounts' })
   )

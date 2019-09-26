@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'semantic-ui-react';
 import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
@@ -10,11 +10,10 @@ import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
-import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
+import { addJsonToIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
 import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent, withSocialAccount, withRequireProfile } from './utils';
-import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { SocialAccount } from '@dappforce/types/blogs';
 
 // TODO get next settings from Substrate:

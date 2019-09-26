@@ -2,7 +2,7 @@
 import { BareProps } from './types';
 
 import BN from 'bn.js';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AccountId, AccountIndex, Address, Balance, Option } from '@polkadot/types';
 import { withCall, withMulti, withCalls } from '@polkadot/ui-api/index';
 
@@ -16,10 +16,9 @@ import { Popup } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import { queryBlogsToProp, withSocialAccount } from '@dappforce/blogs/utils';
 import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
-import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
-import { AccountFollowersModal, AccountFollowingModal } from '@dappforce/blogs/FollowModal';
+import { AccountFollowersModal, AccountFollowingModal } from '@dappforce/blogs/AccountsListModal';
 
 const LIMIT_SUMMARY = 40;
 

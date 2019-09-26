@@ -15,10 +15,11 @@ import Section from '@polkadot/df-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
 import _ from 'lodash';
-import { BlogFollowersModal } from './FollowModal';
+import { BlogFollowersModal } from './AccountsListModal';
 import { BlogHistoryModal } from './ListsEditHistory';
 import { Dropdown } from 'semantic-ui-react';
 import { FollowBlogButton } from './FollowButton';
+import TxButton from '@polkadot/df-utils/TxButton';
 
 type Props = MyAccountProps & {
   preview?: boolean,
@@ -50,6 +51,8 @@ function Component (props: Props) {
   } = blog;
   const [ content , setContent ] = useState({} as BlogData);
   const { desc, name, image } = content;
+
+  const [ followersOpen, setFollowersOpen ] = useState(false);
 
   useEffect(() => {
     if (!ipfs_hash) return;
@@ -132,7 +135,8 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} title={'Followers'} />
+    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)}>Followers: {blog.followers_count.toNumber()}</TxButton>
+    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={'Followers'} />}
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>
