@@ -11,7 +11,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { WebpackPluginServe } = require('webpack-plugin-serve');
 
-const findPackages = require('../../scripts/findPackages'); // Do we need to add joy- apps in that script?
+const findPackages = require('../../scripts/findPackages'); // Do we need to add df- apps in that script?
 
 const DEFAULT_THEME = 'substrate';
 

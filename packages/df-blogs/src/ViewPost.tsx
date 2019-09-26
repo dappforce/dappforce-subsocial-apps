@@ -8,11 +8,12 @@ import { Option } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { PostId, Post, CommentId, PostData } from './types';
-import { queryBlogsToProp, UrlHasIdProps, AuthorPreview } from './utils';
-import { withMyAccount, MyAccountProps } from '@polkadot/joy-utils/MyAccount';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
+import { UrlHasIdProps, AuthorPreview } from './utils';
+import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import { CommentsByPost } from './ViewComment';
 import { CreatedBy } from './CreatedBy';
-import { MutedSpan } from '@polkadot/joy-utils/MutedText';
+import { MutedSpan } from '@polkadot/df-utils/MutedText';
 import { Voter } from './Voter';
 import { PostHistoryModal } from './ListsEditHistory';
 
@@ -110,7 +111,7 @@ function ViewPostInternal (props: ViewPostProps) {
       {withCreatedBy && <CreatedBy created={post.created} />}
       <div style={{ margin: '1rem 0' }}>
         {image && <img src={image} className='DfPostImage' /* add onError handler */ />}
-        <ReactMarkdown className='JoyMemo--full' source={body} linkTarget='_blank' />
+        <ReactMarkdown className='DfMd' source={body} linkTarget='_blank' />
         {/* TODO render tags */}
       </div>
       <Voter struct={post} />

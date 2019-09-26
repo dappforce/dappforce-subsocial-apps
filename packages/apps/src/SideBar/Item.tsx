@@ -17,9 +17,8 @@ import { isFunction } from '@polkadot/util';
 import { Option } from '@polkadot/types';
 
 import ReactTooltip from 'react-tooltip';
-import { queryToProp } from '@polkadot/joy-utils/index';
-import { ElectionStage } from '@joystream/types/';
-import { councilSidebarName } from '../routing/joy-election';
+import { queryToProp } from '@polkadot/df-utils/index';
+import { ElectionStage } from '@dappforce/types/';
 
 type Props = I18nProps & ApiProps & {
   isCollapsed: boolean,
@@ -91,19 +90,17 @@ class Item extends React.PureComponent<Props> {
   }
 
   private getSubtitle (name: string): Subtitle | undefined {
-    if (name === councilSidebarName) {
-      const { electionStage: stage } = this.props;
-      if (stage && stage.isSome) {
-        const classes: string[] = [];
-        let text = 'No active election';
-        if (stage.isSome) {
-          const stageValue = stage.value as ElectionStage;
-          const stageName = stageValue.type;
-          text = `${stageName} stage`;
-          classes.push(stageName);
-        }
-        return { text, classes };
+    const { electionStage: stage } = this.props;
+    if (stage && stage.isSome) {
+      const classes: string[] = [];
+      let text = 'No active election';
+      if (stage.isSome) {
+        const stageValue = stage.value as ElectionStage;
+        const stageName = stageValue.type;
+        text = `${stageName} stage`;
+        classes.push(stageName);
       }
+      return { text, classes };
     }
     return undefined;
   }

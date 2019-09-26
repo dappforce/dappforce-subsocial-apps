@@ -3,12 +3,12 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { AppProps, I18nProps } from '@polkadot/ui-app/types';
-import { SettingsStruct } from '@polkadot/joy-settings/types';
+import { SettingsStruct } from '@polkadot/df-settings/types';
 
 import React from 'react';
 import { Button, Dropdown, Input } from '@polkadot/ui-app';
 import { ActionStatus } from '@polkadot/ui-app/Status/types';
-import uiSettings from '@polkadot/joy-settings/';
+import uiSettings from '@polkadot/df-settings/';
 
 import './index.css';
 

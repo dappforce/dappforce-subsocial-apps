@@ -90,6 +90,11 @@
   }
 }
 
+.ui.img.avatar {
+  width: initial;
+  height: initial;
+}
+
 .DfCommentsByPost {
   .ui.comments {
     max-width: 100%;

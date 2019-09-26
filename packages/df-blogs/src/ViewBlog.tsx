@@ -7,11 +7,10 @@ import { Option, AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { getJsonFromIpfs } from './OffchainUtils';
-import { nonEmptyStr } from '@polkadot/joy-utils/index';
+import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
 import { BlogId, Blog, PostId, BlogData } from './types';
-import { queryBlogsToProp } from './utils';
-import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
-import Section from '@polkadot/joy-utils/Section';
+import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
+import Section from '@polkadot/df-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
 import _ from 'lodash';
@@ -94,7 +93,7 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='description'>
-            <ReactMarkdown className='JoyMemo--full' source={desc} linkTarget='_blank' />
+            <ReactMarkdown className='DfMd' source={desc} linkTarget='_blank' />
           </div>
         </div>
       </div>

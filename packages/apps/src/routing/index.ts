@@ -4,15 +4,7 @@
 
 import { Routing, Routes } from '../types';
 
-import appSettings from '@polkadot/joy-settings/';
-
-// import election from './joy-election';
-// import help from './joy-help';
-// import media from './joy-media';
-import members from './joy-members';
-// import proposals from './joy-proposals';
-// import roles from './joy-roles';
-// import pages from './joy-pages';
+import appSettings from '@polkadot/df-settings/';
 
 import blogs from './df-blogs';
 
@@ -32,49 +24,31 @@ const routes: Routes = appSettings.isBasicMode
   ? ([] as Routes).concat(
     explorer,
     staking,
-    // roles,
     transfer,
     null,
     blogs,
-    // media,
-    members,
     accounts,
     addressbook,
-    // null,
-    // election,
-    // proposals,
     null,
-    // help,
     settings,
-    template//,
-    // null,
-    // pages
+    template
   )
   : ([] as Routes).concat(
     explorer,
     staking,
-    // roles,
     transfer,
     null,
     blogs,
-    // media,
-    members,
     accounts,
     addressbook,
-    // null,
-    // election,
-    // proposals,
     null,
     storage,
     extrinsics,
     null,
-    // help,
     settings,
     toolbox,
     js,
-    template//,
-    // null,
-    // pages
+    template
   );
 
 export default ({

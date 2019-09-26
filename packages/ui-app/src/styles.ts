@@ -14,5 +14,4 @@ import './styles/media.css';
 import './styles/rx.css';
 import './styles/components.css';
 
-import './styles/joystream.css';
 import './styles/subsocial.css';

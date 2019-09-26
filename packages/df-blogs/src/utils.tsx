@@ -2,18 +2,9 @@ import React from 'react';
 import { Pagination as SuiPagination } from 'semantic-ui-react';
 
 import { AccountId, AccountIndex, Address } from '@polkadot/types';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
-import { Options } from '@polkadot/ui-api/with/types';
-import { queryToProp } from '@polkadot/joy-utils/index';
+import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId } from './types';
-import { OuterProps } from './EditProfile';
-
-export const host = 'http://localhost:3001/v1';
-
-export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
-  return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
-};
 
 type AuthorPreviewProps = {
   address: AccountId | AccountIndex | Address | string
@@ -22,7 +13,7 @@ type AuthorPreviewProps = {
 // TODO show member instead of address.
 export function AuthorPreview ({ address }: AuthorPreviewProps) {
   return (
-    <AddressMini value={address} isShort={false} isPadded={false} withBalance={true} withName={true} withMemo={false} size={36} />
+    <AddressMini value={address} isShort={false} isPadded={false} withBalance={true} withName={true} size={36} />
   );
 }
 
@@ -81,14 +72,3 @@ export type UrlHasAddressProps = {
     }
   }
 };
-
-export function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
-  return function (props: UrlHasAddressProps) {
-    const { match: { params: { address } } } = props;
-    try {
-      return <Component id={new AccountId(address)} {...props}/>;
-    } catch (err) {
-      return <em>Invalid address: {address}</em>;
-    }
-  };
-}

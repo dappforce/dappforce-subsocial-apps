@@ -2,12 +2,12 @@ import React from 'react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import _ from 'lodash';
 import { BlogId } from './types';
-import Section from '@polkadot/joy-utils/Section';
+import Section from '@polkadot/df-utils/Section';
 import ViewBlog from './ViewBlog';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 type MyBlogProps = {
   id: AccountId,

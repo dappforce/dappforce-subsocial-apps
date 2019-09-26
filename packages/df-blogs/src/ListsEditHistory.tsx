@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { withMulti, withCalls } from '@polkadot/ui-api/with';
 import { Modal, Comment as SuiComment, Button } from 'semantic-ui-react';
 import _ from 'lodash';
-import AddressMini from '@polkadot/ui-app/AddressMiniJoy';
+import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord } from './types';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Option } from '@polkadot/types';
 import ReactMarkdown from 'react-markdown';
 import IdentityIcon from '@polkadot/ui-identicon/Identicon';
@@ -164,7 +164,6 @@ const PostFromHistory = (props: PropsPostFromHistory) => {
     loadData().catch(err => new Error(err));
   },[ipfsHash, _slug]);
 
-
   return (<div style={{ textAlign: 'left', margin: '1rem' }}>
     <h1 style={{ display: 'flex' }}>
       <span style={{ marginRight: '.5rem' }}>{content.title}</span>
@@ -173,7 +172,7 @@ const PostFromHistory = (props: PropsPostFromHistory) => {
     <CreatedBy created={edited} dateLabel='Edited on' accountLabel='Edited by' />
     <div style={{ margin: '1rem 0' }}>
       {content.image && <img src={content.image} className='DfPostImage' /* add onError handler */ />}
-      <ReactMarkdown className='JoyMemo--full' source={content.body} linkTarget='_blank' />
+      <ReactMarkdown className='DfMd' source={content.body} linkTarget='_blank' />
       {/* TODO render tags */}
     </div>
     <hr/>
@@ -274,7 +273,7 @@ const BlogFromHistory = (props: PropsBlogFromHistory) => {
             </div>
             <div className='description' style={{ margin: '0.2rem' }}>{`slug: ${_slug}`}</div>
             <div className='description' style={{ margin: '0.2rem' }}>
-              <ReactMarkdown className='JoyMemo--full' source={content.desc} linkTarget='_blank' />
+              <ReactMarkdown className='DfMd' source={content.desc} linkTarget='_blank' />
             </div>
           </div>
         </div>

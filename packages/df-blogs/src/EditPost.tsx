@@ -3,18 +3,19 @@ import { Button } from 'semantic-ui-react';
 import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
-import TxButton from '@polkadot/joy-utils/TxButton';
+import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
 import { addJsonToIpfs, getJsonFromIpfs } from './OffchainUtils';
-import * as JoyForms from '@polkadot/joy-utils/forms';
+import * as DfForms from '@polkadot/df-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
 import { PostId, Post, PostData, PostUpdate, BlogId } from './types';
-import Section from '@polkadot/joy-utils/Section';
-import { useMyAccount } from '@polkadot/joy-utils/MyAccountContext';
-import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
+import Section from '@polkadot/df-utils/Section';
+import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
+import { UrlHasIdProps, getNewIdFromEvent } from './utils';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()
@@ -53,9 +54,9 @@ type FormValues = PostData & {
 
 type FormProps = OuterProps & FormikProps<FormValues>;
 
-const LabelledField = JoyForms.LabelledField<FormValues>();
+const LabelledField = DfForms.LabelledField<FormValues>();
 
-const LabelledText = JoyForms.LabelledText<FormValues>();
+const LabelledText = DfForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
@@ -132,7 +133,7 @@ const InnerForm = (props: FormProps) => {
   };
 
   const form =
-    <Form className='ui form JoyForm EditEntityForm'>
+    <Form className='ui form DfForm EditEntityForm'>
 
       <LabelledText name='title' label='Post title' placeholder={`What is a title of you post?`} {...props} />
 

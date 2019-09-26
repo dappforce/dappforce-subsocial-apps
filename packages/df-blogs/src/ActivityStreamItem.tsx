@@ -3,10 +3,10 @@ import React from 'react';
 import { AccountId, AccountIndex, Address, Balance } from '@polkadot/types';
 import { withCall, withMulti } from '@polkadot/ui-api/index';
 
-import { findNameByAddress, nonEmptyStr } from '@polkadot/joy-utils/index';
+import { findNameByAddress, nonEmptyStr } from '@polkadot/df-utils/index';
 import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
 import { Popup, Grid } from 'semantic-ui-react';
-import { MyAccountProps, withMyAccount } from '@polkadot/joy-utils/MyAccount';
+import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import { BareProps } from '@polkadot/ui-app/types';
 import { classes, toShortAddress } from '@polkadot/ui-app/util';
 import IdentityIcon from '@polkadot/ui-identicon/Identicon';
