@@ -13,7 +13,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
-import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent } from './utils';
+import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent, withSocialAccount } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { SocialAccount } from '@dappforce/types/blogs';
 
@@ -72,8 +72,9 @@ type ValidationProps = {
 export type OuterProps = ValidationProps & {
   history?: History,
   id?: AccountId,
-  struct?: Profile,
-  json?: ProfileData
+  profile?: Profile,
+  profileData?: ProfileData,
+  socialAccount?: SocialAccount
 };
 
 type FormValues = ProfileData & {
@@ -90,7 +91,7 @@ const InnerForm = (props: FormProps) => {
   const {
     id,
     history,
-    struct,
+    profile,
     values,
     dirty,
     isValid,
@@ -151,7 +152,7 @@ const InnerForm = (props: FormProps) => {
   const buildTxParams = () => {
     if (!isValid) return [];
 
-    if (!struct) {
+    if (!profile) {
       return [ username, ipfsCid ];
     } else {
       // TODO update only dirty values.
@@ -163,7 +164,7 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  const title = struct ? `Edit profile` : `New profile`;
+  const title = profile ? `Edit profile` : `New profile`;
   const shouldBeValidUrlText = `Should be a valid URL.`;
 
   return (
@@ -235,13 +236,13 @@ const InnerForm = (props: FormProps) => {
         <TxButton
           type='submit'
           size='large'
-          label={struct
+          label={profile
             ? 'Update my profile'
             : 'Create my profile'
           }
           isDisabled={!dirty || isSubmitting}
           params={buildTxParams()}
-          tx={struct
+          tx={profile
             ? 'blogs.updateProfile'
             : 'blogs.createProfile'
           }
@@ -267,12 +268,12 @@ const EditForm = withFormik<OuterProps, FormValues>({
 
   // Transform outer props into form values
   mapPropsToValues: (props): FormValues => {
-    const { struct, json } = props;
-    if (struct && json) {
-      const username = struct.username.toString();
+    const { profile, profileData } = props;
+    if (profile && profileData) {
+      const username = profile.username.toString();
       return {
         username,
-        ...json
+        ...profileData
       };
     } else {
       return {
@@ -296,61 +297,62 @@ const EditForm = withFormik<OuterProps, FormValues>({
   }
 })(InnerForm);
 
-type LoadStructProps = OuterProps & {
-  socialAccountOpt: Option<SocialAccount>
-};
+// type LoadStructProps = OuterProps & {
+//   socialAccountOpt: Option<SocialAccount>
+// };
 
-type StructJson = ProfileData | undefined;
+// type StructJson = ProfileData | undefined;
 
-type Struct = Profile | undefined;
+// type Struct = Profile | undefined;
 
-function LoadStruct (props: LoadStructProps) {
+// function LoadStruct (props: LoadStructProps) {
 
-  const { state: { address: myAddress } } = useMyAccount();
-  const { socialAccountOpt } = props;
-  const [ json, setJson ] = useState(undefined as StructJson);
-  const [ struct, setStruct ] = useState(undefined as Struct);
-  const jsonIsNone = json === undefined;
+//   const { state: { address: myAddress } } = useMyAccount();
+//   const { socialAccountOpt } = props;
+//   const [ profileData, setJson ] = useState(undefined as StructJson);
+//   const [ profile, setStruct ] = useState(undefined as Struct);
+//   const profileDataIsNone = profileData === undefined;
 
-  const loadingProfile = <em>Loading profile...</em>;
-  // const noProfile = <em>No profile for this account</em>;
+//   const loadingProfile = <em>Loading profile...</em>;
+//   // const noProfile = <em>No profile for this account</em>;
 
-  useEffect(() => {
-    if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return;
+//   useEffect(() => {
+//     if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return;
 
-    const socialAccount = socialAccountOpt.unwrap();
-    const profileOpt = socialAccount.profile;
-    if (profileOpt.isNone) return;
+//     const socialAccount = socialAccountOpt.unwrap();
+//     const profileOpt = socialAccount.profile;
+//     if (profileOpt.isNone) return;
 
-    setStruct(profileOpt.unwrap() as Profile);
+//     setStruct(profileOpt.unwrap() as Profile);
 
-    if (struct === undefined) return;
+//     if (profile === undefined) return;
 
-    getJsonFromIpfs<ProfileData>(struct.ipfs_hash).then(json => {
-      setJson(json);
-    }).catch(err => console.log(err));
-  }); // TODO add guard for loading from ipfs
+//     getJsonFromIpfs<ProfileData>(profile.ipfs_hash).then(json => {
+//       setJson(json);
+//     }).catch(err => console.log(err));
+//   }); // TODO add guard for loading from ipfs
 
-  if (!myAddress || !socialAccountOpt || jsonIsNone) {
-    return loadingProfile;
-  }
+//   if (!myAddress || !socialAccountOpt || profileDataIsNone) {
+//     return loadingProfile;
+//   }
 
-  if (socialAccountOpt.isNone) {
-    return <em>Profile not found...</em>;
-  }
+//   if (socialAccountOpt.isNone) {
+//     return <em>Profile not found...</em>;
+//   }
 
-  return <EditForm {...props} struct={struct} json={json} />;
-}
+//   return <EditForm {...props} profile={profile} profileData={profileData} />;
+// }
 
 export const NewProfile = withMulti(
   EditForm
 );
 
 export const EditProfile = withMulti(
-  LoadStruct,
+  EditForm,
   withIdFromMyAddress,
   withCalls<OuterProps>(
     queryBlogsToProp('socialAccountById',
       { paramName: 'id', propName: 'socialAccountOpt' })
-  )
+  ),
+  withSocialAccount
 );

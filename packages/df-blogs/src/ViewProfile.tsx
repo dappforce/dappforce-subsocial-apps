@@ -9,7 +9,7 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
-import { queryBlogsToProp, withIdFromMyAddress } from './utils';
+import { queryBlogsToProp, withIdFromMyAddress, withSocialAccount } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
@@ -21,7 +21,6 @@ export type Props = {
   preview?: boolean,
   nameOnly?: boolean,
   id: AccountId,
-  socialAccountOpt?: Option<SocialAccount>,
   profile?: Profile,
   profileData?: ProfileData,
   socialAccount?: SocialAccount,
@@ -30,34 +29,27 @@ export type Props = {
 };
 
 function Component (props: Props) {
-  const { socialAccountOpt } = props;
-
-  if (socialAccountOpt === undefined) return <em>Loading...</em>;
-  else if (socialAccountOpt.isNone) return <em>Social account not found yet.</em>;
-
-  const socialAccount = socialAccountOpt.unwrap();
-  const profileOpt = socialAccount.profile;
-
-  if (profileOpt.isNone) return <em>Profile is not created yet.</em>;
-
-  const profile = profileOpt.unwrap() as Profile;
-
-  const { followers_count, following_accounts_count } = socialAccount;
 
   const {
     id,
     preview = false,
     nameOnly = false,
-    size
+    size,
+    socialAccount,
+    profile,
+    profileData
   } = props;
+
+  const followers = socialAccount && socialAccount.followers_count.toNumber();
+  const following = socialAccount && socialAccount.following_accounts_count.toNumber();
+
+  if (!profileData || !profile) return null;
 
   const {
     created: { account },
-    username,
-    ipfs_hash
+    username
   } = profile;
 
-  const [ profileData , setProfileData ] = useState({} as ProfileData);
   const {
     fullname,
     avatar,
@@ -68,13 +60,6 @@ function Component (props: Props) {
     github,
     instagram
   } = profileData;
-
-  useEffect(() => {
-    if (!ipfs_hash) return;
-    getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
-      setProfileData(json);
-    }).catch(err => console.log(err));
-  }, [ false ]);
 
   const hasAvatar = avatar && nonEmptyStr(avatar);
   const hasFacebookLink = facebook && nonEmptyStr(facebook);
@@ -185,8 +170,8 @@ function Component (props: Props) {
       {renderPreview()}
     </div>
     {renderFollowButton()}
-    <AccountFollowersModal id={id} accountsCount={followers_count.toNumber()} title={'Followers'}/>
-    <AccountFollowingModal id={id} accountsCount={following_accounts_count.toNumber()} title={'Following'}/>
+    <AccountFollowersModal id={id} accountsCount={followers} title={'Followers'}/>
+    <AccountFollowingModal id={id} accountsCount={following} title={'Following'}/>
   </>;
 }
 
@@ -196,5 +181,6 @@ export default withMulti(
   withCalls<Props>(
     queryBlogsToProp('socialAccountById',
       { paramName: 'id', propName: 'socialAccountOpt' })
-  )
+  ),
+  withSocialAccount
 );

@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pagination as SuiPagination } from 'semantic-ui-react';
 
-import { AccountId, AccountIndex, Address } from '@polkadot/types';
+import { AccountId, AccountIndex, Address, Option } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { Options } from '@polkadot/ui-api/with/types';
 import { queryToProp } from '@polkadot/df-utils/index';
 import { SubmittableResult } from '@polkadot/api';
-import { CommentId, PostId, BlogId } from './types';
-import { OuterProps } from './EditProfile';
+import { CommentId, PostId, BlogId, Profile, ProfileData } from './types';
+import { OuterProps as PropsWithEditProfile } from './EditProfile';
+import { Props as PropsWithViewProfile } from './ViewProfile';
+import { Props as PropsWithAddressMini } from '@polkadot/ui-app/AddressMiniDf';
+import { getJsonFromIpfs } from './OffchainUtils';
+import { SocialAccount } from '@dappforce/types/blogs';
 
 export const host = 'http://localhost:3001/v1';
 
@@ -86,7 +90,7 @@ export type UrlHasAddressProps = {
   }
 };
 
-export function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
+export function withIdFromMyAddress (Component: React.ComponentType<PropsWithEditProfile>) {
   return function (props: UrlHasAddressProps) {
     const { match: { params: { address } } } = props;
     try {
@@ -94,5 +98,43 @@ export function withIdFromMyAddress (Component: React.ComponentType<OuterProps>)
     } catch (err) {
       return <em>Invalid address: {address}</em>;
     }
+  };
+}
+
+type PropsWithSocialAccount = {
+  profile?: Profile,
+  profileData?: ProfileData,
+  socialAccount?: SocialAccount
+};
+
+type LoadSocialAccount = PropsWithSocialAccount & {
+  socialAccountOpt?: Option<SocialAccount>
+};
+
+export function withSocialAccount<P extends LoadSocialAccount> (Component: React.ComponentType<P>) {
+  return function (props: P) {
+    const { socialAccountOpt } = props;
+
+    if (socialAccountOpt === undefined) return <em>Loading...</em>;
+    else if (socialAccountOpt.isNone) return <em>Social account not found yet.</em>;
+
+    const socialAccount = socialAccountOpt.unwrap();
+    const profileOpt = socialAccount.profile;
+
+    if (profileOpt.isNone) return <em>Profile is not created yet.</em>;
+
+    const profile = profileOpt.unwrap() as Profile;
+
+    const ipfsHash = profile.ipfs_hash;
+    const [ profileData , setProfileData ] = useState({} as ProfileData);
+
+    useEffect(() => {
+      if (!ipfsHash) return;
+      getJsonFromIpfs<ProfileData>(ipfsHash).then(json => {
+        setProfileData(json);
+      }).catch(err => console.log(err));
+    }, [ false ]);
+
+    return <Component {...props} socialAccount={socialAccount} profile={profile} profileData={profileData}/>;
   };
 }

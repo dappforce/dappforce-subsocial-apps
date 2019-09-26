@@ -26,8 +26,11 @@ import { AccountFollowersModal, AccountFollowingModal } from '@dappforce/blogs/F
 
 const LIMIT_SUMMARY = 40;
 
-type Props = MyAccountProps & BareProps & {
+export type Props = MyAccountProps & BareProps & {
   socialAccountOpt?: Option<SocialAccount>,
+  profile?: Profile,
+  profileData?: ProfileData,
+  socialAccount?: SocialAccount,
   balance?: Balance | Array<Balance> | BN,
   children?: React.ReactNode,
   isPadded?: boolean,
