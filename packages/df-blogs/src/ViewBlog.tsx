@@ -121,7 +121,7 @@ function Component (props: Props) {
 
   const postsSectionTitle = () => {
     return <>
-      <span style={{ marginRight: '.5rem' }}>Posts ({postsCount})</span>
+      <span style={{ marginRight: '.5rem' }}>{postsCount} posts</span>
       <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
         <i className='plus icon' />
         Write post
@@ -136,7 +136,7 @@ function Component (props: Props) {
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
     <TxButton isBasic={true} onClick={() => setFollowersOpen(true)}>Followers: {blog.followers_count.toNumber()}</TxButton>
-    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={'Followers'} />}
+    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={'followers'} />}
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>

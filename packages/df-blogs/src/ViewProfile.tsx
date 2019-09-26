@@ -176,8 +176,8 @@ function Component (props: Props) {
     {renderFollowButton()}
     <TxButton isBasic={true} onClick={() => setFollowersOpen(true)}>Followers: {followers}</TxButton>
     <TxButton isBasic={true} onClick={() => setFollowingOpen(true)}>Following: {following}</TxButton>
-    {followersOpen && <AccountFollowersModal id={id} accountsCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={'Followers'}/>}
-    {followingOpen && <AccountFollowingModal id={id} accountsCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'Following'}/>}
+    {followersOpen && <AccountFollowersModal id={id} accountsCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={'followers'}/>}
+    {followingOpen && <AccountFollowingModal id={id} accountsCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'following'}/>}
   </>;
 }
 

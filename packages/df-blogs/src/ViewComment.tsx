@@ -69,7 +69,7 @@ function InnerCommentsByPost (props: Props) {
   };
 
   return (
-      <Section title={`Comments (${commentsCount})`} className='DfCommentsByPost'>
+      <Section title={`${commentsCount} comments`} className='DfCommentsByPost'>
         <div id={`commentsForPost${postId}`}>
           <NewComment postId={postId}/>
           {renderComments()}

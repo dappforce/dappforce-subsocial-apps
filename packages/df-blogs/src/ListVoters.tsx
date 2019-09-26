@@ -76,7 +76,7 @@ const InnerModalVoters = (props: VotersProps) => {
       centered={true}
       style={{ marginTop: '3rem' }}
     >
-      <Modal.Header><h1>Voters ({votersCount})</h1></Modal.Header>
+      <Modal.Header><h1>{votersCount} voters</h1></Modal.Header>
       <Modal.Content scrolling>
       <Tab panes={panes} activeIndex={active}/>
       </Modal.Content>

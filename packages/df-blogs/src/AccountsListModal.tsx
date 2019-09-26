@@ -42,7 +42,7 @@ const InnerAccountsListModal = (props: Props) => {
       centered={true}
       style={{ marginTop: '3rem' }}
     >
-      <Modal.Header><h1>{title} ({accountsCount})</h1></Modal.Header>
+      <Modal.Header><h1>{accountsCount} {title}</h1></Modal.Header>
       <Modal.Content scrolling>
         {renderAccounts()}
       </Modal.Content>
