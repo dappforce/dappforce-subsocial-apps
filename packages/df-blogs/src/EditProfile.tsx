@@ -13,7 +13,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
-import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent, withSocialAccount } from './utils';
+import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent, withSocialAccount, withRequireProfile } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { SocialAccount } from '@dappforce/types/blogs';
 
@@ -74,7 +74,8 @@ export type OuterProps = ValidationProps & {
   id?: AccountId,
   profile?: Profile,
   profileData?: ProfileData,
-  socialAccount?: SocialAccount
+  socialAccount?: SocialAccount,
+  requireProfile?: boolean
 };
 
 type FormValues = ProfileData & {
@@ -354,5 +355,6 @@ export const EditProfile = withMulti(
     queryBlogsToProp('socialAccountById',
       { paramName: 'id', propName: 'socialAccountOpt' })
   ),
+  withRequireProfile,
   withSocialAccount
 );

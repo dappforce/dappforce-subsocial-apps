@@ -104,7 +104,8 @@ export function withIdFromMyAddress (Component: React.ComponentType<PropsWithEdi
 type PropsWithSocialAccount = {
   profile?: Profile,
   profileData?: ProfileData,
-  socialAccount?: SocialAccount
+  socialAccount?: SocialAccount,
+  requireProfile?: boolean
 };
 
 type LoadSocialAccount = PropsWithSocialAccount & {
@@ -113,10 +114,11 @@ type LoadSocialAccount = PropsWithSocialAccount & {
 
 export function withSocialAccount<P extends LoadSocialAccount> (Component: React.ComponentType<P>) {
   return function (props: P) {
-    const { socialAccountOpt } = props;
+    const { socialAccountOpt, requireProfile = false } = props;
 
     if (socialAccountOpt === undefined) return <em>Loading...</em>;
-    else if (socialAccountOpt.isNone) return <em>Social account not found yet.</em>;
+    else if (socialAccountOpt.isNone && requireProfile) return <em>Social account not found yet.</em>;
+    else if (socialAccountOpt.isNone) return <Component {...props} />;
 
     const socialAccount = socialAccountOpt.unwrap();
     const profileOpt = socialAccount.profile;
@@ -136,5 +138,11 @@ export function withSocialAccount<P extends LoadSocialAccount> (Component: React
     }, [ false ]);
 
     return <Component {...props} socialAccount={socialAccount} profile={profile} profileData={profileData}/>;
+  };
+}
+
+export function withRequireProfile<P extends LoadSocialAccount> (Component: React.ComponentType<P>) {
+  return function (props: P) {
+    return <Component {...props} requireProfile/>;
   };
 }

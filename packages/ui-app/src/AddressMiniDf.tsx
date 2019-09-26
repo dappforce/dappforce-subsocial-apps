@@ -1,6 +1,3 @@
-// Copyright 2017-2019 @polkadot/app-staking authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
 
 import { BareProps } from './types';
 
@@ -17,7 +14,7 @@ import { findNameByAddress, nonEmptyStr } from '@polkadot/df-utils/index';
 import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
 import { Popup } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
-import { queryBlogsToProp } from '@dappforce/blogs/utils';
+import { queryBlogsToProp, withSocialAccount } from '@dappforce/blogs/utils';
 import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
 import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
 import ReactMarkdown from 'react-markdown';
@@ -43,12 +40,25 @@ export type Props = MyAccountProps & BareProps & {
   withAddress?: boolean,
   withBalance?: boolean,
   withName?: boolean,
-  withFollowButton?: boolean
+  withFollowButton?: boolean,
+  optionalProfile: boolean
 };
 
 function AddressMini (props: Props) {
 
-  const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value, socialAccountOpt, withFollowButton } = props;
+  const { children,
+    myAddress,
+    className,
+    isPadded = true,
+    extraDetails,
+    session_validators,
+    style,
+    size,
+    value,
+    socialAccount,
+    profile = {} as Profile,
+    profileData = {} as ProfileData,
+    withFollowButton } = props;
   if (!value) {
     return null;
   }
@@ -58,39 +68,19 @@ function AddressMini (props: Props) {
     validator.toString() === address
   );
 
-  let socialAccount: SocialAccount | undefined = undefined;
-  let profile: Profile = {} as Profile;
-
-  if (socialAccountOpt && socialAccountOpt.isSome) {
-    socialAccount = socialAccountOpt.unwrap();
-    profile = socialAccount.profile.unwrapOr({}) as Profile;
-  }
-
   const followers = socialAccount && socialAccount.followers_count.toNumber();
   const following = socialAccount && socialAccount.following_accounts_count.toNumber();
   const {
-    username,
-    ipfs_hash
+    username
   } = profile;
-  const [ profileData , setProfileData ] = useState({} as ProfileData);
+
   const {
     fullname,
-    avatar
+    avatar,
+    about
   } = profileData;
-  const [ summary, setSummary ] = useState('');
 
-  useEffect(() => {
-    if (!ipfs_hash) {
-      setProfileData({} as ProfileData);
-      return;
-    }
-
-    getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
-      setProfileData(json);
-      const summary = json.about.length > LIMIT_SUMMARY ? json.about.substr(0,LIMIT_SUMMARY) + '...' : json.about;
-      setSummary(summary);
-    }).catch(err => console.log(err));
-  }, [address, ipfs_hash]);
+  const summary = about !== undefined && about.length > LIMIT_SUMMARY ? about.substr(0,LIMIT_SUMMARY) + '...' : about;
 
   const [ popupOpen, setPopupOpen ] = useState(false);
   const [ followersOpen, setFollowersOpen ] = useState(false);
@@ -246,5 +236,6 @@ export default withMulti(
   withCalls<Props>(
     queryBlogsToProp('socialAccountById',
       { paramName: 'value', propName: 'socialAccountOpt' })
-  )
+  ),
+  withSocialAccount
 );

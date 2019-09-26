@@ -9,7 +9,7 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
-import { queryBlogsToProp, withIdFromMyAddress, withSocialAccount } from './utils';
+import { queryBlogsToProp, withIdFromMyAddress, withSocialAccount, withRequireProfile } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
@@ -24,6 +24,7 @@ export type Props = {
   profile?: Profile,
   profileData?: ProfileData,
   socialAccount?: SocialAccount,
+  requireProfile?: boolean,
   followers?: AccountId[],
   size?: number
 };
@@ -182,5 +183,6 @@ export default withMulti(
     queryBlogsToProp('socialAccountById',
       { paramName: 'id', propName: 'socialAccountOpt' })
   ),
+  withRequireProfile,
   withSocialAccount
 );
