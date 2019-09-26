@@ -57,6 +57,8 @@
   .ui--AddressMini-details {
     display: block;
     text-align: left;
+    color: #999999;
+    font-size: .8rem!important
   }
   .ui--AddressSummary-name,
   .ui--AddressSummary-balance {
@@ -183,7 +185,7 @@
   color: #4e4e4e;
 }
 
-.DfMemo--full{
+.DfMd{
   margin-top: .5rem;
   font-size: 1rem;
 }

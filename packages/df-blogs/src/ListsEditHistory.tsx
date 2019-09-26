@@ -176,7 +176,7 @@ const PostFromHistory = (props: PropsPostFromHistory) => {
     <CreatedBy created={edited} dateLabel='Edited on' accountLabel='Edited by' />
     <div style={{ margin: '1rem 0' }}>
       {content.image && <img src={content.image} className='DfPostImage' /* add onError handler */ />}
-      <ReactMarkdown className='DfMemo--full' source={content.body} linkTarget='_blank' />
+      <ReactMarkdown className='DfMd' source={content.body} linkTarget='_blank' />
       {/* TODO render tags */}
     </div>
     <hr/>
@@ -276,7 +276,7 @@ const BlogFromHistory = (props: PropsBlogFromHistory) => {
             </div>
             <div className='description' style={{ margin: '0.2rem' }}>{`slug: ${_slug}`}</div>
             <div className='description' style={{ margin: '0.2rem' }}>
-              <ReactMarkdown className='DfMemo--full' source={content.desc} linkTarget='_blank' />
+              <ReactMarkdown className='DfMd' source={content.desc} linkTarget='_blank' />
             </div>
           </div>
         </div>
@@ -376,7 +376,7 @@ const ProfileFromHistory = (props: PropsProfileFromHistory) => {
             </div>
             <div className='about' style={{ margin: '0.2rem' }}>{`username: ${_username}`}</div>
             <div className='about' style={{ margin: '0.2rem' }}>
-              <ReactMarkdown className='DfMemo--full' source={content.about} linkTarget='_blank' />
+              <ReactMarkdown className='DfMd' source={content.about} linkTarget='_blank' />
             </div>
           </div>
         </div>

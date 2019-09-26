@@ -109,9 +109,10 @@ function ViewPostInternal (props: ViewPostProps) {
               value={account}
               isShort={true}
               isPadded={false}
+              extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}`}
         />}
         <div style={{ margin: '1rem 0' }}>
-          <ReactMarkdown className='DfMemo--full' source={summary} linkTarget='_blank' />
+          <ReactMarkdown className='DfMd' source={summary} linkTarget='_blank' />
         </div>
         {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         <div className='DfCountsPreview'>
@@ -135,7 +136,7 @@ function ViewPostInternal (props: ViewPostProps) {
       {withCreatedBy && <CreatedBy created={post.created} />}
       <div style={{ margin: '1rem 0' }}>
         {image && <img src={image} className='DfPostImage' /* add onError handler */ />}
-        <ReactMarkdown className='DfMemo--full' source={body} linkTarget='_blank' />
+        <ReactMarkdown className='DfMd' source={body} linkTarget='_blank' />
         {/* TODO render tags */}
       </div>
       <Voter struct={post} />

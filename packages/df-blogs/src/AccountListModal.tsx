@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
@@ -10,13 +10,14 @@ import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 type Props = {
   followers?: AccountId[],
   followersCount: Number,
+  title: string,
   open: boolean,
   close: () => void
 };
 
 const InnerFollowersModal = (props: Props) => {
 
-  const { followers, followersCount, open, close } = props;
+  const { followers, followersCount = 0, open, close, title } = props;
   console.log(followers);
 
   const renderFollowers = () => {
@@ -47,7 +48,7 @@ const InnerFollowersModal = (props: Props) => {
       centered={true}
       style={{ marginTop: '3rem' }}
     >
-      <Modal.Header><h1>Followers ({followersCount})</h1></Modal.Header>
+      <Modal.Header><h1>{title} ({followersCount})</h1></Modal.Header>
       <Modal.Content scrolling>
         {renderFollowers()}
       </Modal.Content>
@@ -71,3 +72,11 @@ export const AccountFollowersModal = withMulti(
     queryBlogsToProp('accountFollowers', { paramName: 'id', propName: 'followers' })
   )
 );
+
+export const AccountFollowingModal = withMulti(
+  InnerFollowersModal,
+  withCalls<Props>(
+    queryBlogsToProp('accountsFollowedByAccount', { paramName: 'id', propName: 'following' })
+  )
+);
+

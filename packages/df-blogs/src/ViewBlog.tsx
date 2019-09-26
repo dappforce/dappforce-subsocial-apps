@@ -14,9 +14,9 @@ import Section from '@polkadot/df-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
 import _ from 'lodash';
-import { BlogFollowersModal } from './FollowersModal';
+import { BlogFollowersModal } from './AccountListModal';
 import { BlogHistoryModal } from './ListsEditHistory';
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Button } from 'semantic-ui-react';
 import { FollowBlogButton } from './FollowButton';
 
 type Props = MyAccountProps & {
@@ -45,8 +45,11 @@ function Component (props: Props) {
   const {
     id,
     created: { account },
-    ipfs_hash
+    ipfs_hash,
+    followers_count
   } = blog;
+  const followers = followers_count.toNumber();
+  const [ modalOpen, setModalOpen ] = useState(false);
   const [ content , setContent ] = useState({} as BlogData);
   const { desc, name, image } = content;
 
@@ -94,7 +97,7 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='description'>
-            <ReactMarkdown className='DfMemo--full' source={desc} linkTarget='_blank' />
+            <ReactMarkdown className='DfMd' source={desc} linkTarget='_blank' />
           </div>
         </div>
       </div>
@@ -131,7 +134,8 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <BlogFollowersModal id={id} followersCount={blog.followers_count.toNumber()} />
+    <Button basic onClick={() => setModalOpen(true)}>Followers ({followers})</Button>
+    {modalOpen && <BlogFollowersModal id={id} open={modalOpen} close={setModalOpen(false)} followersCount={followers} title='Followers' />}
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>

@@ -21,8 +21,7 @@ import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
 import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
-import { AccountFollowersModal } from '@dappforce/blogs/FollowersModal';
-import { AccountFollowingModal } from '@dappforce/blogs/FollowingModal';
+import { AccountFollowersModal, AccountFollowingModal } from '@dappforce/blogs/AccountListModal';
 
 const LIMIT_SUMMARY = 40;
 
@@ -125,21 +124,18 @@ function AddressMini (props: Props) {
           />
         }
         <div>
-          {myAddress !== address
-            ? <Popup
-              trigger={renderAddress(address)}
-              onClose={() => setOpen(false)}
-              onOpen={() => setOpen(true)}
-              open={open}
-              flowing
-              hoverable
-            >
+          <Popup
+            trigger={renderAddress(address)}
+            onClose={() => setOpen(false)}
+            onOpen={() => setOpen(true)}
+            open={open}
+            flowing
+            hoverable
+          >
             {renderProfilePreview()}
-            </Popup>
-            : renderAddress(address)
-          }
-            {openFollowers && <AccountFollowersModal id={address} followersCount={followers} open={openFollowers} close={() => setOpenFollowers(false)}/>}
-            {openFollowing && <AccountFollowingModal id={address} followingCount={following} open={openFollowing} close={() => setOpenFollowing(false)}/>}
+          </Popup>
+          {openFollowers && <AccountFollowersModal id={address} followersCount={followers} open={openFollowers} close={() => setOpenFollowers(false)} title='Followers'/>}
+          {openFollowing && <AccountFollowingModal id={address} followingCount={following} open={openFollowing} close={() => setOpenFollowing(false)} title='Following'/>}
           <div className='ui--AddressMini-details'>
             {renderName(address)}
             {extraDetails}
@@ -158,8 +154,8 @@ function AddressMini (props: Props) {
     return <div>
       <div className={`item ProfileDetails MyProfile`}>
         {hasAvatar
-          ? <img className='DfAvatar' height={size || 48} width={size || 48} src={avatar} />
-          : <IdentityIcon className='image' value={address} size={40} />
+          ? <img className='DfAvatar' height={size || 36} width={size || 36} src={avatar} />
+          : <IdentityIcon className='image' value={address} size={size || 36} />
         }
         <div className='content'>
           <div className='header'>

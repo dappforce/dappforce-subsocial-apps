@@ -1,5 +1,6 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32 } from '@polkadot/types';
+import moment from 'moment-timezone';
 
 export type IpfsData = CommentData | PostData | BlogData | ProfileData;
 export type Activity = {
@@ -42,8 +43,9 @@ export class Change extends Struct {
     return this.get('block') as BlockNumber;
   }
 
-  get time (): Moment {
-    return this.get('time') as Moment;
+  get time (): string {
+    const time = this.get('time') as Moment;
+    return moment(time).format('lll');
   }
 }
 

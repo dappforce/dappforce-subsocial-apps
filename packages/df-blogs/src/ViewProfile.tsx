@@ -14,9 +14,8 @@ import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
-import { AccountFollowersModal } from './FollowersModal';
+import { AccountFollowersModal, AccountFollowingModal } from './AccountListModal';
 import { ProfileHistoryModal } from './ListsEditHistory';
-import { AccountFollowingModal } from './FollowingModal';
 
 type Props = {
   preview?: boolean,
@@ -157,7 +156,7 @@ function Component (props: Props) {
               </a>
             }
 
-            <ReactMarkdown className='DfMemo--full' source={about} linkTarget='_blank' />
+            <ReactMarkdown className='DfMd' source={about} linkTarget='_blank' />
           </div>
         </div>
       </div>
