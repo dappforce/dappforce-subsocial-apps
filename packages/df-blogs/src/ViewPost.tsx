@@ -74,6 +74,10 @@ function ViewPostInternal (props: ViewPostProps) {
 
   const isMyStruct = myAddress === account.toString();
 
+  const commentsText = comments_count.toNumber() === 1 ? 'comment' : 'comments';
+  const upvotesText = upvotes_count.toNumber() === 1 ? 'upvote' : 'upvotes';
+  const downvotesText = downvotes_count.toNumber() === 1 ? 'downvote' : 'downvotes';
+
   const renderDropDownMenu = () => {
 
     const [open, setOpen] = useState(false);
@@ -114,9 +118,9 @@ function ViewPostInternal (props: ViewPostProps) {
         {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         <div className='DfCountsPreview'>
           <MutedSpan><HashLink to={`#commentsForPost${id}`} onClick={() => setCommentsSection(!commentsSection)}>
-            Comments: <b>{comments_count.toString()}</b></HashLink></MutedSpan>
-          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)}>Upvotes: <b>{upvotes_count.toString()}</b></Link></MutedSpan>
-          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)}>Downvotes: <b>{downvotes_count.toString()}</b></Link></MutedSpan>
+          <b>{comments_count.toString()}</b> {commentsText}</HashLink></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)}><b>{upvotes_count.toString()}</b> {upvotesText}</Link></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)}><b>{downvotes_count.toString()}</b> {downvotesText}</Link></MutedSpan>
         </div>
         {commentsSection && <CommentsByPost postId={post.id} post={post} />}
         {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => serPostVotersOpen(false)}/>}

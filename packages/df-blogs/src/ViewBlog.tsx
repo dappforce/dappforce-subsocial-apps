@@ -53,6 +53,7 @@ function Component (props: Props) {
   const { desc, name, image } = content;
 
   const [ followersOpen, setFollowersOpen ] = useState(false);
+  const followersText = blog.followers_count.toNumber() === 1 ? 'follower' : 'followers';
 
   useEffect(() => {
     if (!ipfs_hash) return;
@@ -66,6 +67,7 @@ function Component (props: Props) {
   const isMyBlog = myAddress && account && myAddress === account.toString();
   const hasImage = image && nonEmptyStr(image);
   const postsCount = postIds ? postIds.length : 0;
+  const postsText = postsCount === 1 ? 'post' : 'posts';
 
   const renderDropDownMenu = () => {
 
@@ -121,7 +123,7 @@ function Component (props: Props) {
 
   const postsSectionTitle = () => {
     return <>
-      <span style={{ marginRight: '.5rem' }}>{postsCount} posts</span>
+      <span style={{ marginRight: '.5rem' }}>{postsCount} {postsText}</span>
       <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
         <i className='plus icon' />
         Write post
@@ -135,8 +137,8 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)}>Followers: {blog.followers_count.toNumber()}</TxButton>
-    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={'followers'} />}
+    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)}>{blog.followers_count.toNumber()} {followersText}</TxButton>
+    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={followersText} />}
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>

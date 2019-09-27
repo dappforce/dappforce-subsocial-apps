@@ -69,6 +69,8 @@ function AddressMini (props: Props) {
 
   const followers = socialAccount && socialAccount.followers_count.toNumber();
   const following = socialAccount && socialAccount.following_accounts_count.toNumber();
+  const followersText = followers === 1 ? 'follower' : 'followers';
+
   const {
     username
   } = profile;
@@ -130,7 +132,7 @@ function AddressMini (props: Props) {
             </Popup>
             : renderAddress(address)
           }
-            {followersOpen && <AccountFollowersModal id={address} followersCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={'Followers'}/>}
+            {followersOpen && <AccountFollowersModal id={address} followersCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={followersText}/>}
             {followingOpen && <AccountFollowingModal id={address} followingCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'Following'}/>}
           <div className='ui--AddressMini-details'>
             {renderName(address)}
@@ -164,8 +166,8 @@ function AddressMini (props: Props) {
         <ReactMarkdown source={summary} linkTarget='_blank' />
       </div>
       <div>
-      <Link to='#' onClick={openFollowersModal}>Followers: {followers}</Link>
-      <Link to='#' onClick={openFollowingModal}>Following: {following}</Link>
+      <Link to='#' onClick={openFollowersModal}><b>{followers}</b>{followersText}</Link>
+      <Link to='#' onClick={openFollowingModal}><b>{following}</b> following</Link>
       </div>
     </div>;
   }
