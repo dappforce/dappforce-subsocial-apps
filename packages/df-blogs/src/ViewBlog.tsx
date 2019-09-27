@@ -53,6 +53,7 @@ function Component (props: Props) {
   const { desc, name, image } = content;
 
   const [ followersOpen, setFollowersOpen ] = useState(false);
+  const followers = blog.followers_count.toNumber();
   const followersText = blog.followers_count.toNumber() === 1 ? 'follower' : 'followers';
 
   useEffect(() => {
@@ -137,7 +138,7 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)}>{blog.followers_count.toNumber()} {followersText}</TxButton>
+    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{followers} {followersText}</TxButton>
     {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={followersText} />}
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}

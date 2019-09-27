@@ -58,6 +58,9 @@ function ViewPostInternal (props: ViewPostProps) {
   const [ postVotersOpen, serPostVotersOpen ] = useState(false);
   const [ activeVoters, setActiveVoters ] = useState(0);
   const openVoters = (type: ActiveVoters) => {
+    if (type === ActiveVoters.Upvote && !upvotes) return;
+    if (type === ActiveVoters.Downvote && !downvotes) return;
+
     serPostVotersOpen(true);
     setActiveVoters(type);
   };
@@ -77,6 +80,9 @@ function ViewPostInternal (props: ViewPostProps) {
   const commentsText = comments_count.toNumber() === 1 ? 'comment' : 'comments';
   const upvotesText = upvotes_count.toNumber() === 1 ? 'upvote' : 'upvotes';
   const downvotesText = downvotes_count.toNumber() === 1 ? 'downvote' : 'downvotes';
+
+  const upvotes = upvotes_count.toNumber();
+  const downvotes = downvotes_count.toNumber();
 
   const renderDropDownMenu = () => {
 
@@ -119,8 +125,8 @@ function ViewPostInternal (props: ViewPostProps) {
         <div className='DfCountsPreview'>
           <MutedSpan><HashLink to={`#commentsForPost${id}`} onClick={() => setCommentsSection(!commentsSection)}>
           <b>{comments_count.toString()}</b> {commentsText}</HashLink></MutedSpan>
-          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)}><b>{upvotes_count.toString()}</b> {upvotesText}</Link></MutedSpan>
-          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)}><b>{downvotes_count.toString()}</b> {downvotesText}</Link></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)} className={upvotes ? '' : 'disable'}><b>{upvotes_count.toString()}</b> {upvotesText}</Link></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)} className={downvotes ? '' : 'disable'}><b>{downvotes_count.toString()}</b> {downvotesText}</Link></MutedSpan>
         </div>
         {commentsSection && <CommentsByPost postId={post.id} post={post} />}
         {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => serPostVotersOpen(false)}/>}

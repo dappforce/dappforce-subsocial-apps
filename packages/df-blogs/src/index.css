@@ -172,3 +172,8 @@ hr {
   text-transform: uppercase;
 }
 
+.disable, .disable:hover{
+  color: #999;
+  text-decoration: none;
+  cursor: default;
+}
