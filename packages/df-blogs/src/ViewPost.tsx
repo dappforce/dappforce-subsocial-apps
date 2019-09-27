@@ -5,12 +5,12 @@ import ReactMarkdown from 'react-markdown';
 import { Segment, Dropdown } from 'semantic-ui-react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { Option, bool } from '@polkadot/types';
+import { Option } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { PostId, Post, CommentId, PostData } from './types';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { UrlHasIdProps, AuthorPreview } from './utils';
+import { UrlHasIdProps } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import { CommentsByPost } from './ViewComment';
 import { CreatedBy } from './CreatedBy';

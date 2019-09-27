@@ -6,11 +6,13 @@ import { api } from '@polkadot/ui-api';
 import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
-import { PostId, Comment, Post, ReactionKind, Reaction, CommentId } from '@dappforce/types/blogs';
 import { CommentVoters, PostVoters } from './ListVoters';
+import { Post, Reaction, CommentId, PostId, ReactionKind, Comment } from './types';
+
+type Struct = Comment | Post;
 
 type VoterValue = {
-  struct: Comment | Post
+  struct: Struct
 };
 
 type VoterProps = VoterValue;
@@ -44,7 +46,7 @@ export const Voter = (props: VoterProps) => {
 
       if (result.isNone) return;
 
-      const _struct = result.unwrap() as T;
+      const _struct = result.unwrap();
       setState(_struct);
     }
     loadStruct(state).catch(err => console.log(err));

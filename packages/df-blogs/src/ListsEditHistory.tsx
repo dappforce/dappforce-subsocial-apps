@@ -11,7 +11,7 @@ import IdentityIcon from '@polkadot/ui-identicon/Identicon';
 import { Link } from 'react-router-dom';
 import { CreatedBy } from './CreatedBy';
 import { getJsonFromIpfs } from './OffchainUtils';
-import { SocialAccount, OptionText } from 'packages/df-types/lib/blogs';
+import { SocialAccount, OptionText } from '@dappforce/types/blogs';
 
 type ModalController = {
   open: boolean,

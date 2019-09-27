@@ -1,7 +1,19 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32 } from '@polkadot/types';
+import moment from 'moment-timezone';
 
-export type IpfsData = CommentData | PostData | BlogData;
+export type IpfsData = CommentData | PostData | BlogData | ProfileData;
+export type Activity = {
+  id: number,
+  account: string,
+  event: string,
+  following_id: string,
+  blog_id: string,
+  post_id: string,
+  comment_id: string,
+  date: Date,
+  agg_count: number
+};
 export class IpfsHash extends Text {}
 export class BlogId extends u64 {}
 export class OptionIpfsHash extends Option.with(IpfsHash) {}
@@ -31,8 +43,9 @@ export class Change extends Struct {
     return this.get('block') as BlockNumber;
   }
 
-  get time (): Moment {
-    return this.get('time') as Moment;
+  get time (): string {
+    const time = this.get('time') as Moment;
+    return moment(time).format('lll');
   }
 }
 
@@ -45,39 +58,42 @@ export class OptionCommentId extends Option.with(CommentId) {}
 export class OptionVecAccountId extends Option.with(VecAccountId) {}
 
 export type BlogData = {
-  name: string,
-  desc: string,
-  image: string,
-  tags: string[]
+  name: string;
+  desc: string;
+  image: string;
+  tags: string[];
 };
 
 export type BlogType = {
-  id: BlogId,
-  created: ChangeType,
-  updated: OptionChange,
-  writers: AccountId[],
-  slug: Text,
-  ipfs_hash: IpfsHash,
-  posts_count: u16,
-  followers_count: u32,
-  edit_history: VecBlogHistoryRecord,
-  score: i32
+  id: BlogId;
+  created: ChangeType;
+  updated: OptionChange;
+  writers: AccountId[];
+  slug: Text;
+  ipfs_hash: IpfsHash;
+  posts_count: u16;
+  followers_count: u32;
+  edit_history: VecBlogHistoryRecord;
+  score: i32;
 };
 
 export class Blog extends Struct {
   constructor (value?: BlogType) {
-    super({
-      id: BlogId,
-      created: Change,
-      updated: OptionChange,
-      writers: VecAccountId,
-      slug: Text,
-      ipfs_hash: IpfsHash,
-      posts_count: u16,
-      followers_count: u32,
-      edit_history: VecBlogHistoryRecord,
-      score: i32
-    }, value);
+    super(
+      {
+        id: BlogId,
+        created: Change,
+        updated: OptionChange,
+        writers: VecAccountId,
+        slug: Text,
+        ipfs_hash: IpfsHash,
+        posts_count: u16,
+        followers_count: u32,
+        edit_history: VecBlogHistoryRecord,
+        score: i32
+      },
+      value
+    );
   }
 
   get id (): BlogId {
@@ -128,18 +144,21 @@ export class Blog extends Struct {
 }
 
 export type BlogUpdateType = {
-  writers: OptionVecAccountId,
-  slug: OptionText,
-  ipfs_hash: OptionIpfsHash
+  writers: OptionVecAccountId;
+  slug: OptionText;
+  ipfs_hash: OptionIpfsHash;
 };
 
 export class BlogUpdate extends Struct {
   constructor (value?: BlogUpdateType) {
-    super({
-      writers: OptionVecAccountId,
-      slug: OptionText,
-      ipfs_hash: OptionIpfsHash
-    }, value);
+    super(
+      {
+        writers: OptionVecAccountId,
+        slug: OptionText,
+        ipfs_hash: OptionIpfsHash
+      },
+      value
+    );
   }
   get writers (): OptionVecAccountId {
     return this.get('writers') as OptionVecAccountId;
@@ -163,43 +182,46 @@ export class BlogUpdate extends Struct {
 }
 
 export type PostData = {
-  title: string,
-  body: string,
-  image: string,
-  tags: string[]
+  title: string;
+  body: string;
+  image: string;
+  tags: string[];
 };
 
 export type PostType = {
-  id: PostId,
-  blog_id: BlogId,
-  created: ChangeType,
-  updated: OptionChange,
-  slug: Text,
-  ipfs_hash: IpfsHash,
-  comments_count: u16,
-  upvotes_count: u16,
-  downvotes_count: u16,
-  shares_count: u16,
-  edit_history: VecPostHistoryRecord,
-  score: i32
+  id: PostId;
+  blog_id: BlogId;
+  created: ChangeType;
+  updated: OptionChange;
+  slug: Text;
+  ipfs_hash: IpfsHash;
+  comments_count: u16;
+  upvotes_count: u16;
+  downvotes_count: u16;
+  shares_count: u16;
+  edit_history: VecPostHistoryRecord;
+  score: i32;
 };
 
 export class Post extends Struct {
   constructor (value?: PostType) {
-    super({
-      id: PostId,
-      blog_id: BlogId,
-      created: Change,
-      updated: OptionChange,
-      slug: Text,
-      ipfs_hash: IpfsHash,
-      comments_count: u16,
-      upvotes_count: u16,
-      downvotes_count: u16,
-      shares_count: u16,
-      edit_history: VecPostHistoryRecord,
-      score: i32
-    }, value);
+    super(
+      {
+        id: PostId,
+        blog_id: BlogId,
+        created: Change,
+        updated: OptionChange,
+        slug: Text,
+        ipfs_hash: IpfsHash,
+        comments_count: u16,
+        upvotes_count: u16,
+        downvotes_count: u16,
+        shares_count: u16,
+        edit_history: VecPostHistoryRecord,
+        score: i32
+      },
+      value
+    );
   }
 
   get id (): PostId {
@@ -253,18 +275,21 @@ export class Post extends Struct {
 }
 
 export type PostUpdateType = {
-  blog_id: OptionBlogId,
-  slug: OptionText,
-  ipfs_hash: OptionIpfsHash
+  blog_id: OptionBlogId;
+  slug: OptionText;
+  ipfs_hash: OptionIpfsHash;
 };
 
 export class PostUpdate extends Struct {
   constructor (value?: PostUpdateType) {
-    super({
-      blog_id: OptionBlogId,
-      slug: OptionText,
-      ipfs_hash: OptionIpfsHash
-    }, value);
+    super(
+      {
+        blog_id: OptionBlogId,
+        slug: OptionText,
+        ipfs_hash: OptionIpfsHash
+      },
+      value
+    );
   }
 
   get ipfs_hash (): OptionIpfsHash {
@@ -285,38 +310,43 @@ export class PostUpdate extends Struct {
 }
 
 export type CommentData = {
-  body: string
+  body: string;
 };
 
 export type CommentType = {
-  id: CommentId,
-  parent_id: OptionCommentId,
-  post_id: PostId,
-  created: Change,
-  updated: OptionChange,
-  ipfs_hash: IpfsHash,
-  upvotes_count: u16,
-  downvotes_count: u16,
-  shares_count: u16,
-  edit_history: VecCommentHistoryRecord,
-  score: i32
+  id: CommentId;
+  parent_id: OptionCommentId;
+  post_id: PostId;
+  created: Change;
+  updated: OptionChange;
+  ipfs_hash: IpfsHash;
+  upvotes_count: u16;
+  downvotes_count: u16;
+  shares_count: u16;
+  direct_replies_count: u16;
+  edit_history: VecCommentHistoryRecord;
+  score: i32;
 };
 
 export class Comment extends Struct {
   constructor (value?: CommentType) {
-    super({
-      id: CommentId,
-      parent_id: OptionCommentId,
-      post_id: PostId,
-      created: Change,
-      updated: OptionChange,
-      ipfs_hash: IpfsHash,
-      upvotes_count: u16,
-      downvotes_count: u16,
-      shares_count: u16,
-      edit_history: VecCommentHistoryRecord,
-      score: i32
-    }, value);
+    super(
+      {
+        id: CommentId,
+        parent_id: OptionCommentId,
+        post_id: PostId,
+        created: Change,
+        updated: OptionChange,
+        ipfs_hash: IpfsHash,
+        upvotes_count: u16,
+        downvotes_count: u16,
+        shares_count: u16,
+        direct_replies_count: u16,
+        edit_history: VecCommentHistoryRecord,
+        score: i32
+      },
+      value
+    );
   }
 
   get id (): CommentId {
@@ -356,6 +386,10 @@ export class Comment extends Struct {
     return this.get('shares_count') as u16;
   }
 
+  get direct_replies_count (): u16 {
+    return this.get('direct_replies_count') as u16;
+  }
+
   get edit_history (): VecCommentHistoryRecord {
     return this.get('edit_history') as VecCommentHistoryRecord;
   }
@@ -366,53 +400,55 @@ export class Comment extends Struct {
 }
 
 export type CommentUpdateType = {
-  ipfs_hash: IpfsHash
+  ipfs_hash: IpfsHash;
 };
 
 export class CommentUpdate extends Struct {
   constructor (value?: CommentUpdateType) {
-    super({
-      ipfs_hash: IpfsHash
-    }, value);
+    super(
+      {
+        ipfs_hash: IpfsHash
+      },
+      value
+    );
   }
 
   get ipfs_hash (): IpfsHash {
     return this.get('ipfs_hash') as IpfsHash;
   }
-
 }
 
 export class OptionComment extends Option.with(Comment) {}
 
-export const ReactionKinds: { [key: string ]: string } = {
+export const ReactionKinds: { [key: string]: string } = {
   Upvote: 'Upvote',
   Downvote: 'Downvote'
 };
 
 export class ReactionKind extends Enum {
   constructor (value?: any) {
-    super([
-      'Upvote',
-      'Downvote'
-    ], value);
+    super(['Upvote', 'Downvote'], value);
   }
 }
 
 export type ReactionType = {
-  id: ReactionId,
-  created: Change,
-  updated: OptionChange,
-  kind: ReactionKind
+  id: ReactionId;
+  created: Change;
+  updated: OptionChange;
+  kind: ReactionKind;
 };
 
 export class Reaction extends Struct {
   constructor (value?: ReactionType) {
-    super({
-      id: ReactionId,
-      created: Change,
-      updated: OptionChange,
-      kind: ReactionKind
-    }, value);
+    super(
+      {
+        id: ReactionId,
+        created: Change,
+        updated: OptionChange,
+        kind: ReactionKind
+      },
+      value
+    );
   }
 
   get id (): ReactionId {
@@ -433,22 +469,25 @@ export class Reaction extends Struct {
 }
 
 export type SocialAccountType = {
-  followers_count: u32,
-  following_accounts_count: u16,
-  following_blogs_count: u16,
-  reputation: u32,
-  profile: OptionProfile
+  followers_count: u32;
+  following_accounts_count: u16;
+  following_blogs_count: u16;
+  reputation: u32;
+  profile: OptionProfile;
 };
 
 export class SocialAccount extends Struct {
   constructor (value?: SocialAccountType) {
-    super({
-      followers_count: u32,
-      following_accounts_count: u16,
-      following_blogs_count: u16,
-      reputation: u32,
-      profile: OptionProfile
-    }, value);
+    super(
+      {
+        followers_count: u32,
+        following_accounts_count: u16,
+        following_blogs_count: u16,
+        reputation: u32,
+        profile: OptionProfile
+      },
+      value
+    );
   }
 
   get followers_count (): u32 {
@@ -472,23 +511,37 @@ export class SocialAccount extends Struct {
   }
 }
 
+export type ProfileData = {
+  fullname: string;
+  avatar: string;
+  about: string;
+  facebook: string;
+  twitter: string;
+  linkedIn: string;
+  github: string;
+  instagram: string;
+};
+
 export type ProfileType = {
-  created: ChangeType,
-  updated: OptionChange,
-  username: Text,
-  ipfs_hash: IpfsHash,
-  edit_history: VecProfileHistoryRecord
+  created: ChangeType;
+  updated: OptionChange;
+  username: Text;
+  ipfs_hash: IpfsHash;
+  edit_history: VecProfileHistoryRecord;
 };
 
 export class Profile extends Struct {
   constructor (value?: ProfileType) {
-    super({
-      created: Change,
-      updated: OptionChange,
-      username: Text,
-      ipfs_hash: IpfsHash,
-      edit_history: VecProfileHistoryRecord
-    }, value);
+    super(
+      {
+        created: Change,
+        updated: OptionChange,
+        username: Text,
+        ipfs_hash: IpfsHash,
+        edit_history: VecProfileHistoryRecord
+      },
+      value
+    );
   }
 
   get created (): Change {
@@ -516,16 +569,19 @@ export class Profile extends Struct {
 export class OptionProfile extends Option.with(Profile) {}
 
 export type ProfileUpdateType = {
-  username: OptionText,
-  ipfs_hash: OptionIpfsHash
+  username: OptionText;
+  ipfs_hash: OptionIpfsHash;
 };
 
 export class ProfileUpdate extends Struct {
   constructor (value?: ProfileUpdateType) {
-    super({
-      username: OptionText,
-      ipfs_hash: OptionIpfsHash
-    }, value);
+    super(
+      {
+        username: OptionText,
+        ipfs_hash: OptionIpfsHash
+      },
+      value
+    );
   }
 
   get ipfs_hash (): OptionIpfsHash {
@@ -546,16 +602,19 @@ export class ProfileUpdate extends Struct {
 }
 
 export type BlogHistoryRecordType = {
-  edited: ChangeType,
-  old_data: BlogUpdateType
+  edited: ChangeType;
+  old_data: BlogUpdateType;
 };
 
 export class BlogHistoryRecord extends Struct {
   constructor (value?: BlogHistoryRecordType) {
-    super({
-      edited: Change,
-      old_data: BlogUpdate
-    }, value);
+    super(
+      {
+        edited: Change,
+        old_data: BlogUpdate
+      },
+      value
+    );
   }
 
   get edited (): Change {
@@ -570,16 +629,19 @@ export class BlogHistoryRecord extends Struct {
 export class VecBlogHistoryRecord extends Vector.with(BlogHistoryRecord) {}
 
 export type PostHistoryRecordType = {
-  edited: ChangeType,
-  old_data: PostUpdateType
+  edited: ChangeType;
+  old_data: PostUpdateType;
 };
 
 export class PostHistoryRecord extends Struct {
   constructor (value?: PostHistoryRecordType) {
-    super({
-      edited: Change,
-      old_data: PostUpdate
-    }, value);
+    super(
+      {
+        edited: Change,
+        old_data: PostUpdate
+      },
+      value
+    );
   }
 
   get edited (): Change {
@@ -594,16 +656,19 @@ export class PostHistoryRecord extends Struct {
 export class VecPostHistoryRecord extends Vector.with(PostHistoryRecord) {}
 
 export type CommentHistoryRecordType = {
-  edited: ChangeType,
-  old_data: CommentUpdateType
+  edited: ChangeType;
+  old_data: CommentUpdateType;
 };
 
 export class CommentHistoryRecord extends Struct {
   constructor (value?: CommentHistoryRecordType) {
-    super({
-      edited: Change,
-      old_data: CommentUpdate
-    }, value);
+    super(
+      {
+        edited: Change,
+        old_data: CommentUpdate
+      },
+      value
+    );
   }
 
   get edited (): Change {
@@ -618,16 +683,19 @@ export class CommentHistoryRecord extends Struct {
 export class VecCommentHistoryRecord extends Vector.with(CommentHistoryRecord) {}
 
 export type ProfileHistoryRecordType = {
-  edited: ChangeType,
-  old_data: ProfileUpdateType
+  edited: ChangeType;
+  old_data: ProfileUpdateType;
 };
 
 export class ProfileHistoryRecord extends Struct {
   constructor (value?: ProfileHistoryRecordType) {
-    super({
-      edited: Change,
-      old_data: ProfileUpdate
-    }, value);
+    super(
+      {
+        edited: Change,
+        old_data: ProfileUpdate
+      },
+      value
+    );
   }
 
   get edited (): Change {
@@ -641,7 +709,7 @@ export class ProfileHistoryRecord extends Struct {
 
 export class VecProfileHistoryRecord extends Vector.with(ProfileHistoryRecord) {}
 
-export const ScoringActions: { [key: string ]: string } = {
+export const ScoringActions: { [key: string]: string } = {
   UpvotePost: 'UpvotePost',
   DownvotePost: 'DownvotePost',
   SharePost: 'SharePost',
@@ -654,16 +722,19 @@ export const ScoringActions: { [key: string ]: string } = {
 
 export class ScoringAction extends Enum {
   constructor (value?: any) {
-    super([
-      'UpvotePost',
-      'DownvotePost',
-      'SharePost',
-      'UpvoteComment',
-      'DownvoteComment',
-      'ShareComment',
-      'FollowBlog',
-      'FollowAccount'
-    ], value);
+    super(
+      [
+        'UpvotePost',
+        'DownvotePost',
+        'SharePost',
+        'UpvoteComment',
+        'DownvoteComment',
+        'ShareComment',
+        'FollowBlog',
+        'FollowAccount'
+      ],
+      value
+    );
   }
 }
 
@@ -671,10 +742,10 @@ export function registerBlogsTypes () {
   try {
     const typeRegistry = getTypeRegistry();
     typeRegistry.register({
-      BlogId: 'u64',
-      PostId: 'u64',
-      CommentId: 'u64',
-      ReactionId: 'u64',
+      BlogId,
+      PostId,
+      CommentId,
+      ReactionId,
       Change,
       Blog,
       BlogUpdate,
