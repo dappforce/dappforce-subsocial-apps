@@ -12,13 +12,20 @@ import { api } from '@polkadot/ui-api/Api';
 type VotersProps = {
   id: CommentId | PostId,
   reactions?: ReactionId[],
+  active?: number
   open: boolean,
   close: () => void
 };
 
+export enum ActiveVoters {
+  All = 0,
+  Upvote,
+  Downvote
+}
+
 const InnerModalVoters = (props: VotersProps) => {
 
-  const { reactions, open, close } = props;
+  const { reactions, open, close, active = ActiveVoters.All } = props;
   const votersCount = reactions && reactions.length;
   const [ reactionView, setReactionView ] = useState(new Array<Reaction>());
 
@@ -46,6 +53,7 @@ const InnerModalVoters = (props: VotersProps) => {
         isPadded={false}
         size={28}
         extraDetails={`Kind: ${reaction.kind}`}
+        withFollowButton
       />
     </div>;
     });
@@ -65,13 +73,12 @@ const InnerModalVoters = (props: VotersProps) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       centered={true}
       style={{ marginTop: '3rem' }}
     >
       <Modal.Header><h1>Voters ({votersCount})</h1></Modal.Header>
       <Modal.Content scrolling>
-      <Tab panes={panes} />
+      <Tab panes={panes} activeIndex={active}/>
       </Modal.Content>
       <Modal.Actions>
         <Button content='Close' onClick={close} />

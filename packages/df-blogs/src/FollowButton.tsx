@@ -52,11 +52,12 @@ export function FollowBlogButton (props: FollowBlogButtonProps) {
 }
 
 type FollowAccountButtonProps = {
-  address: string
+  address: string,
+  size?: string
 };
 
 export function FollowAccountButton (props: FollowAccountButtonProps) {
-  const { address } = props;
+  const { address, size = 'medium' } = props;
   const { state: { address: myAddress } } = useMyAccount();
 
   const accountId = new AccountId(address);
@@ -81,11 +82,12 @@ export function FollowAccountButton (props: FollowAccountButtonProps) {
   return <TxButton
     type='submit'
     compact
+    size={size}
     isBasic={isFollow}
     isPrimary={!isFollow}
     label={isFollow
-      ? 'Unfollow account'
-      : 'Follow account'}
+      ? 'Unfollow'
+      : 'Follow'}
     params={buildTxParams()}
     tx={isFollow
       ? `blogs.unfollowAccount`

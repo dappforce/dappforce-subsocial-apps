@@ -19,6 +19,9 @@ import { NewPost, EditPost } from './EditPost';
 import { ViewPostById } from './ViewPost';
 import { ListFollowingBlogs } from './ListFollowingBlogs';
 import { ViewNewsFeed, ViewNotifications } from './ActivityStream';
+import { EditProfile, NewProfile } from './EditProfile';
+import ViewProfile from './ViewProfile';
+import { MyAccountContext, MyAccountContextProps } from '@polkadot/df-utils/MyAccountContext';
 
 type Props = AppProps & ApiProps & I18nProps & {
   nextBlogId?: BN

@@ -26,12 +26,13 @@
 .ProfileDetails {
   display: flex !important;
   padding-left: 1rem !important;
-  .handle {
-    margin-right: 1rem;
-    .button {
-      padding: .5rem .75rem;
+    .handle {
+      display: inline-block;
+      margin-right: .6rem;
+      .button {
+        padding: .5rem .75rem;
+      }
     }
-  }
 }
 .ProfileDetailsTable {
   font-size: 1rem !important;
@@ -104,6 +105,10 @@
     .comment .text {
       margin-top: .5rem;
     }
+    .comment img.avatar{
+      width: 2.5rem;
+      height: 2.5rem;
+    }
   }
 }
 
@@ -135,9 +140,19 @@ hr {
   padding-right: .25rem;
 }
 
+.DfActivityStreamItem-popup{
+  line-height: 1.5rem;
+  padding-top: .5rem;
+}
+
 .DfActivityStreamItem-info {
   display: flex;
   flex-direction: row;
+}
+
+.DfActivityStreamItem-address{
+  display: inline-block;
+  margin-right: .3rem;
 }
 
 .DfActivityStreamItem-info .ui--IdentityIcon {

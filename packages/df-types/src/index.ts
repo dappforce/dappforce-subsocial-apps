@@ -37,4 +37,5 @@ export class ElectionStage extends EnumType<Announcing | Voting | Revealing> {
 
 export function registerDfTypes () {
   registerBlogsTypes();
+  registerElectionAndProposalTypes();
 }
