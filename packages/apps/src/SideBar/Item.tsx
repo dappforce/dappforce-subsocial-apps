@@ -20,8 +20,6 @@ import ReactTooltip from 'react-tooltip';
 import { queryToProp } from '@polkadot/df-utils/index';
 import { ElectionStage } from '@dappforce/types/';
 
-const councilSidebarName = 'council';
-
 type Props = I18nProps & ApiProps & {
   isCollapsed: boolean,
   onClick: () => void,
