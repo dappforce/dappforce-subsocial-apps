@@ -17,8 +17,9 @@ type MyBlogProps = {
 const InnerListMyBlogs = (props: MyBlogProps) => {
   const { followedBlogsIds } = props;
   const totalCount = followedBlogsIds && followedBlogsIds.length;
+  const followingBlogsText = totalCount === 1 ? 'following blog' : 'following blogs';
   return (
-  <Section title={`Following Blogs (${totalCount})`}>{
+  <Section title={`${totalCount} ${followingBlogsText}`}>{
     followedBlogsIds && followedBlogsIds.length === 0
       ? <em>No blogs created yet.</em>
       : <div className='ui huge relaxed middle aligned divided list ProfilePreviews'>

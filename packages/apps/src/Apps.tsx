@@ -18,6 +18,7 @@ import { hot } from 'react-hot-loader/root';
 import Connecting from './Connecting';
 import Content from './Content';
 import SideBar from './SideBar';
+import settings from '@polkadot/df-settings/';
 
 type Props = BareProps & {};
 

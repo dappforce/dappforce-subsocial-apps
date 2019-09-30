@@ -70,21 +70,10 @@ const InnerViewNotifications = (props: MyAccountProps) => {
 
 function ViewActivity (props: ActivityProps) {
   const { activity } = props;
-  const { account, date, post_id } = activity;
-  const formatDate = moment(date).format('lll');
+  const { post_id } = activity;
   const postId = new PostId(hexToNumber('0x' + post_id));
 
-  return <Segment className='DfActivity'>
-    <ActivityStreamItem
-      value={account}
-      isShort={false}
-      isPadded={false}
-      size={48}
-      withName
-      date={formatDate}
-    />
-    <ViewPost id={postId} withCreatedBy={false} preview/>
-  </Segment>;
+  return <ViewPost id={postId} preview/>;
 }
 
 function Notification (props: ActivityProps) {
@@ -162,10 +151,9 @@ function Notification (props: ActivityProps) {
   return <Segment className='DfActivity'>
     <ActivityStreamItem
       value={account}
-      isShort={false}
+      isShort={true}
       isPadded={false}
       size={48}
-      withName
       date={formatDate}
       event={message}
       subject={subject}

@@ -14,10 +14,11 @@ import Section from '@polkadot/df-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
 import _ from 'lodash';
-import { BlogFollowersModal } from './FollowersModal';
+import { BlogFollowersModal } from './AccountsListModal';
 import { BlogHistoryModal } from './ListsEditHistory';
 import { Dropdown } from 'semantic-ui-react';
 import { FollowBlogButton } from './FollowButton';
+import TxButton from '@polkadot/df-utils/TxButton';
 
 type Props = MyAccountProps & {
   preview?: boolean,
@@ -50,6 +51,10 @@ function Component (props: Props) {
   const [ content , setContent ] = useState({} as BlogData);
   const { desc, name, image } = content;
 
+  const [ followersOpen, setFollowersOpen ] = useState(false);
+  const followers = blog.followers_count.toNumber();
+  const followersText = blog.followers_count.toNumber() === 1 ? 'follower' : 'followers';
+
   useEffect(() => {
     if (!ipfs_hash) return;
     getJsonFromIpfs<BlogData>(ipfs_hash).then(json => {
@@ -62,16 +67,18 @@ function Component (props: Props) {
   const isMyBlog = myAddress && account && myAddress === account.toString();
   const hasImage = image && nonEmptyStr(image);
   const postsCount = postIds ? postIds.length : 0;
+  const postsText = postsCount === 1 ? 'post' : 'posts';
 
   const renderDropDownMenu = () => {
 
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
+
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
         {isMyBlog && <Link className='item' to={`/blogs/${id.toString()}/edit`}>Edit</Link>}
         <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
-        {open && <BlogHistoryModal id={id} open={open} close={close}/>}
+        {open && <BlogHistoryModal id={id} close={close}/>}
       </Dropdown.Menu>
     </Dropdown>);
   };
@@ -116,7 +123,7 @@ function Component (props: Props) {
 
   const postsSectionTitle = () => {
     return <>
-      <span style={{ marginRight: '.5rem' }}>Posts ({postsCount})</span>
+      <span style={{ marginRight: '.5rem' }}>{postsCount} {postsText}</span>
       <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
         <i className='plus icon' />
         Write post
@@ -130,7 +137,8 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <BlogFollowersModal id={id} followersCount={blog.followers_count.toNumber()} />
+    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{followers} {followersText}</TxButton>
+    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={followersText} />}
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>

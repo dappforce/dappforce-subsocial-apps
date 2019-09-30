@@ -1,11 +1,8 @@
-// Copyright 2017-2019 @polkadot/app-staking authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
 
 import { BareProps } from './types';
 
 import BN from 'bn.js';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AccountId, AccountIndex, Address, Balance, Option } from '@polkadot/types';
 import { withCall, withMulti, withCalls } from '@polkadot/ui-api/index';
 
@@ -13,15 +10,23 @@ import classes from './util/classes';
 import toShortAddress from './util/toShortAddress';
 import BalanceDisplay from './Balance';
 import IdentityIcon from './IdentityIcon';
-import { findNameByAddress, nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
+import { findNameByAddress, nonEmptyStr } from '@polkadot/df-utils/index';
 import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
-import { Popup, Grid } from 'semantic-ui-react';
+import { Popup } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
+import { queryBlogsToProp, withSocialAccount } from '@dappforce/blogs/utils';
 import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
-import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
+import ReactMarkdown from 'react-markdown';
+import { Link } from 'react-router-dom';
+import { AccountFollowersModal, AccountFollowingModal } from '@dappforce/blogs/AccountsListModal';
 
-type Props = MyAccountProps & BareProps & {
+const LIMIT_SUMMARY = 40;
+
+export type Props = MyAccountProps & BareProps & {
   socialAccountOpt?: Option<SocialAccount>,
+  profile?: Profile,
+  profileData?: ProfileData,
+  socialAccount?: SocialAccount,
   balance?: Balance | Array<Balance> | BN,
   children?: React.ReactNode,
   isPadded?: boolean,
@@ -34,13 +39,25 @@ type Props = MyAccountProps & BareProps & {
   withAddress?: boolean,
   withBalance?: boolean,
   withName?: boolean,
-  withFollowButton?: boolean
+  withFollowButton?: boolean,
+  optionalProfile: boolean
 };
 
 function AddressMini (props: Props) {
 
-  const { children, myAddress, className, isPadded = true, extraDetails, session_validators, style, size, value, socialAccountOpt, withFollowButton } = props;
-
+  const { children,
+    myAddress,
+    className,
+    isPadded = true,
+    extraDetails,
+    session_validators,
+    style,
+    size,
+    value,
+    socialAccount,
+    profile = {} as Profile,
+    profileData = {} as ProfileData,
+    withFollowButton } = props;
   if (!value) {
     return null;
   }
@@ -50,36 +67,45 @@ function AddressMini (props: Props) {
     validator.toString() === address
   );
 
-  const profile: Profile =
-    socialAccountOpt && socialAccountOpt.isSome
-    ? socialAccountOpt.unwrap().profile.unwrapOr({}) as Profile
-    : {} as Profile;
+  const followers = socialAccount && socialAccount.followers_count.toNumber();
+  const following = socialAccount && socialAccount.following_accounts_count.toNumber();
+
+  const followersText = followers === 1 ? 'follower' : 'followers';
 
   const {
-    username,
-    ipfs_hash
+    username
   } = profile;
-  const [ profileData , setProfileData ] = useState({} as ProfileData);
+
   const {
     fullname,
-    avatar
+    avatar,
+    about
   } = profileData;
 
-  useEffect(() => {
-    if (!ipfs_hash) {
-      setProfileData({} as ProfileData);
-      return;
-    }
+  const summary = about !== undefined && about.length > LIMIT_SUMMARY ? about.substr(0,LIMIT_SUMMARY) + '...' : about;
 
-    getJsonFromIpfs<ProfileData>(ipfs_hash).then(json => {
-      setProfileData(json);
-    }).catch(err => console.log(err));
-  }, [address, ipfs_hash]);
+  const [ popupOpen, setPopupOpen ] = useState(false);
+  const [ followersOpen, setFollowersOpen ] = useState(false);
+  const [ followingOpen, setFollowingOpen ] = useState(false);
+
+  const openFollowersModal = () => {
+    if (!followers) return;
+
+    setFollowersOpen(true);
+    setPopupOpen(false);
+  };
+
+  const openFollowingModal = () => {
+    if (!following) return;
+
+    setFollowingOpen(true);
+    setPopupOpen(false);
+  };
 
   const hasAvatar = avatar && nonEmptyStr(avatar);
   const isMyProfile: boolean = address === myAddress;
 
-  const renderFollowButton = (withFollowButton && !isMyProfile)
+  const renderFollowButton = (!isMyProfile)
     ? <div className = 'AddressMini follow'><FollowAccountButton address={address}/></div>
     : null;
 
@@ -90,7 +116,7 @@ function AddressMini (props: Props) {
     >
       <div className='ui--AddressMini-info'>
         {hasAvatar
-          ? <img className='ui avatar image' height={size || 36} width={size || 36} src={avatar} />
+          ? <img className='DfAvatar' height={size || 36} width={size || 36} src={avatar} />
           : <IdentityIcon
             isHighlight={!!isValidator}
             size={size || 36}
@@ -100,30 +126,70 @@ function AddressMini (props: Props) {
         <div>
           {myAddress !== address
             ? <Popup
-                trigger={renderAddress(address)}
-                flowing
-                hoverable
+              trigger={renderAddress(address)}
+              onClose={() => setPopupOpen(false)}
+              onOpen={() => setPopupOpen(true)}
+              open={popupOpen}
+              flowing
+              hoverable
             >
-              <Grid centered divided columns={1}>
-                <Grid.Column textAlign='center'>
-                </Grid.Column>
-              </Grid>
+            {renderProfilePreview()}
             </Popup>
             : renderAddress(address)
           }
+            {followersOpen && <AccountFollowersModal id={address} followersCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={followersText}/>}
+            {followingOpen && <AccountFollowingModal id={address} followingCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'Following'}/>}
           <div className='ui--AddressMini-details'>
             {renderName(address)}
             {extraDetails}
             {renderBalance()}
           </div>
         </div>
-        {renderFollowButton}
+        {withFollowButton && renderFollowButton}
         {children}
       </div>
     </div>
   );
 
   return renderAutorPreview();
+
+  function renderProfilePreview () {
+    return <div>
+      <div className={`item ProfileDetails MyProfile`}>
+        {hasAvatar
+          ? <img className='DfAvatar' height={size || 48} width={size || 48} src={avatar} />
+          : <IdentityIcon className='image' value={address} size={40} />
+        }
+        <div className='content'>
+          <div className='header'>
+            {renderAddressForProfile(address)}
+          </div>
+        </div>
+        {renderFollowButton}
+      </div>
+      <div className='DfPopup-about'>
+        <ReactMarkdown source={summary} linkTarget='_blank' />
+      </div>
+      <div>
+        <Link to='#' onClick={openFollowersModal} className={followers ? '' : 'disable'}><b>{followers}</b> {followersText}</Link>
+        <Link to='#' onClick={openFollowingModal} className={following ? '' : 'disable'}><b>{following}</b> following</Link>
+      </div>
+    </div>;
+  }
+
+  function renderAddressForProfile (address: string) {
+    const { withAddress = true } = props;
+    if (!withAddress) {
+      return null;
+    }
+
+    return (
+      <div className='ui--AddressMini-address'>
+        <b>{fullname || toShortAddress(address)}</b>
+        <div className='DfPopup-username'>{username}</div>
+      </div>
+    );
+  }
 
   function renderAddress (address: string) {
     const { isShort = true, withAddress = true } = props;
@@ -176,5 +242,6 @@ export default withMulti(
   withCalls<Props>(
     queryBlogsToProp('socialAccountById',
       { paramName: 'value', propName: 'socialAccountOpt' })
-  )
+  ),
+  withSocialAccount
 );

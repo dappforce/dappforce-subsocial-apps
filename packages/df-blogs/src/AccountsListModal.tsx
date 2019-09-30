@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
@@ -8,18 +8,20 @@ import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 
 type Props = {
-  followers?: AccountId[],
-  followersCount: Number
+  accounts?: AccountId[],
+  accountsCount: Number,
+  title: string,
+  open: boolean,
+  close: () => void
 };
 
-const InnerFollowersModal = (props: Props) => {
+const InnerAccountsListModal = (props: Props) => {
 
-  const { followers, followersCount } = props;
-  console.log(followers);
-  const [open, setOpen] = useState(false);
+  const { accounts, accountsCount = 0, open, close, title } = props;
+  console.log(accounts);
 
-  const renderFollowers = () => {
-    return followers && followers.map((account, index) =>
+  const renderAccounts = () => {
+    return accounts && accounts.map((account, index) =>
       <div key={index} style={{ textAlign: 'left', margin: '1rem' }}>
         <AddressMini
           value={account}
@@ -28,6 +30,7 @@ const InnerFollowersModal = (props: Props) => {
           size={48}
           withName
           withBalance
+          withFollowButton
         />
       </div>
     );
@@ -36,32 +39,37 @@ const InnerFollowersModal = (props: Props) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
-      trigger={<Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>}
       centered={true}
       style={{ marginTop: '3rem' }}
     >
-      <Modal.Header><h1>Followers ({followersCount})</h1></Modal.Header>
+      <Modal.Header><h1>{accountsCount} {title}</h1></Modal.Header>
       <Modal.Content scrolling>
-        {renderFollowers()}
+        {renderAccounts()}
       </Modal.Content>
       <Modal.Actions>
-        <Button content='Close' onClick={() => setOpen(false)} />
+        <Button content='Close' onClick={close} />
       </Modal.Actions>
     </Modal>
   );
 };
 
 export const BlogFollowersModal = withMulti(
-  InnerFollowersModal,
+  InnerAccountsListModal,
   withCalls<Props>(
-    queryBlogsToProp('blogFollowers', { paramName: 'id', propName: 'followers' })
+    queryBlogsToProp('blogFollowers', { paramName: 'id', propName: 'accounts' })
   )
 );
 
 export const AccountFollowersModal = withMulti(
-  InnerFollowersModal,
+  InnerAccountsListModal,
   withCalls<Props>(
-    queryBlogsToProp('accountFollowers', { paramName: 'id', propName: 'followers' })
+    queryBlogsToProp('accountFollowers', { paramName: 'id', propName: 'accounts' })
+  )
+);
+
+export const AccountFollowingModal = withMulti(
+  InnerAccountsListModal,
+  withCalls<Props>(
+    queryBlogsToProp('accountsFollowedByAccount', { paramName: 'id', propName: 'accounts' })
   )
 );

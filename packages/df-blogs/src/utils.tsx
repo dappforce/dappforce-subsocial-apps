@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pagination as SuiPagination } from 'semantic-ui-react';
 
-import { AccountId, AccountIndex, Address } from '@polkadot/types';
+import { AccountId, AccountIndex, Address, Option } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
+import { Options } from '@polkadot/ui-api/with/types';
+import { queryToProp } from '@polkadot/df-utils/index';
 import { SubmittableResult } from '@polkadot/api';
-import { CommentId, PostId, BlogId } from './types';
+import { CommentId, PostId, BlogId, Profile, ProfileData } from './types';
+import { OuterProps as PropsWithEditProfile } from './EditProfile';
+import { getJsonFromIpfs } from './OffchainUtils';
+import { SocialAccount } from '@dappforce/types/blogs';
 
 type AuthorPreviewProps = {
   address: AccountId | AccountIndex | Address | string
@@ -39,14 +44,18 @@ export const Pagination = (p: PaginationProps) => {
   );
 };
 
-export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId>
+export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId | AccountId>
   (_txResult: SubmittableResult): IdType | undefined {
 
   let id: IdType | undefined;
 
   _txResult.events.find(event => {
     const { event: { data, method } } = event;
-    if (method.indexOf(`Created`) >= 0) {
+    if (method.indexOf('ProfileCreated') >= 0) {
+      const [ newId ] = data.toArray();
+      id = newId as IdType;
+      return true;
+    } else if (method.indexOf(`Created`) >= 0) {
       const [/* owner */, newId ] = data.toArray();
       id = newId as IdType;
       return true;
@@ -72,3 +81,60 @@ export type UrlHasAddressProps = {
     }
   }
 };
+
+export function withIdFromMyAddress (Component: React.ComponentType<PropsWithEditProfile>) {
+  return function (props: UrlHasAddressProps) {
+    const { match: { params: { address } } } = props;
+    try {
+      return <Component id={new AccountId(address)} {...props}/>;
+    } catch (err) {
+      return <em>Invalid address: {address}</em>;
+    }
+  };
+}
+
+type PropsWithSocialAccount = {
+  profile?: Profile,
+  profileData?: ProfileData,
+  socialAccount?: SocialAccount,
+  requireProfile?: boolean
+};
+
+type LoadSocialAccount = PropsWithSocialAccount & {
+  socialAccountOpt?: Option<SocialAccount>
+};
+
+export function withSocialAccount<P extends LoadSocialAccount> (Component: React.ComponentType<P>) {
+  return function (props: P) {
+    const { socialAccountOpt, requireProfile = false } = props;
+
+    if (socialAccountOpt === undefined) return <em>Loading...</em>;
+    else if (socialAccountOpt.isNone && requireProfile) return <em>Social account not found yet.</em>;
+    else if (socialAccountOpt.isNone) return <Component {...props} />;
+
+    const socialAccount = socialAccountOpt.unwrap();
+    const profileOpt = socialAccount.profile;
+
+    if (profileOpt.isNone) return <em>Profile is not created yet.</em>;
+
+    const profile = profileOpt.unwrap() as Profile;
+
+    const ipfsHash = profile.ipfs_hash;
+    const [ profileData , setProfileData ] = useState({} as ProfileData);
+
+    useEffect(() => {
+      if (!ipfsHash) return;
+      getJsonFromIpfs<ProfileData>(ipfsHash).then(json => {
+        setProfileData(json);
+      }).catch(err => console.log(err));
+    }, [ false ]);
+
+    return <Component {...props} socialAccount={socialAccount} profile={profile} profileData={profileData}/>;
+  };
+}
+
+export function withRequireProfile<P extends LoadSocialAccount> (Component: React.ComponentType<P>) {
+  return function (props: P) {
+    return <Component {...props} requireProfile/>;
+  };
+}

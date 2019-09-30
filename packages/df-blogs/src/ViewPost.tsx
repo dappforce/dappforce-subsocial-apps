@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { HashLink } from 'react-router-hash-link';
 import ReactMarkdown from 'react-markdown';
 import { Segment, Dropdown } from 'semantic-ui-react';
 
@@ -16,6 +17,10 @@ import { CreatedBy } from './CreatedBy';
 import { MutedSpan } from '@polkadot/df-utils/MutedText';
 import { Voter } from './Voter';
 import { PostHistoryModal } from './ListsEditHistory';
+import { PostVoters, ActiveVoters } from './ListVoters';
+import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
+
+const LIMIT_SUMMARY = 150;
 
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
@@ -48,19 +53,37 @@ function ViewPostInternal (props: ViewPostProps) {
     downvotes_count,
     ipfs_hash
   } = post;
-
   const [ content , setContent ] = useState({} as PostData);
+  const [ summary, setSummary ] = useState('');
+  const [ commentsSection, setCommentsSection ] = useState(false);
+  const [ postVotersOpen, serPostVotersOpen ] = useState(false);
+  const [ activeVoters, setActiveVoters ] = useState(0);
+  const openVoters = (type: ActiveVoters) => {
+    if (type === ActiveVoters.Upvote && !upvotes) return;
+    if (type === ActiveVoters.Downvote && !downvotes) return;
+
+    serPostVotersOpen(true);
+    setActiveVoters(type);
+  };
   const { title, body, image } = content;
   useEffect(() => {
     if (!ipfs_hash) return;
     getJsonFromIpfs<PostData>(ipfs_hash).then(json => {
-      const content = json;
-      setContent(content);
+      setContent(json);
+      const summary = json.body.length > LIMIT_SUMMARY ? json.body.substr(0,LIMIT_SUMMARY) + '...' : json.body;
+      setSummary(summary);
       console.log(content);
     }).catch(err => console.log(err));
   }, [ false ]);
 
   const isMyStruct = myAddress === account.toString();
+
+  const commentsText = comments_count.toNumber() === 1 ? 'comment' : 'comments';
+  const upvotesText = upvotes_count.toNumber() === 1 ? 'upvote' : 'upvotes';
+  const downvotesText = downvotes_count.toNumber() === 1 ? 'downvote' : 'downvotes';
+
+  const upvotes = upvotes_count.toNumber();
+  const downvotes = downvotes_count.toNumber();
 
   const renderDropDownMenu = () => {
 
@@ -91,13 +114,23 @@ function ViewPostInternal (props: ViewPostProps) {
           {renderNameOnly()}
           {renderDropDownMenu()}
         </h2>
-        {withCreatedBy && <AuthorPreview address={account} />}
+        {withCreatedBy && <AddressMiniDf
+              value={account}
+              isShort={true}
+              isPadded={false}
+        />}
+        <div style={{ margin: '1rem 0' }}>
+          <ReactMarkdown className='DfMemo--full' source={summary} linkTarget='_blank' />
+        </div>
         {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         <div className='DfCountsPreview'>
-          <MutedSpan>Comments: <b>{comments_count.toString()}</b></MutedSpan>
-          <MutedSpan>Upvotes: <b>{upvotes_count.toString()}</b></MutedSpan>
-          <MutedSpan>Downvotes: <b>{downvotes_count.toString()}</b></MutedSpan>
+          <MutedSpan><HashLink to={`#commentsForPost${id}`} onClick={() => setCommentsSection(!commentsSection)}>
+          <b>{comments_count.toString()}</b> {commentsText}</HashLink></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)} className={upvotes ? '' : 'disable'}><b>{upvotes_count.toString()}</b> {upvotesText}</Link></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)} className={downvotes ? '' : 'disable'}><b>{downvotes_count.toString()}</b> {downvotesText}</Link></MutedSpan>
         </div>
+        {commentsSection && <CommentsByPost postId={post.id} post={post} />}
+        {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => serPostVotersOpen(false)}/>}
       </Segment>
     </>;
   };
