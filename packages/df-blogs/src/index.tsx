@@ -85,7 +85,7 @@ class App extends PureComponent<Props> {
           <Route path={`${basePath}/followed`} component={ListFollowingBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />
           <Route path={`${basePath}/accounts/new`} component={NewProfile} />
-          <Route path={`${basePath}/accounts/:address/edit`} component={EditProfile} />
+          <Route path={`${basePath}/accounts/edit`} component={EditProfile} />
           <Route path={`${basePath}/accounts/:address`} component={ViewProfile} />
           <Route path={`${basePath}/feed`} component={ViewNewsFeed} />
           <Route path={`${basePath}/notifications`} component={ViewNotifications} />
