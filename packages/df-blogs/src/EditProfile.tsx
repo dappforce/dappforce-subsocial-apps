@@ -308,26 +308,33 @@ function LoadStruct (props: LoadStructProps) {
   const { socialAccountOpt } = props;
   const [ json, setJson ] = useState(undefined as StructJson);
   const [ struct, setStruct ] = useState(undefined as Struct);
+  const [ trigger, setTrigger ] = useState(false);
   const jsonIsNone = json === undefined;
 
   const loadingProfile = <em>Loading profile...</em>;
-  // const noProfile = <em>No profile for this account</em>;
+
+  const toggleTrigger = () => {
+    json === undefined && setTrigger(!trigger);
+    return;
+  };
 
   useEffect(() => {
-    if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return;
+    if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return toggleTrigger();
 
     const socialAccount = socialAccountOpt.unwrap();
     const profileOpt = socialAccount.profile;
-    if (profileOpt.isNone) return;
+    if (profileOpt.isNone) return toggleTrigger();
 
     setStruct(profileOpt.unwrap() as Profile);
 
-    if (struct === undefined) return;
+    if (struct === undefined) return toggleTrigger();
 
+    console.log('Loading profile JSON from IPFS');
     getJsonFromIpfs<ProfileData>(struct.ipfs_hash).then(json => {
       setJson(json);
     }).catch(err => console.log(err));
-  }); // TODO add guard for loading from ipfs
+
+  }, [ trigger ]);
 
   if (!myAddress || !socialAccountOpt || jsonIsNone) {
     return loadingProfile;

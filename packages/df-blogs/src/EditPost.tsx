@@ -250,20 +250,28 @@ function LoadStruct (props: LoadStructProps) {
   const { structOpt } = props;
   const [ json, setJson ] = useState(undefined as StructJson);
   const [ struct, setStruct ] = useState(undefined as Struct);
+  const [ trigger, setTrigger ] = useState(false);
   const jsonIsNone = json === undefined;
+
+  const toggleTrigger = () => {
+    json === undefined && setTrigger(!trigger);
+    return;
+  };
 
   useEffect(() => {
 
-    if (!myAddress || !structOpt || structOpt.isNone) return;
+    if (!myAddress || !structOpt || structOpt.isNone) return toggleTrigger();;
 
     setStruct(structOpt.unwrap());
 
-    if (struct === undefined) return;
+    if (struct === undefined) return toggleTrigger();;
+
+    console.log('Loading post JSON from IPFS');
 
     getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
       setJson(json);
     }).catch(err => console.log(err));
-  }); // TODO add guard for loading from ipfs
+  }, [ trigger ]);
 
   if (!myAddress || !structOpt || jsonIsNone) {
     return <em>Loading post...</em>;
