@@ -104,7 +104,6 @@ class App extends PureComponent<Props> {
 export default withMulti(
   App,
   translate,
-  // withMyAccount, // TODO on tabs 'My blogs'
   withCalls<Props>(
     queryBlogsToProp('nextBlogId')
   )
