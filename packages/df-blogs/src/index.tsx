@@ -29,9 +29,12 @@ type Props = AppProps & ApiProps & I18nProps & {
 
 class App extends PureComponent<Props> {
 
+  static contextType = MyAccountContext;
+
   private buildTabs (): TabItem[] {
     const { t, nextBlogId } = this.props;
     let blogCount = nextBlogId ? nextBlogId.sub(new BN(1)).toNumber() : 0;
+    const { state: { address: myAddress } } = (this.context as MyAccountContextProps);
 
     return [
       {
@@ -57,6 +60,14 @@ class App extends PureComponent<Props> {
       {
         name: 'notifications',
         text: t('Notifications')
+      },
+      {
+        name: 'accounts/new',
+        text: t('New profile')
+      },
+      {
+        name: `accounts/${myAddress}`,
+        text: t('My profile')
       }
     ];
   }
@@ -73,6 +84,9 @@ class App extends PureComponent<Props> {
           <Route path={`${basePath}/my`} component={ListMyBlogs} />
           <Route path={`${basePath}/followed`} component={ListFollowingBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />
+          <Route path={`${basePath}/accounts/new`} component={NewProfile} />
+          <Route path={`${basePath}/accounts/:address/edit`} component={EditProfile} />
+          <Route path={`${basePath}/accounts/:address`} component={ViewProfile} />
           <Route path={`${basePath}/feed`} component={ViewNewsFeed} />
           <Route path={`${basePath}/notifications`} component={ViewNotifications} />
           <Route path={`${basePath}/posts/:id/edit`} component={EditPost} />
@@ -90,6 +104,7 @@ class App extends PureComponent<Props> {
 export default withMulti(
   App,
   translate,
+  // withMyAccount, // TODO on tabs 'My blogs'
   withCalls<Props>(
     queryBlogsToProp('nextBlogId')
   )
