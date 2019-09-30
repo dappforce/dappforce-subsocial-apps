@@ -7,12 +7,10 @@ import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { CommentVoters, PostVoters } from './ListVoters';
-import { Post, Reaction, CommentId, PostId, ReactionKind, Comment } from './types';
-
-type Struct = Comment | Post;
+import { Post, Reaction, CommentId, PostId, ReactionKind, Comment } from './types'; 
 
 type VoterValue = {
-  struct: Struct
+  struct: Comment | Post;
 };
 
 type VoterProps = VoterValue;

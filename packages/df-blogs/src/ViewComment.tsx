@@ -70,7 +70,7 @@ function InnerCommentsByPost (props: Props) {
 
   return (
       <Section title={`Comments (${commentsCount})`} className='DfCommentsByPost'>
-        <div id={`commentsForPost${postId}`}>
+        <div id={`comments-on-post-${postId}`}>
           <NewComment postId={postId}/>
           {renderComments()}
         </div>
@@ -153,7 +153,7 @@ export function ViewComment (props: ViewCommentProps) {
       content='Reply'
     />);
 
-  return <div id={`comment${id}`}>
+  return <div id={`comment-${id}`}>
     <SuiComment.Group threaded>
     <SuiComment>
       <div className='DfCommentBox'>

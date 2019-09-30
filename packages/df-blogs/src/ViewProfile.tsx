@@ -30,13 +30,12 @@ function Component (props: Props) {
   const { socialAccountOpt } = props;
 
   if (socialAccountOpt === undefined) return <em>Loading...</em>;
-  else if (socialAccountOpt.isNone) return <em>Social account not found yet.</em>;
+  else if (socialAccountOpt.isNone) return <em>No social activity by this account.</em>;
 
   const socialAccount = socialAccountOpt.unwrap();
   const profileOpt = socialAccount.profile;
 
-  if (profileOpt.isNone) return <em>Profile is not created yet.</em>;
-
+  if (profileOpt.isNone) return <em>Profile is not created yet.</em>; // TODO show social account info even if profile is not created
   const profile = profileOpt.unwrap() as Profile;
 
   const { followers_count, following_accounts_count } = socialAccount;

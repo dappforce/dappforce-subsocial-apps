@@ -165,7 +165,7 @@ function Notification (props: ActivityProps) {
               setMessage(Events.CommentCreated);
             }
           }
-          setSubject(<><HashLink to={`/blogs/posts/${postId.toString()}#comment${comment_id}`}><ViewPost id={postId} withCreatedBy={false} nameOnly withLink={false}/></HashLink></>);
+          setSubject(<><HashLink to={`/blogs/posts/${postId.toString()}#comment-${comment_id}`}><ViewPost id={postId} withCreatedBy={false} nameOnly withLink={false}/></HashLink></>);
           break;
         }
         case 'PostReactionCreated': {
