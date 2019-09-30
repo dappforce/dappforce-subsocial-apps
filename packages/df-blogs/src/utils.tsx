@@ -3,13 +3,12 @@ import { Pagination as SuiPagination } from 'semantic-ui-react';
 
 import { AccountId, AccountIndex, Address, Option } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
-import { Options } from '@polkadot/ui-api/with/types';
-import { queryToProp } from '@polkadot/df-utils/index';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId, Profile, ProfileData } from './types';
 import { OuterProps as PropsWithEditProfile } from './EditProfile';
 import { getJsonFromIpfs } from './OffchainUtils';
 import { SocialAccount } from '@dappforce/types/blogs';
+import BN from 'bn.js';
 
 type AuthorPreviewProps = {
   address: AccountId | AccountIndex | Address | string
@@ -137,4 +136,11 @@ export function withRequireProfile<P extends LoadSocialAccount> (Component: Reac
   return function (props: P) {
     return <Component {...props} requireProfile/>;
   };
+}
+
+export function pluralizeText (count: number | BN, singularText: string, pluralText?: string) {
+  count = typeof count !== 'number' ? count.toNumber() : count;
+  const plural = () => !pluralText ? singularText + 's' : pluralText;
+  const text = count === 1 ? singularText : plural();
+  return <><b>{count}</b> {text}</>;
 }

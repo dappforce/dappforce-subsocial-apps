@@ -9,8 +9,8 @@ import { api, withMulti } from '@polkadot/ui-api';
 import ViewBlog from './ViewBlog';
 import moment from 'moment-timezone';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
-import ActivityStreamItem from './ActivityStreamItem';
 import { getNewsFeed, getNotifications } from './OffchainUtils';
+import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
 
 type ActivityProps = {
   activity: Activity;
@@ -149,7 +149,7 @@ function Notification (props: ActivityProps) {
   }, [ postId > new PostId(0) ]);
 
   return <Segment className='DfActivity'>
-    <ActivityStreamItem
+    <AddressMiniDf
       value={account}
       isShort={true}
       isPadded={false}
@@ -158,6 +158,7 @@ function Notification (props: ActivityProps) {
       event={message}
       subject={subject}
       count={agg_count}
+      asActivity
     />
   </Segment>;
 }

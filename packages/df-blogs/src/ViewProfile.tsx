@@ -8,7 +8,7 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
-import { withIdFromMyAddress, withSocialAccount, withRequireProfile } from './utils';
+import { withIdFromMyAddress, withSocialAccount, withRequireProfile, pluralizeText } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
@@ -41,9 +41,8 @@ function Component (props: Props) {
     profileData
   } = props;
 
-  const followers = socialAccount && socialAccount.followers_count.toNumber();
-  const following = socialAccount && socialAccount.following_accounts_count.toNumber();
-  const followersText = followers === 1 ? 'follower' : 'followers';
+  const followers = socialAccount !== undefined ? socialAccount.followers_count.toNumber() : 0;
+  const following = socialAccount !== undefined ? socialAccount.following_accounts_count.toNumber() : 0;
 
   const [ followersOpen, setFollowersOpen ] = useState(false);
   const [ followingOpen, setFollowingOpen ] = useState(false);
@@ -175,9 +174,9 @@ function Component (props: Props) {
       {renderPreview()}
     </div>
     {renderFollowButton()}
-    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}><b>{followers}</b> {followersText} </TxButton>
+    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{pluralizeText(followers, 'follower')} </TxButton>
     <TxButton isBasic={true} onClick={() => setFollowingOpen(true)} isDisabled={following === 0}>{following} following </TxButton>
-    {followersOpen && <AccountFollowersModal id={id} accountsCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={followersText}/>}
+    {followersOpen && <AccountFollowersModal id={id} accountsCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'follower')}/>}
     {followingOpen && <AccountFollowingModal id={id} accountsCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'following'}/>}
   </>;
 }

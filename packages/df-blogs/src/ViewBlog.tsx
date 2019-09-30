@@ -19,6 +19,7 @@ import { BlogHistoryModal } from './ListsEditHistory';
 import { Dropdown } from 'semantic-ui-react';
 import { FollowBlogButton } from './FollowButton';
 import TxButton from '@polkadot/df-utils/TxButton';
+import { pluralizeText } from './utils';
 
 type Props = MyAccountProps & {
   preview?: boolean,
@@ -53,7 +54,6 @@ function Component (props: Props) {
 
   const [ followersOpen, setFollowersOpen ] = useState(false);
   const followers = blog.followers_count.toNumber();
-  const followersText = blog.followers_count.toNumber() === 1 ? 'follower' : 'followers';
 
   useEffect(() => {
     if (!ipfs_hash) return;
@@ -67,7 +67,6 @@ function Component (props: Props) {
   const isMyBlog = myAddress && account && myAddress === account.toString();
   const hasImage = image && nonEmptyStr(image);
   const postsCount = postIds ? postIds.length : 0;
-  const postsText = postsCount === 1 ? 'post' : 'posts';
 
   const renderDropDownMenu = () => {
 
@@ -123,7 +122,7 @@ function Component (props: Props) {
 
   const postsSectionTitle = () => {
     return <>
-      <span style={{ marginRight: '.5rem' }}>{postsCount} {postsText}</span>
+      <span style={{ marginRight: '.5rem' }}>{pluralizeText(postsCount, 'post')}</span>
       <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
         <i className='plus icon' />
         Write post
@@ -137,8 +136,8 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{followers} {followersText}</TxButton>
-    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={followersText} />}
+    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{pluralizeText(followers, 'follower')}</TxButton>
+    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'follower')} />}
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>
