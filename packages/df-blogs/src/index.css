@@ -26,13 +26,20 @@
 .ProfileDetails {
   display: flex !important;
   padding-left: 1rem !important;
-    .handle {
-      display: inline-block;
-      margin-right: .6rem;
-      .button {
-        padding: .5rem .75rem;
-      }
+  .content {
+    margin-left: 1rem;
+  }
+  .header { 
+    font-size: 1.7rem;
+    font-weight: bold;
+  }
+  .handle {
+    display: inline-block;
+    margin-right: .6rem;
+    .button {
+      padding: .5rem .75rem;
     }
+  }
 }
 .ProfileDetailsTable {
   font-size: 1rem !important;
@@ -174,4 +181,11 @@ hr {
 
 .DfActivityStreamItem-details.name{
   text-transform: uppercase;
+}
+
+.DfSocialLinks {
+  margin-top: 1rem;
+  a {
+    margin-right: 1rem
+  }
 }

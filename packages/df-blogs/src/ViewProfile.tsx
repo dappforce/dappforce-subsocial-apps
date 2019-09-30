@@ -109,53 +109,49 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='about'>
-            {hasFacebookLink &&
-              <a
-                href={facebook}
-                className='handle'
-                target='_blank'
-              >
-                <Icon className='facebook'/>Facebook
-              </a>
-            }
-            {hasTwitterLink &&
-              <a
-                href={twitter}
-                className='handle'
-                target='_blank'
-              >
-                <Icon className='twitter' />Twitter
-              </a>
-            }
-            {hasLinkedInLink &&
-              <a
-                href={linkedIn}
-                className='handle'
-                target='_blank'
-              >
-                <Icon className='linkedIn' />LinkedIn
-              </a>
-            }
-            {hasGithubLink &&
-              <a
-                href={github}
-                className='handle'
-                target='_blank'
-              >
-                <Icon className='github' />GitHub
-              </a>
-            }
-            {hasInstagramLink &&
-              <a
-                href={instagram}
-                className='handle'
-                target='_blank'
-              >
-              <Icon className='instagram' />Instagram
-              </a>
-            }
-
             <ReactMarkdown className='DfMd' source={about} linkTarget='_blank' />
+            <div className='DfSocialLinks'>
+              {hasFacebookLink &&
+                <a
+                  href={facebook}
+                  target='_blank'
+                >
+                  <Icon className='facebook'/>Facebook
+                </a>
+              }
+              {hasTwitterLink &&
+                <a
+                  href={twitter}
+                  target='_blank'
+                >
+                  <Icon className='twitter' />Twitter
+                </a>
+              }
+              {hasLinkedInLink &&
+                <a
+                  href={linkedIn}
+                  target='_blank'
+                >
+                  <Icon className='linkedin' />LinkedIn
+                </a>
+              }
+              {hasGithubLink &&
+                <a
+                  href={github}
+                  target='_blank'
+                >
+                  <Icon className='github' />GitHub
+                </a>
+              }
+              {hasInstagramLink &&
+                <a
+                  href={instagram}
+                  target='_blank'
+                >
+                <Icon className='instagram' />Instagram
+                </a>
+              }
+            </div>
           </div>
         </div>
       </div>
@@ -177,7 +173,7 @@ function Component (props: Props) {
   };
 
   return <>
-    <div className='ui massive relaxed middle aligned list FullProfile'>
+    <div className='FullProfile'>
       {renderPreview()}
     </div>
     {renderFollowButton()}
