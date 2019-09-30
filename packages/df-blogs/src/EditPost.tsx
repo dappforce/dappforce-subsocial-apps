@@ -16,6 +16,8 @@ import Section from '@polkadot/df-utils/Section';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { UrlHasIdProps, getNewIdFromEvent } from './utils';
+import SimpleMDEReact from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()
@@ -80,6 +82,8 @@ const InnerForm = (props: FormProps) => {
     tags
   } = values;
 
+  const [ bodyData, setBodyData ] = useState(body);
+
   const goToView = (id: PostId) => {
     if (history) {
       history.push('/blogs/posts/' + id.toString());
@@ -90,7 +94,7 @@ const InnerForm = (props: FormProps) => {
 
   const onSubmit = (sendTx: () => void) => {
     if (isValid) {
-      const json = { title, body, image, tags };
+      const json = { title, body: bodyData, image, tags };
       console.log(json);
       addJsonToIpfs(json).then(cid => {
         setIpfsCid(cid);
@@ -143,11 +147,15 @@ const InnerForm = (props: FormProps) => {
 
       {/* TODO ask a post summary or auto-generate and show under an "Advanced" tab. */}
 
-      <LabelledField name='body' label='Your post' {...props}>
-        <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={5} placeholder={`Write your post here. You can use Markdown.`} />
+      <LabelledField label='Your post' {...props}>
+        <SimpleMDEReact
+            className={'DfMdEditor'}
+            value={bodyData}
+            onChange={(data) => setBodyData(data)}
+        />
       </LabelledField>
 
-      {/* TODO tags */}
+      {/* TODO tags // Create onClick event -> render Editor*/}
 
       <LabelledField {...props}>
         <TxButton
