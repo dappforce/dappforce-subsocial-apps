@@ -6,9 +6,9 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
-import { nonEmptyStr } from '@polkadot/df-utils/index';
+import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
-import { queryBlogsToProp, withIdFromMyAddress, withSocialAccount, withRequireProfile } from './utils';
+import { withIdFromMyAddress, withSocialAccount, withRequireProfile } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
