@@ -40,18 +40,14 @@ export const Pagination = (p: PaginationProps) => {
   );
 };
 
-export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId | AccountId>
+export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId>
   (_txResult: SubmittableResult): IdType | undefined {
 
   let id: IdType | undefined;
 
   _txResult.events.find(event => {
     const { event: { data, method } } = event;
-    if (method.indexOf('ProfileCreated') >= 0) {
-      const [ newId ] = data.toArray();
-      id = newId as IdType;
-      return true;
-    } else if (method.indexOf(`Created`) >= 0) {
+    if (method.indexOf(`Created`) >= 0) {
       const [/* owner */, newId ] = data.toArray();
       id = newId as IdType;
       return true;
@@ -78,7 +74,12 @@ export type UrlHasAddressProps = {
   }
 };
 
-export function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
+type LoadProps = {
+  history?: History,
+  id: AccountId
+}
+
+export function withIdFromMyAddress (Component: React.ComponentType<LoadProps>) {
   return function (props: UrlHasAddressProps) {
     const { match: { params: { address } } } = props;
     try {
