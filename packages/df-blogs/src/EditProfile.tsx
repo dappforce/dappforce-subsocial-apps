@@ -144,8 +144,8 @@ const InnerForm = (props: FormProps) => {
     setSubmitting(false);
 
     if (!history) return;
+
     const _id = id ? id : getNewIdFromEvent<AccountId>(_txResult);
-    console.log(_id);
     _id && goToView(_id);
   };
 

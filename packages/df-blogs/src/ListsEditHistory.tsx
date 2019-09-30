@@ -296,8 +296,6 @@ const InnerBlogHistoryModal = (props: BlogHistoryProps) => {
   const blog = blogOpt.unwrap();
   const { edit_history } = blog;
 
-  console.log(edit_history);
-
   const history = fillHistory<VecBlogHistoryRecord>(edit_history);
 
   const renderBlogHistory = () => {
@@ -400,8 +398,6 @@ const InnerProfileHistoryModal = (props: ProfileHistoryProps) => {
   const profile = profileOpt.unwrap() as Profile;
 
   const { edit_history } = profile;
-
-  console.log(edit_history);
 
   const history = fillHistory<VecProfileHistoryRecord>(edit_history);
 

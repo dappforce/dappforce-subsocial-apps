@@ -130,7 +130,6 @@ function Notification (props: ActivityProps) {
   }
 
   useEffect(() => {
-    console.log(event);
     const loadActivity = async () => {
       switch (event) {
         case 'AccountFollowed': {
@@ -189,7 +188,7 @@ function Notification (props: ActivityProps) {
     };
     loadActivity().catch(err => new Error(err));
   }, [ postId > new PostId(0) ]);
-  console.log(agg_count);
+
   return <Segment className='DfActivity'>
     <ActivityStreamItem
       value={account}

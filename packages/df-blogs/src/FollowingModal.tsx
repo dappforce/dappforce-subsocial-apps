@@ -15,7 +15,6 @@ type Props = {
 const InnerFollowingModal = (props: Props) => {
 
   const { following, followingCount } = props;
-  console.log(following);
   const [open, setOpen] = useState(false);
 
   const renderFollowing = () => {

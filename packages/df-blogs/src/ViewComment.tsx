@@ -42,7 +42,6 @@ function InnerCommentsByPost (props: Props) {
   useEffect(() => {
     const loadComments = async () => {
       if (!commentsCount) return;
-      console.log('CommentsByPost');
       const apiCalls: Promise<OptionComment>[] = commentIds.map(id =>
         api.query.blogs.commentById(id) as Promise<OptionComment>);
 
@@ -110,7 +109,6 @@ export function ViewComment (props: ViewCommentProps) {
   useEffect(() => {
 
     getJsonFromIpfs<CommentData>(struct.ipfs_hash).then(json => {
-      console.log(json);
       setContent(json);
     }).catch(err => console.log(err));
 

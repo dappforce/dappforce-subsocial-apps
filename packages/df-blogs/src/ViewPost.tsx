@@ -71,7 +71,6 @@ function ViewPostInternal (props: ViewPostProps) {
       setContent(json);
       const summary = json.body.length > LIMIT_SUMMARY ? json.body.substr(0,LIMIT_SUMMARY) + '...' : json.body;
       setSummary(summary);
-      console.log(content);
     }).catch(err => console.log(err));
   }, [ false ]);
 

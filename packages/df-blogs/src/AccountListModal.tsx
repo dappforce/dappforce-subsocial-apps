@@ -18,7 +18,6 @@ type Props = {
 const InnerFollowersModal = (props: Props) => {
 
   const { followers, followersCount = 0, open, close, title } = props;
-  console.log(followers);
 
   const renderFollowers = () => {
     return followers && followers.map((account, index) =>
