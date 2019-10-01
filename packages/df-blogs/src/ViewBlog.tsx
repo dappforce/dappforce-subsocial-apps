@@ -136,7 +136,7 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{pluralizeText(followers, 'follower')}</TxButton>
+    <TxButton isBasic={true} isPrimary={false} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{pluralizeText(followers, 'follower')}</TxButton>
     {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'follower')} />}
     <Section title={postsSectionTitle()}>
       {renderPostPreviews()}

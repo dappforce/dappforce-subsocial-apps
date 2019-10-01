@@ -108,7 +108,7 @@ export function withSocialAccount<P extends LoadSocialAccount> (Component: React
     const { socialAccountOpt, requireProfile = false } = props;
 
     if (socialAccountOpt === undefined) return <em>Loading...</em>;
-    else if (socialAccountOpt.isNone && requireProfile) return <em>Social account not found yet.</em>;
+    else if (socialAccountOpt.isNone && requireProfile) return <em>Social account not create yet.</em>;
     else if (socialAccountOpt.isNone) return <Component {...props} />;
 
     const socialAccount = socialAccountOpt.unwrap();
