@@ -132,7 +132,7 @@ function AddressMini (props: Props) {
             value={address}
           />
         }
-        <div className='DfActivityStreamItem-popup'>
+        <div className='DfAddressMini-popup'>
           {myAddress !== address
             ? <Popup
               trigger={renderAddress(address)}

@@ -19,6 +19,7 @@ import { Voter } from './Voter';
 import { PostHistoryModal } from './ListsEditHistory';
 import { PostVoters, ActiveVoters } from './ListVoters';
 import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
+import { time } from 'console';
 
 const LIMIT_SUMMARY = 150;
 
@@ -47,7 +48,7 @@ function ViewPostInternal (props: ViewPostProps) {
 
   const post = postById.unwrap();
   const {
-    created: { account },
+    created: { account, time, block },
     comments_count,
     upvotes_count,
     downvotes_count,
@@ -114,6 +115,7 @@ function ViewPostInternal (props: ViewPostProps) {
               value={account}
               isShort={true}
               isPadded={false}
+              extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}`}
         />}
         <div style={{ margin: '1rem 0' }}>
           <ReactMarkdown className='DfMemo--full' source={summary} linkTarget='_blank' />

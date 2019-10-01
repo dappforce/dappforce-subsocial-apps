@@ -17,7 +17,7 @@
   min-width: 48%;
 
   .ui--AddressMini {
-    display: block;
+    display: inline-block;
   }
 
   .ui--AddressSummary {
@@ -31,6 +31,26 @@
   }
 }
 
+.ui--AddressMini 
+{
+  vertical-align: bottom;
+  .ui--AddressMini-details {
+    display: inline-block !important;
+    font-size: .9rem;
+    color: #999;
+  }
+}
+
+.ui--AddressMini-info div{
+  display: table-cell;
+}
+
+.DfAddressMini-popup{
+  padding-left: .6rem;
+  p {
+    font-size: 1rem;
+  }
+}
 .ui--Nominators {
   overflow-y: overlay;
   max-height: 196px;
