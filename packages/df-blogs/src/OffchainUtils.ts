@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const host = 'http://localhost:3001/v1';
 
-export const LIMIT = 20;
+export const LIMIT = 3;
 
 export async function addJsonToIpfs (ipfsData: IpfsData): Promise<string> {
   const res = await axios.post(`${host}/ipfs/add`, ipfsData);

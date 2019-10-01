@@ -24,10 +24,12 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
 
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
   const [ offset, setOffset ] = useState(0);
+  const [ hasMore, setHasMore ] = useState(true);
 
   const getNewsArray = async () => {
     const data = await getNewsFeed(myAddress, offset, LIMIT);
-    setMyFeeds(data);
+    if (data.length < LIMIT) setHasMore(false);
+    setMyFeeds(myFeeds.concat(data));
     setOffset(offset + LIMIT);
   };
 
@@ -42,20 +44,18 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
     <ViewActivity key={id} activity={item}/>);
   return (
   <Section title={`News Feed (${totalCount})`}>{
-    <div id='newsFeedContainer' className='ui huge relaxed middle aligned divided list ProfilePreviews'>
-      {totalCount === 0
-      ? <em>News is not yet</em>
-      :
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={getNewsArray}
-        hasMore={true}
-        loader={<h4>Loading...</h4>}
-        scrollableTarget='newsFeedContainer'
-      >
-        {NewsFeedArray}
-      </InfiniteScroll>}
-    </div>
+    totalCount === 0
+    ? <em>News is not yet</em>
+    :
+    <InfiniteScroll
+      dataLength={totalCount}
+      next={getNewsArray}
+      hasMore={hasMore}
+      endMessage={<em>End</em>}
+      loader={<h4>Loading...</h4>}
+    >
+      {NewsFeedArray}
+    </InfiniteScroll>
   }</Section>
   );
 };
@@ -65,12 +65,13 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   if (!myAddress) return <em>Opps...Incorect Account</em>;
 
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
-
+  const [ hasMore, setHasMore ] = useState(true);
   const [ offset, setOffset ] = useState(0);
 
   const getNotificationsArray = async () => {
     const data = await getNotifications(myAddress, offset, LIMIT);
-    setMyFeeds(data);
+    if (data.length < LIMIT) setHasMore(false);
+    setMyFeeds(myFeeds.concat(data));
     setOffset(offset + LIMIT);
   };
 
@@ -84,21 +85,19 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   const NotificationsArray = myFeeds.map((item, id) =>
     <Notification key={id} activity={item}/>);
   return (
-  <Section title={`Notifications (${totalCount})`}>{
-    <div id='notificationsContainer' className='ui huge relaxed middle aligned divided list ProfilePreviews'>
-      {totalCount === 0
-      ? <em>News is not yet</em>
-      :
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={getNotificationsArray}
-        hasMore={true}
-        loader={<h4>Loading...</h4>}
-        scrollableTarget='newsFeedContainer'
-      >
-        {NotificationsArray}
-      </InfiniteScroll>}
-    </div>
+  <Section title={`Notifications (${totalCount})`}>
+    {totalCount === 0
+    ? <em>News is not yet</em>
+    :
+    <InfiniteScroll
+      dataLength={totalCount}
+      next={getNotificationsArray}
+      hasMore={hasMore}
+      endMessage={<em>End</em>}
+      loader={<h4>Loading...</h4>}
+    >
+      {NotificationsArray}
+    </InfiniteScroll>
   }</Section>
   );
 };
