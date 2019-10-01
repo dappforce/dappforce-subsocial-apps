@@ -4,10 +4,10 @@
 
 import { Options } from './types';
 
-const WS_LOCALHOST = 'ws://127.0.0.1:9944/';
+const WSS_LOCALHOST = 'ws://127.0.0.1:9944/';
 
 const ENDPOINTS: Options = [
-  { text: 'Local Node (127.0.0.1:9944)', value: WS_LOCALHOST }
+  { text: 'Local Node (127.0.0.1:9944)', value: WSS_LOCALHOST }
 ];
 
 const LANGUAGE_DEFAULT = 'default';
@@ -30,14 +30,14 @@ const UITHEMES: Options = [
   { value: 'substrate', text: 'Substrate' }
 ];
 
-const ENDPOINT_DEFAULT = WS_LOCALHOST;
+const ENDPOINT_DEFAULT = WSS_LOCALHOST;
 
 const UITHEME_DEFAULT = 'substrate';
 
 // tslint:disable-next-line
 const UIMODE_DEFAULT = typeof window !== 'undefined'
-  ? 'full'
-  : 'light';
+  ? 'light'
+  : 'full';
 
 export {
   CRYPTOS,

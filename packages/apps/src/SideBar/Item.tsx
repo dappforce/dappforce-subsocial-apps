@@ -92,19 +92,17 @@ class Item extends React.PureComponent<Props> {
   }
 
   private getSubtitle (name: string): Subtitle | undefined {
-    if (name === councilSidebarName) {
-      const { electionStage: stage } = this.props;
-      if (stage && stage.isSome) {
-        const classes: string[] = [];
-        let text = 'No active election';
-        if (stage.isSome) {
-          const stageValue = stage.value as ElectionStage;
-          const stageName = stageValue.type;
-          text = `${stageName} stage`;
-          classes.push(stageName);
-        }
-        return { text, classes };
+    const { electionStage: stage } = this.props;
+    if (stage && stage.isSome) {
+      const classes: string[] = [];
+      let text = 'No active election';
+      if (stage.isSome) {
+        const stageValue = stage.value as ElectionStage;
+        const stageName = stageValue.type;
+        text = `${stageName} stage`;
+        classes.push(stageName);
       }
+      return { text, classes };
     }
     return undefined;
   }

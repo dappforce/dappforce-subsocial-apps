@@ -13,7 +13,8 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 import { addJsonToIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { ProfileData, Profile, ProfileUpdate } from './types';
-import { queryBlogsToProp, withIdFromMyAddress, getNewIdFromEvent, withSocialAccount, withRequireProfile } from './utils';
+import { withIdFromMyAddress, getNewIdFromEvent, withSocialAccount, withRequireProfile } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { SocialAccount } from '@dappforce/types/blogs';
 
 // TODO get next settings from Substrate:

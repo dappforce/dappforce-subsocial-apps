@@ -3,9 +3,9 @@ import { withMulti, withCalls } from '@polkadot/ui-api/with';
 import { Modal, Comment as SuiComment, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
-import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord, ProfileHistoryRecord, ProfileData, Profile, VecProfileHistoryRecord } from './types';
-import { queryBlogsToProp } from './utils';
-import { Option, AccountId } from '@polkadot/types';
+import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord } from './types';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
+import { Option } from '@polkadot/types';
 import ReactMarkdown from 'react-markdown';
 import IdentityIcon from '@polkadot/ui-identicon/Identicon';
 import { Link } from 'react-router-dom';
@@ -176,7 +176,7 @@ const PostFromHistory = (props: PropsPostFromHistory) => {
     <CreatedBy created={edited} dateLabel='Edited on' accountLabel='Edited by' />
     <div style={{ margin: '1rem 0' }}>
       {content.image && <img src={content.image} className='DfPostImage' /* add onError handler */ />}
-      <ReactMarkdown className='DfMemo--full' source={content.body} linkTarget='_blank' />
+      <ReactMarkdown className='DfMd' source={content.body} linkTarget='_blank' />
       {/* TODO render tags */}
     </div>
     <hr/>
@@ -276,7 +276,7 @@ const BlogFromHistory = (props: PropsBlogFromHistory) => {
             </div>
             <div className='description' style={{ margin: '0.2rem' }}>{`slug: ${_slug}`}</div>
             <div className='description' style={{ margin: '0.2rem' }}>
-              <ReactMarkdown className='DfMemo--full' source={content.desc} linkTarget='_blank' />
+              <ReactMarkdown className='DfMd' source={content.desc} linkTarget='_blank' />
             </div>
           </div>
         </div>

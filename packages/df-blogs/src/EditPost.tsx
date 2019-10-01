@@ -14,7 +14,8 @@ import { Option } from '@polkadot/types/codec';
 import { PostId, Post, PostData, PostUpdate, BlogId } from './types';
 import Section from '@polkadot/df-utils/Section';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
-import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
+import { UrlHasIdProps, getNewIdFromEvent } from './utils';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()

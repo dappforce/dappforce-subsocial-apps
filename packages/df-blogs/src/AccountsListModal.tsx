@@ -2,7 +2,7 @@ import React from 'react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
-import { queryBlogsToProp } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Modal, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
@@ -42,7 +42,7 @@ const InnerAccountsListModal = (props: Props) => {
       centered={true}
       style={{ marginTop: '3rem' }}
     >
-      <Modal.Header><h1>{accountsCount} {title}</h1></Modal.Header>
+      <Modal.Header><h1>{title}</h1></Modal.Header>
       <Modal.Content scrolling>
         {renderAccounts()}
       </Modal.Content>

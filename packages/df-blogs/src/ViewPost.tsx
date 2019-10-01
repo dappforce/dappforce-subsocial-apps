@@ -9,7 +9,8 @@ import { Option } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { PostId, Post, CommentId, PostData } from './types';
-import { queryBlogsToProp, UrlHasIdProps } from './utils';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
+import { UrlHasIdProps, pluralizeText } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import { CommentsByPost } from './ViewComment';
 import { CreatedBy } from './CreatedBy';
@@ -46,7 +47,7 @@ function ViewPostInternal (props: ViewPostProps) {
 
   const post = postById.unwrap();
   const {
-    created: { account },
+    created: { account, time, block },
     comments_count,
     upvotes_count,
     downvotes_count,
@@ -76,10 +77,6 @@ function ViewPostInternal (props: ViewPostProps) {
   }, [ false ]);
 
   const isMyStruct = myAddress === account.toString();
-
-  const commentsText = comments_count.toNumber() === 1 ? 'comment' : 'comments';
-  const upvotesText = upvotes_count.toNumber() === 1 ? 'upvote' : 'upvotes';
-  const downvotesText = downvotes_count.toNumber() === 1 ? 'downvote' : 'downvotes';
 
   const upvotes = upvotes_count.toNumber();
   const downvotes = downvotes_count.toNumber();
@@ -117,6 +114,7 @@ function ViewPostInternal (props: ViewPostProps) {
               value={account}
               isShort={true}
               isPadded={false}
+              extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}`}
         />}
         <div style={{ margin: '1rem 0' }}>
           <ReactMarkdown className='DfMemo--full' source={summary} linkTarget='_blank' />
@@ -124,9 +122,9 @@ function ViewPostInternal (props: ViewPostProps) {
         {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         <div className='DfCountsPreview'>
           <MutedSpan><HashLink to={`#commentsForPost${id}`} onClick={() => setCommentsSection(!commentsSection)}>
-          <b>{comments_count.toString()}</b> {commentsText}</HashLink></MutedSpan>
-          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)} className={upvotes ? '' : 'disable'}><b>{upvotes_count.toString()}</b> {upvotesText}</Link></MutedSpan>
-          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)} className={downvotes ? '' : 'disable'}><b>{downvotes_count.toString()}</b> {downvotesText}</Link></MutedSpan>
+          {pluralizeText(comments_count, 'comment')}</HashLink></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)} className={upvotes ? '' : 'disable'}>{pluralizeText(upvotes_count, 'upvote')}</Link></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)} className={downvotes ? '' : 'disable'}> {pluralizeText(downvotes_count, 'downvote')}</Link></MutedSpan>
         </div>
         {commentsSection && <CommentsByPost postId={post.id} post={post} />}
         {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => serPostVotersOpen(false)}/>}
@@ -143,7 +141,7 @@ function ViewPostInternal (props: ViewPostProps) {
       {withCreatedBy && <CreatedBy created={post.created} />}
       <div style={{ margin: '1rem 0' }}>
         {image && <img src={image} className='DfPostImage' /* add onError handler */ />}
-        <ReactMarkdown className='DfMemo--full' source={body} linkTarget='_blank' />
+        <ReactMarkdown className='DfMd' source={body} linkTarget='_blank' />
         {/* TODO render tags */}
       </div>
       <Voter struct={post} />

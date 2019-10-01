@@ -57,8 +57,21 @@ type FollowAccountButtonProps = {
 };
 
 export function FollowAccountButton (props: FollowAccountButtonProps) {
-  const { address, size = 'medium' } = props;
+  const { address } = props;
   const { state: { address: myAddress } } = useMyAccount();
+
+  // Account cannot follow itself
+  if (!myAddress || address === myAddress) return null;
+
+  return <InnerFollowAccountButton {...props} myAddress={myAddress}/>;
+}
+
+type InnerFollowAccountButtonProps = FollowAccountButtonProps & {
+  myAddress: string
+};
+
+function InnerFollowAccountButton (props: InnerFollowAccountButtonProps) {
+  const { myAddress, address, size = 'medium' } = props;
 
   const accountId = new AccountId(address);
   const dataForQuery = new Tuple([AccountId, AccountId], [new AccountId(myAddress), accountId]);

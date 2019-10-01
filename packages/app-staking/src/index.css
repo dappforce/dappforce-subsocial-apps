@@ -17,7 +17,7 @@
   min-width: 48%;
 
   .ui--AddressMini {
-    display: block;
+    display: inline-block;
   }
 
   .ui--AddressSummary {
@@ -27,6 +27,72 @@
 
     .ui--AddressSummary-base, .ui--AddressSummary-children {
       min-width: 0;
+    }
+  }
+}
+
+.ui--AddressMini 
+{
+  vertical-align: bottom;
+  .ui--AddressMini-details {
+    display: inline-block !important;
+    font-size: .9rem;
+  }
+}
+
+.DfActivityStreamItem-details.subject{
+  margin-left: .3rem;
+}
+.DfSection{
+  .ui--AddressMini-details
+  {
+    color: #999;
+  }
+}
+.ui--AddressMini-info div{
+  display: table-cell;
+}
+
+.DfActivity{
+  .ui--AddressMini-info div{
+    display: inline-block;;
+  }
+  .ui--AddressMini-info{
+    display: flex;
+  }
+  .DfAddressMini-popup{
+    display: flex !important;
+    flex-direction: column;
+  }
+  .DfActivityStreamItem-details.date{
+    font-size: .9rem;
+    color: #999;
+  }
+}
+.DfCommentBox{
+  .DfAddressMini-popup{
+    p {
+      font-size: .9rem;
+      color: #4e4e4e;
+    }
+  }
+}
+
+.DfAddressMini-popup{
+  padding-left: .6rem;
+}
+
+.popup{
+  .ui--IdentityIcon{
+    margin-right: .5rem;
+  }
+  .content{
+    margin-right: 1.5rem;
+  }
+  .DfPopup-links{
+    margin-top: .2rem;
+    a{
+      margin-right: .4rem;
     }
   }
 }

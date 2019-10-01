@@ -12,8 +12,9 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
+import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
-import { queryBlogsToProp, UrlHasIdProps, getNewIdFromEvent } from './utils';
+import { UrlHasIdProps, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 // TODO get next settings from Substrate:

@@ -6,9 +6,9 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
-import { nonEmptyStr } from '@polkadot/df-utils/index';
+import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
-import { queryBlogsToProp, withIdFromMyAddress, withSocialAccount, withRequireProfile } from './utils';
+import { withIdFromMyAddress, withSocialAccount, withRequireProfile, pluralizeText } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
@@ -16,6 +16,7 @@ import { FollowAccountButton } from './FollowButton';
 import { AccountFollowersModal, AccountFollowingModal } from './AccountsListModal';
 import { ProfileHistoryModal } from './ListsEditHistory';
 import TxButton from '@polkadot/df-utils/TxButton';
+import { toShortAddress } from '@polkadot/ui-app/util';
 
 export type Props = {
   preview?: boolean,
@@ -24,7 +25,6 @@ export type Props = {
   profile?: Profile,
   profileData?: ProfileData,
   socialAccount?: SocialAccount,
-  requireProfile?: boolean,
   followers?: AccountId[],
   size?: number
 };
@@ -37,21 +37,19 @@ function Component (props: Props) {
     nameOnly = false,
     size,
     socialAccount,
-    profile,
-    profileData
+    profile = {} as Profile,
+    profileData = {} as ProfileData
   } = props;
 
-  const followers = socialAccount && socialAccount.followers_count.toNumber();
-  const following = socialAccount && socialAccount.following_accounts_count.toNumber();
-  const followersText = followers === 1 ? 'follower' : 'followers';
+  const address = id.toString();
+  const profileIsNone = !socialAccount || socialAccount && socialAccount.profile.isNone;
+  const followers = socialAccount ? socialAccount.followers_count.toNumber() : 0;
+  const following = socialAccount ? socialAccount.following_accounts_count.toNumber() : 0;
 
   const [ followersOpen, setFollowersOpen ] = useState(false);
   const [ followingOpen, setFollowingOpen ] = useState(false);
 
-  if (!profileData || !profile) return null;
-
   const {
-    created: { account },
     username
   } = profile;
 
@@ -73,14 +71,22 @@ function Component (props: Props) {
   const hasGithubLink = github && nonEmptyStr(github);
   const hasInstagramLink = instagram && nonEmptyStr(instagram);
 
+  const renderCreateProfileButton = profileIsNone &&
+    <Link to={`/blogs/accounts/new`} style={ { marginTop: '.5rem' } } className='ui tiny button primary'>
+      <i className='plus icon' />
+      Create profile
+    </Link>;
+
   const renderDropDownMenu = () => {
+
+    if (profileIsNone) return null;
 
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
 
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
-        {<Link className='item' to={`/blogs/accounts/${id.toString()}/edit`}>Edit</Link>}
+        {<Link className='item' to={`/blogs/accounts/${address}/edit`}>Edit</Link>}
         <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
         {open && <ProfileHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
@@ -88,20 +94,21 @@ function Component (props: Props) {
   };
 
   const renderNameOnly = () => (<>
-    <div className='handle'>{fullname || username}</div></>);
+    <div className='handle'>{fullname || username || address}</div></>);
 
   const renderPreview = () => {
     return <>
       <div className={`item ProfileDetails MyProfile`}>
         {hasAvatar
           ? <img className='DfAvatar' height={size || 48} width={size || 48} src={avatar} />
-          : <IdentityIcon className='image' value={account} size={size || 48} />
+          : <IdentityIcon className='image' value={address} size={size || 48} />
         }
         <div className='content'>
           <div className='header'>
             {renderNameOnly()}
             {renderDropDownMenu()}
           </div>
+          {renderCreateProfileButton}
           <div className='about'>
             {hasFacebookLink &&
               <a
@@ -162,22 +169,14 @@ function Component (props: Props) {
     return renderPreview();
   }
 
-  const { state: { address: myAddress } } = useMyAccount();
-  const isMyProfile: boolean = id.toString() === myAddress;
-
-  const renderFollowButton = () => {
-    if (!isMyProfile) return <FollowAccountButton address={id.toString()} />;
-    else return null;
-  };
-
   return <>
     <div className='ui massive relaxed middle aligned list FullProfile'>
       {renderPreview()}
     </div>
-    {renderFollowButton()}
-    <TxButton isBasic={true} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}><b>{followers}</b> {followersText} </TxButton>
-    <TxButton isBasic={true} onClick={() => setFollowingOpen(true)} isDisabled={following === 0}>{following} following </TxButton>
-    {followersOpen && <AccountFollowersModal id={id} accountsCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={followersText}/>}
+    <FollowAccountButton address={address}/>
+    <TxButton isBasic={true} isPrimary={false} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{pluralizeText(followers, 'follower')} </TxButton>
+    <TxButton isBasic={true} isPrimary={false} onClick={() => setFollowingOpen(true)} isDisabled={following === 0}>{following} following </TxButton>
+    {followersOpen && <AccountFollowersModal id={id} accountsCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'follower')}/>}
     {followingOpen && <AccountFollowingModal id={id} accountsCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'following'}/>}
   </>;
 }
@@ -189,6 +188,5 @@ export default withMulti(
     queryBlogsToProp('socialAccountById',
       { paramName: 'id', propName: 'socialAccountOpt' })
   ),
-  withRequireProfile,
   withSocialAccount
 );

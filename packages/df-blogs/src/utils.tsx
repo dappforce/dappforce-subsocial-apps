@@ -3,19 +3,12 @@ import { Pagination as SuiPagination } from 'semantic-ui-react';
 
 import { AccountId, AccountIndex, Address, Option } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
-import { Options } from '@polkadot/ui-api/with/types';
-import { queryToProp } from '@polkadot/df-utils/index';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId, Profile, ProfileData } from './types';
 import { OuterProps as PropsWithEditProfile } from './EditProfile';
 import { getJsonFromIpfs } from './OffchainUtils';
 import { SocialAccount } from '@dappforce/types/blogs';
-
-export const host = 'http://localhost:3001/v1';
-
-export const queryBlogsToProp = (storageItem: string, paramNameOrOpts?: string | Options) => {
-  return queryToProp(`query.blogs.${storageItem}`, paramNameOrOpts);
-};
+import BN from 'bn.js';
 
 type AuthorPreviewProps = {
   address: AccountId | AccountIndex | Address | string
@@ -115,7 +108,7 @@ export function withSocialAccount<P extends LoadSocialAccount> (Component: React
     const { socialAccountOpt, requireProfile = false } = props;
 
     if (socialAccountOpt === undefined) return <em>Loading...</em>;
-    else if (socialAccountOpt.isNone && requireProfile) return <em>Social account not found yet.</em>;
+    else if (socialAccountOpt.isNone && requireProfile) return <em>Social account not create yet.</em>;
     else if (socialAccountOpt.isNone) return <Component {...props} />;
 
     const socialAccount = socialAccountOpt.unwrap();
@@ -143,4 +136,11 @@ export function withRequireProfile<P extends LoadSocialAccount> (Component: Reac
   return function (props: P) {
     return <Component {...props} requireProfile/>;
   };
+}
+
+export function pluralizeText (count: number | BN, singularText: string, pluralText?: string) {
+  count = typeof count !== 'number' ? count.toNumber() : count;
+  const plural = () => !pluralText ? singularText + 's' : pluralText;
+  const text = count === 1 ? singularText : plural();
+  return <><b>{count}</b> {text}</>;
 }
