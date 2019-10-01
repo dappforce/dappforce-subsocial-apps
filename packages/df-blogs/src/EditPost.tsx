@@ -69,6 +69,8 @@ const InnerForm = (props: FormProps) => {
     values,
     dirty,
     isValid,
+    errors,
+    setFieldValue,
     isSubmitting,
     setSubmitting,
     resetForm
@@ -81,8 +83,6 @@ const InnerForm = (props: FormProps) => {
     image,
     tags
   } = values;
-
-  //const [ body, setBodyData ] = useState(values.body);
 
   const goToView = (id: PostId) => {
     if (history) {
@@ -136,16 +136,6 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  type LabelledMarkdown = FieldProps & {
-    id: string
-  };
-
-  const LabelledMarkdown = (props: LabelledMarkdown) => {
-    const { field, id } = props;
-    console.log({ props });
-    return <SimpleMDEReact {...field} id={id}/>;
-  };
-
   const form =
     <Form className='ui form DfForm EditEntityForm'>
 
@@ -156,7 +146,7 @@ const InnerForm = (props: FormProps) => {
       <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
 
       <LabelledField name='body' label='Your post' {...props}>
-        <Field component={LabelledMarkdown} id='body' name='body' disabled={isSubmitting} rows={3} placeholder='Tell others what is your blog about. You can use Markdown.' />
+        <Field component={SimpleMDEReact} name='body' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} />
       </LabelledField>
 
       {/* TODO tags // Create onClick event -> render Editor*/}
