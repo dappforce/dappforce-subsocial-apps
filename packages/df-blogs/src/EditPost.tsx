@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'semantic-ui-react';
-import { Form, Field, withFormik, FormikProps } from 'formik';
+import { Form, Field, withFormik, FormikProps, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
 import TxButton from '@polkadot/df-utils/TxButton';
@@ -74,7 +74,7 @@ const InnerForm = (props: FormProps) => {
     resetForm
   } = props;
 
-  const {
+  let {
     slug,
     title,
     body,
@@ -82,7 +82,7 @@ const InnerForm = (props: FormProps) => {
     tags
   } = values;
 
-  const [ bodyData, setBodyData ] = useState(body);
+  //const [ body, setBodyData ] = useState(values.body);
 
   const goToView = (id: PostId) => {
     if (history) {
@@ -94,7 +94,7 @@ const InnerForm = (props: FormProps) => {
 
   const onSubmit = (sendTx: () => void) => {
     if (isValid) {
-      const json = { title, body: bodyData, image, tags };
+      const json = { title, body, image, tags };
       console.log(json);
       addJsonToIpfs(json).then(cid => {
         setIpfsCid(cid);
@@ -136,6 +136,16 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
+  type LabelledMarkdown = FieldProps & {
+    id: string
+  };
+
+  const LabelledMarkdown = (props: LabelledMarkdown) => {
+    const { field, id } = props;
+    console.log({ props });
+    return <SimpleMDEReact {...field} id={id}/>;
+  };
+
   const form =
     <Form className='ui form DfForm EditEntityForm'>
 
@@ -145,14 +155,8 @@ const InnerForm = (props: FormProps) => {
 
       <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
 
-      {/* TODO ask a post summary or auto-generate and show under an "Advanced" tab. */}
-
-      <LabelledField label='Your post' {...props}>
-        <SimpleMDEReact
-            className={'DfMdEditor'}
-            value={bodyData}
-            onChange={(data) => setBodyData(data)}
-        />
+      <LabelledField name='body' label='Your post' {...props}>
+        <Field component={LabelledMarkdown} id='body' name='body' disabled={isSubmitting} rows={3} placeholder='Tell others what is your blog about. You can use Markdown.' />
       </LabelledField>
 
       {/* TODO tags // Create onClick event -> render Editor*/}
