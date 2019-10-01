@@ -110,7 +110,6 @@ const InnerForm = (props: FormProps) => {
   const onSubmit = (sendTx: () => void) => {
     if (isValid) {
       const json = { name, desc, image, tags };
-      console.log(json);
       addJsonToIpfs(json).then(cid => {
         setIpfsCid(cid);
         sendTx();

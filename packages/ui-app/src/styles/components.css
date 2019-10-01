@@ -60,6 +60,8 @@ header .ui--Button-Group {
 }
 
 .ui--AddressMini-address {
+  width: 100%;
+  text-align: left;
   &.withAddr {
     font-family: monospace;
   }

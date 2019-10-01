@@ -3,26 +3,29 @@ import { withMulti, withCalls } from '@polkadot/ui-api/with';
 import { Modal, Comment as SuiComment, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
-import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord } from './types';
+import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord, ProfileHistoryRecord, ProfileData, Profile, VecProfileHistoryRecord } from './types';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { Option } from '@polkadot/types';
+import { Option, AccountId } from '@polkadot/types';
 import ReactMarkdown from 'react-markdown';
 import IdentityIcon from '@polkadot/ui-identicon/Identicon';
 import { Link } from 'react-router-dom';
 import { CreatedBy } from './CreatedBy';
 import { getJsonFromIpfs } from './OffchainUtils';
+import { SocialAccount, OptionText } from '@dappforce/types/blogs';
 
 type ModalController = {
   open: boolean,
   close: () => void
 };
 
-export function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]> (historyLast: T) {
-
+function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord | ProfileHistoryRecord)[]> (historyLast: T) {
   if (historyLast[0] === undefined) return;
+
+  const stringForSlugOrUsername = historyLast[0] instanceof ProfileHistoryRecord ? 'username' : 'slug';
+
   const history = [...historyLast];
   let ipfsHash = history[0].old_data.ipfs_hash;
-  let slug = history[0].old_data.slug;
+  let slug = history[0].old_data.get(stringForSlugOrUsername) as OptionText;
 
   if (ipfsHash.isNone) {
     for (let i = 1; i < history.length; i++) {
@@ -35,8 +38,9 @@ export function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]>
 
   if (slug.isNone) {
     for (let i = 1; i < history.length; i++) {
-      if (history[i].old_data.slug.isSome) {
-        slug = history[i].old_data.slug;
+      const _slug = history[i].old_data.get(stringForSlugOrUsername) as OptionText;
+      if (_slug.isSome) {
+        slug = _slug;
         break;
       }
     }
@@ -48,10 +52,11 @@ export function fillHistory<T extends (BlogHistoryRecord | PostHistoryRecord)[]>
     } else {
       ipfsHash = record.old_data.ipfs_hash;
     }
-    if (record.old_data.slug.isNone) {
-      record.old_data.slug = slug;
+    const _slug = record.old_data.get(stringForSlugOrUsername) as OptionText;
+    if (_slug.isNone) {
+      record.old_data.set(stringForSlugOrUsername, slug);
     } else {
-      slug = record.old_data.slug;
+      slug = _slug;
     }
     return record;
   }).reverse() as T;
@@ -116,7 +121,6 @@ const InnerCommentHistoryModal = (props: CommentHistoryProps) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -207,7 +211,6 @@ const InnerPostHistoryModal = (props: PostHistoryProps) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -293,8 +296,6 @@ const InnerBlogHistoryModal = (props: BlogHistoryProps) => {
   const blog = blogOpt.unwrap();
   const { edit_history } = blog;
 
-  console.log(edit_history);
-
   const history = fillHistory<VecBlogHistoryRecord>(edit_history);
 
   const renderBlogHistory = () => {
@@ -308,7 +309,6 @@ const InnerBlogHistoryModal = (props: BlogHistoryProps) => {
   return (
     <Modal
       open={open}
-      dimmer='blurring'
       centered={true}
       style={{ marginTop: '3rem' }}
     >
@@ -327,5 +327,109 @@ export const BlogHistoryModal = withMulti(
   InnerBlogHistoryModal,
   withCalls<PostHistoryProps>(
     queryBlogsToProp('blogById', { paramName: 'id', propName: 'blogOpt' })
+  )
+);
+
+type ProfileHistoryProps = ModalController & {
+  id: AccountId,
+  socialAccountOpt?: Option<SocialAccount>
+};
+
+type PropsProfileFromHistory = {
+  history: ProfileHistoryRecord,
+  current_data: {
+    ipfs_hash: string,
+    username: string
+  }
+};
+
+const ProfileFromHistory = (props: PropsProfileFromHistory) => {
+
+  const { history: { old_data, edited }, current_data } = props;
+  const { ipfs_hash, username } = old_data;
+  const [ content, setContent ] = useState({} as ProfileData);
+  const [ ipfsHash, setIpfsHash ] = useState('');
+  const [ _username, setSlug ] = useState('');
+
+  useEffect(() => {
+    ipfs_hash.isNone ? setIpfsHash(current_data.ipfs_hash) : setIpfsHash(ipfs_hash.unwrap().toString());
+    username.isNone ? setSlug(current_data.username) : setSlug(username.unwrap().toString());
+    const loadData = async () => {
+      const data = await getJsonFromIpfs<ProfileData>(ipfsHash);
+      setContent(data);
+    };
+    loadData().catch(err => new Error(err));
+  },[ipfsHash, _username]);
+
+  return (<div style={{ textAlign: 'left', margin: '1rem' }}>
+      <div className='ui massive relaxed middle aligned list FullProfile'>
+        <div className={`item ProfileDetails MyProfile`}>
+        {content.avatar
+        ? <img className='ui avatar image' src={content.avatar} />
+        : <IdentityIcon className='image' value={edited.account} size={40} />
+        }
+          <div className='content'>
+            <div className='header'>
+              <Link to='' className='handle'>{content.fullname}</Link>
+            </div>
+            <div className='about' style={{ margin: '0.2rem' }}>{`username: ${_username}`}</div>
+            <div className='about' style={{ margin: '0.2rem' }}>
+              <ReactMarkdown className='DfMd' source={content.about} linkTarget='_blank' />
+            </div>
+          </div>
+        </div>
+      </div>
+      <CreatedBy created={edited} dateLabel='Edited on' accountLabel='Edited by' />
+      <hr/>
+  </div>);
+};
+
+const InnerProfileHistoryModal = (props: ProfileHistoryProps) => {
+
+  const { open, close, socialAccountOpt } = props;
+
+  if (!socialAccountOpt || socialAccountOpt.isNone) return null;
+
+  const socialAccount = socialAccountOpt.unwrap();
+  const profileOpt = socialAccount.profile;
+
+  if (profileOpt.isNone) return <Modal>Profile not found</Modal>;
+
+  const profile = profileOpt.unwrap() as Profile;
+
+  const { edit_history } = profile;
+
+  const history = fillHistory<VecProfileHistoryRecord>(edit_history);
+
+  const renderProfileHistory = () => {
+    return history && history.map((x,index) => <ProfileFromHistory
+      history={x}
+      key={index}
+      current_data={{ ipfs_hash: profile.ipfs_hash, username: profile.username.toString() }}
+    />);
+  };
+
+  return (
+    <Modal
+      open={open}
+      centered={true}
+      style={{ marginTop: '3rem' }}
+    >
+      <Modal.Header><h1>Edit History</h1></Modal.Header>
+      <Modal.Content scrolling>
+        {edit_history && renderProfileHistory()}
+      </Modal.Content>
+      <Modal.Actions>
+        <Button content='Close' onClick={close} />
+      </Modal.Actions>
+    </Modal>
+  );
+};
+
+export const ProfileHistoryModal = withMulti(
+  InnerProfileHistoryModal,
+  withCalls<ProfileHistoryProps>(
+    queryBlogsToProp('socialAccountById',
+    { paramName: 'id', propName: 'socialAccountOpt' })
   )
 );

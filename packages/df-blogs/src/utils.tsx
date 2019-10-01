@@ -5,6 +5,7 @@ import { AccountId, AccountIndex, Address } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId } from './types';
+import { OuterProps } from './EditProfile';
 
 type AuthorPreviewProps = {
   address: AccountId | AccountIndex | Address | string
@@ -39,14 +40,18 @@ export const Pagination = (p: PaginationProps) => {
   );
 };
 
-export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId>
+export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId | AccountId>
   (_txResult: SubmittableResult): IdType | undefined {
 
   let id: IdType | undefined;
 
   _txResult.events.find(event => {
     const { event: { data, method } } = event;
-    if (method.indexOf(`Created`) >= 0) {
+    if (method.indexOf('ProfileCreated') >= 0) {
+      const [ newId ] = data.toArray();
+      id = newId as IdType;
+      return true;
+    } else if (method.indexOf(`Created`) >= 0) {
       const [/* owner */, newId ] = data.toArray();
       id = newId as IdType;
       return true;
@@ -72,3 +77,14 @@ export type UrlHasAddressProps = {
     }
   }
 };
+
+export function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
+  return function (props: UrlHasAddressProps) {
+    const { match: { params: { address } } } = props;
+    try {
+      return <Component id={new AccountId(address)} {...props}/>;
+    } catch (err) {
+      return <em>Invalid address: {address}</em>;
+    }
+  };
+}
