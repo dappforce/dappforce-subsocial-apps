@@ -170,7 +170,7 @@ function AddressMini (props: Props) {
   }
 
   function renderPreviewForActivity () {
-    return <div>
+    return <><div>
       {renderCount()}
       <div className='DfActivityStreamItem-details event'>
         {event}
@@ -178,11 +178,13 @@ function AddressMini (props: Props) {
       <div className='DfActivityStreamItem-details subject'>
         {subject}
       </div>
-      <div className='DfActivityStreamItem-details date'>
-        {date}
-      </div>
-    </div>;
+    </div>
+    <div className='DfActivityStreamItem-details date'>
+      {date}
+    </div>
+    </>;
   }
+
   function renderProfilePreview () {
     return <div>
       <div className={`item ProfileDetails MyProfile`}>
@@ -200,7 +202,7 @@ function AddressMini (props: Props) {
       <div className='DfPopup-about'>
         <ReactMarkdown source={summary} linkTarget='_blank' />
       </div>
-      <div>
+      <div className='DfPopup-links'>
         <Link to='#' onClick={openFollowersModal} className={followers ? '' : 'disable'}>{pluralizeText(followers, 'follower', 'followers')}</Link>
         <Link to='#' onClick={openFollowingModal} className={following ? '' : 'disable'}><b>{following}</b> following</Link>
       </div>

@@ -19,7 +19,6 @@ import { Voter } from './Voter';
 import { PostHistoryModal } from './ListsEditHistory';
 import { PostVoters, ActiveVoters } from './ListVoters';
 import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
-import { time } from 'console';
 
 const LIMIT_SUMMARY = 150;
 

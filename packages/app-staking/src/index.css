@@ -37,20 +37,66 @@
   .ui--AddressMini-details {
     display: inline-block !important;
     font-size: .9rem;
-    color: #999;
   }
 }
 
+.DfActivityStreamItem-details.subject{
+  margin-left: .3rem;
+}
+.DfSection{
+  .ui--AddressMini-details
+  {
+    color: #999;
+  }
+}
 .ui--AddressMini-info div{
   display: table-cell;
 }
 
-.DfAddressMini-popup{
-  padding-left: .6rem;
-  p {
-    font-size: 1rem;
+.DfActivity{
+  .ui--AddressMini-info div{
+    display: inline-block;;
+  }
+  .ui--AddressMini-info{
+    display: flex;
+  }
+  .DfAddressMini-popup{
+    display: flex !important;
+    flex-direction: column;
+  }
+  .DfActivityStreamItem-details.date{
+    font-size: .9rem;
+    color: #999;
   }
 }
+.DfCommentBox{
+  .DfAddressMini-popup{
+    p {
+      font-size: .9rem;
+      color: #4e4e4e;
+    }
+  }
+}
+
+.DfAddressMini-popup{
+  padding-left: .6rem;
+}
+
+.popup{
+  .ui--IdentityIcon{
+    margin-right: .5rem;
+  }
+  .content{
+    margin-right: 1.5rem;
+  }
+  .DfPopup-links{
+    margin-top: .2rem;
+    a{
+      margin-right: .4rem;
+    }
+  }
+}
+
 .ui--Nominators {
   overflow-y: overlay;
   max-height: 196px;

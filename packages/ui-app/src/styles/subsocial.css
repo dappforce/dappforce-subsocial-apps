@@ -152,11 +152,13 @@
 
 .ui.top.left.flowing.popup.transition.visible{
   .ui--AddressMini-address{
-    padding-top: .5rem;
     font-size: 1.2rem;
   }
   .DfPopup-username{
     font-size: .8rem;
+  }
+  .ui--AddressMini-details {
+    margin-right: .3rem;
   }
 }
 
