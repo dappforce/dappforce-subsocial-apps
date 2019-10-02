@@ -190,7 +190,7 @@ function Notification (props: ActivityProps) {
   }, [ postId > new PostId(0) ]);
 
   return <Segment className='DfActivity'>
-    <ActivityStreamItem
+    <AddressMiniDf
       value={account}
       isShort={true}
       isPadded={false}
@@ -199,6 +199,7 @@ function Notification (props: ActivityProps) {
       event={message}
       subject={subject}
       count={agg_count}
+      asActivity
     />
   </Segment>;
 }

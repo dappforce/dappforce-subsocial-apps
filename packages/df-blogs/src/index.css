@@ -132,51 +132,10 @@ hr {
   margin-top: .6rem;
 }
 
-/*.DfActivity{
-  position: relative;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-  margin: 1rem 0;
-  padding: 1em 1em;
-  border-radius: 0 !important;
-  border: 0 !important;
-}*/
-
-.DfActivityStreamItem {
-  display: inline-block;
-  padding-right: .25rem;
-}
-
-.DfActivityStreamItem-popup{
-  line-height: 1.5rem;
-  padding-top: .5rem;
-}
-
-.DfActivityStreamItem-info {
-  display: flex;
-  flex-direction: row;
-}
-
-.DfActivityStreamItem-address{
-  display: inline-block;
-  margin-right: .3rem;
-}
-
-.DfActivityStreamItem-info .ui--IdentityIcon {
-  padding-top: .25rem;
-  margin-right:.6rem;
-}
-
-.DfActivityStreamItem-details.name,
-.DfActivityStreamItem-details.event,
-.DfActivityStreamItem-details.subject {
-  display: inline-block;
-  margin-right: .35rem;
-}
-
-.DfActivityStreamItem-details.date{
-  font-size: .85rem;
+.disable, .disable:hover{
   color: #999;
+  text-decoration: none;
+  cursor: default;
 }
 
 .DfActivityStreamItem-details.name{

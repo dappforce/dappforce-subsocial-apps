@@ -8,6 +8,7 @@ import { BlogId } from './types';
 import Section from '@polkadot/df-utils/Section';
 import ViewBlog from './ViewBlog';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
+import { pluralizeText } from './utils';
 
 type MyBlogProps = {
   id: AccountId,
@@ -16,9 +17,10 @@ type MyBlogProps = {
 
 const InnerListMyBlogs = (props: MyBlogProps) => {
   const { followedBlogsIds } = props;
-  const totalCount = followedBlogsIds && followedBlogsIds.length;
+  const totalCount = followedBlogsIds !== undefined ? followedBlogsIds && followedBlogsIds.length : 0;
+
   return (
-  <Section title={`Following Blogs (${totalCount})`}>{
+  <Section title={pluralizeText(totalCount, 'following blog')}>{
     followedBlogsIds && followedBlogsIds.length === 0
       ? <em>No blogs created yet.</em>
       : <div className='ui huge relaxed middle aligned divided list ProfilePreviews'>

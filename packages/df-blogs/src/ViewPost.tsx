@@ -10,7 +10,7 @@ import { Option } from '@polkadot/types';
 import { getJsonFromIpfs } from './OffchainUtils';
 import { PostId, Post, CommentId, PostData } from './types';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { UrlHasIdProps } from './utils';
+import { UrlHasIdProps, pluralizeText } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import { CommentsByPost } from './ViewComment';
 import { CreatedBy } from './CreatedBy';
@@ -58,10 +58,13 @@ function ViewPostInternal (props: ViewPostProps) {
   const [ content , setContent ] = useState({} as PostData);
   const [ summary, setSummary ] = useState('');
   const [ commentsSection, setCommentsSection ] = useState(false);
-  const [ openPostVoters, setOpenPostVoters ] = useState(false);
+  const [ postVotersOpen, serPostVotersOpen ] = useState(false);
   const [ activeVoters, setActiveVoters ] = useState(0);
   const openVoters = (type: ActiveVoters) => {
-    setOpenPostVoters(true);
+    if (type === ActiveVoters.Upvote && !upvotes) return;
+    if (type === ActiveVoters.Downvote && !downvotes) return;
+
+    serPostVotersOpen(true);
     setActiveVoters(type);
   };
   const { title, body, image } = content;
@@ -75,6 +78,9 @@ function ViewPostInternal (props: ViewPostProps) {
   }, [ false ]);
 
   const isMyStruct = myAddress === account.toString();
+
+  const upvotes = upvotes_count.toNumber();
+  const downvotes = downvotes_count.toNumber();
 
   const renderDropDownMenu = () => {
 
@@ -115,13 +121,13 @@ function ViewPostInternal (props: ViewPostProps) {
         </div>
         {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         <div className='DfCountsPreview'>
-          <MutedSpan><HashLink to={`#comments-on-post-${id}`} onClick={() => setCommentsSection(!commentsSection)}>
-            Comments: <b>{comments_count.toString()}</b></HashLink></MutedSpan>
-          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)}>Upvotes: <b>{upvotes_count.toString()}</b></Link></MutedSpan>
-          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)}>Downvotes: <b>{downvotes_count.toString()}</b></Link></MutedSpan>
+          <MutedSpan><HashLink to={`#commentsForPost${id}`} onClick={() => setCommentsSection(!commentsSection)}>
+          {pluralizeText(comments_count, 'comment')}</HashLink></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)} className={upvotes ? '' : 'disable'}>{pluralizeText(upvotes_count, 'upvote')}</Link></MutedSpan>
+          <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)} className={downvotes ? '' : 'disable'}> {pluralizeText(downvotes_count, 'downvote')}</Link></MutedSpan>
         </div>
         {commentsSection && <CommentsByPost postId={post.id} post={post} />}
-        {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
+        {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => serPostVotersOpen(false)}/>}
       </Segment>
     </>;
   };

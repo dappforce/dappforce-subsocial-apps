@@ -62,10 +62,6 @@ class App extends PureComponent<Props> {
         text: t('Notifications')
       },
       {
-        name: 'accounts/new',
-        text: t('New profile')
-      },
-      {
         name: `accounts/${myAddress}`,
         text: t('My profile')
       }
@@ -84,7 +80,6 @@ class App extends PureComponent<Props> {
           <Route path={`${basePath}/my`} component={ListMyBlogs} />
           <Route path={`${basePath}/followed`} component={ListFollowingBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />
-          <Route path={`${basePath}/accounts/new`} component={NewProfile} />
           <Route path={`${basePath}/accounts/:address/edit`} component={EditProfile} />
           <Route path={`${basePath}/accounts/:address`} component={ViewProfile} />
           <Route path={`${basePath}/feed`} component={ViewNewsFeed} />

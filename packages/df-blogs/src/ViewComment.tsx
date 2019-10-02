@@ -38,7 +38,7 @@ function InnerCommentsByPost (props: Props) {
   const commentsCount = commentIds.length;// post.comments_count.toNumber();
   const [loaded, setLoaded] = useState(false);
   const [comments, setComments] = useState(new Array<Comment>());
-
+  const commentsText = commentsCount === 1 ? 'comment' : 'comments';
   useEffect(() => {
     const loadComments = async () => {
       if (!commentsCount) return;

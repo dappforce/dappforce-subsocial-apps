@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pagination as SuiPagination } from 'semantic-ui-react';
 
-import { AccountId, AccountIndex, Address } from '@polkadot/types';
+import { AccountId, AccountIndex, Address, Option } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { SubmittableResult } from '@polkadot/api';
-import { CommentId, PostId, BlogId } from './types';
-import { OuterProps } from './EditProfile';
+import { CommentId, PostId, BlogId, Profile, ProfileData } from './types';
+import { OuterProps as PropsWithEditProfile } from './EditProfile';
+import { getJsonFromIpfs } from './OffchainUtils';
+import { SocialAccount } from '@dappforce/types/blogs';
+import BN from 'bn.js';
 
 type AuthorPreviewProps = {
   address: AccountId | AccountIndex | Address | string
@@ -78,7 +81,7 @@ export type UrlHasAddressProps = {
   }
 };
 
-export function withIdFromMyAddress (Component: React.ComponentType<OuterProps>) {
+export function withIdFromMyAddress (Component: React.ComponentType<PropsWithEditProfile>) {
   return function (props: UrlHasAddressProps) {
     const { match: { params: { address } } } = props;
     try {
@@ -87,4 +90,57 @@ export function withIdFromMyAddress (Component: React.ComponentType<OuterProps>)
       return <em>Invalid address: {address}</em>;
     }
   };
+}
+
+type PropsWithSocialAccount = {
+  profile?: Profile,
+  profileData?: ProfileData,
+  socialAccount?: SocialAccount,
+  requireProfile?: boolean
+};
+
+type LoadSocialAccount = PropsWithSocialAccount & {
+  socialAccountOpt?: Option<SocialAccount>
+};
+
+export function withSocialAccount<P extends LoadSocialAccount> (Component: React.ComponentType<P>) {
+  return function (props: P) {
+    const { socialAccountOpt, requireProfile = false } = props;
+
+    if (socialAccountOpt === undefined) return <em>Loading...</em>;
+    else if (socialAccountOpt.isNone && requireProfile) return <em>Social account not create yet.</em>;
+    else if (socialAccountOpt.isNone) return <Component {...props} />;
+
+    const socialAccount = socialAccountOpt.unwrap();
+    const profileOpt = socialAccount.profile;
+
+    if (profileOpt.isNone) return <em>Profile is not created yet.</em>;
+
+    const profile = profileOpt.unwrap() as Profile;
+
+    const ipfsHash = profile.ipfs_hash;
+    const [ profileData , setProfileData ] = useState({} as ProfileData);
+
+    useEffect(() => {
+      if (!ipfsHash) return;
+      getJsonFromIpfs<ProfileData>(ipfsHash).then(json => {
+        setProfileData(json);
+      }).catch(err => console.log(err));
+    }, [ false ]);
+
+    return <Component {...props} socialAccount={socialAccount} profile={profile} profileData={profileData}/>;
+  };
+}
+
+export function withRequireProfile<P extends LoadSocialAccount> (Component: React.ComponentType<P>) {
+  return function (props: P) {
+    return <Component {...props} requireProfile/>;
+  };
+}
+
+export function pluralizeText (count: number | BN, singularText: string, pluralText?: string) {
+  count = typeof count !== 'number' ? count.toNumber() : count;
+  const plural = () => !pluralText ? singularText + 's' : pluralText;
+  const text = count === 1 ? singularText : plural();
+  return <><b>{count}</b> {text}</>;
 }
