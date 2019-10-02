@@ -58,13 +58,13 @@ function ViewPostInternal (props: ViewPostProps) {
   const [ content , setContent ] = useState({} as PostData);
   const [ summary, setSummary ] = useState('');
   const [ commentsSection, setCommentsSection ] = useState(false);
-  const [ postVotersOpen, serPostVotersOpen ] = useState(false);
+  const [ postVotersOpen, setPostVotersOpen ] = useState(false);
   const [ activeVoters, setActiveVoters ] = useState(0);
   const openVoters = (type: ActiveVoters) => {
     if (type === ActiveVoters.Upvote && !upvotes) return;
     if (type === ActiveVoters.Downvote && !downvotes) return;
 
-    serPostVotersOpen(true);
+    setPostVotersOpen(true);
     setActiveVoters(type);
   };
   const { title, body, image } = content;
@@ -127,7 +127,7 @@ function ViewPostInternal (props: ViewPostProps) {
           <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)} className={downvotes ? '' : 'disable'}> {pluralizeText(downvotes_count, 'downvote')}</Link></MutedSpan>
         </div>
         {commentsSection && <CommentsByPost postId={post.id} post={post} />}
-        {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => serPostVotersOpen(false)}/>}
+        {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => setPostVotersOpen(false)}/>}
       </Segment>
     </>;
   };
@@ -158,7 +158,7 @@ function ViewPostInternal (props: ViewPostProps) {
 
 export const ViewPost = withMulti(
   ViewPostInternal,
-  withMyAccount,// TODO replese with useMyAccount
+  withMyAccount,
   withCalls<ViewPostProps>(
     queryBlogsToProp('postById', 'id')
   )
