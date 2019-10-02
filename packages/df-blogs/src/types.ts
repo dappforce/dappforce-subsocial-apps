@@ -203,6 +203,23 @@ export type PostType = {
   score: i32;
 };
 
+export const PostExtensions: { [key: string]: string } = {
+  SimplePost: 'SimplePost',
+  SharedPost: 'Sharedost'
+};
+
+export class PostExtension extends Enum {
+  constructor (value?: any) {
+    super(
+      [
+        'SimplePost',
+        'SharedPost'
+      ],
+      value
+    );
+  }
+}
+
 export class Post extends Struct {
   constructor (value?: PostType) {
     super(
@@ -211,6 +228,7 @@ export class Post extends Struct {
         blog_id: BlogId,
         created: Change,
         updated: OptionChange,
+        extension: PostExtension,
         slug: Text,
         ipfs_hash: IpfsHash,
         comments_count: u16,
@@ -238,6 +256,10 @@ export class Post extends Struct {
 
   get updated (): OptionChange {
     return this.get('updated') as OptionChange;
+  }
+
+  get extension (): PostExtension {
+    return this.get('extension') as PostExtension;
   }
 
   get slug (): Text {
@@ -750,6 +772,7 @@ export function registerBlogsTypes () {
       Blog,
       BlogUpdate,
       BlogHistoryRecord,
+      PostExtension,
       Post,
       PostUpdate,
       PostHistoryRecord,
