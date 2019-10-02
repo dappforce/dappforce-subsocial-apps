@@ -188,21 +188,6 @@ export type PostData = {
   tags: string[];
 };
 
-export type PostType = {
-  id: PostId;
-  blog_id: BlogId;
-  created: ChangeType;
-  updated: OptionChange;
-  slug: Text;
-  ipfs_hash: IpfsHash;
-  comments_count: u16;
-  upvotes_count: u16;
-  downvotes_count: u16;
-  shares_count: u16;
-  edit_history: VecPostHistoryRecord;
-  score: i32;
-};
-
 export const PostExtensions: { [key: string]: string } = {
   SimplePost: 'SimplePost',
   SharedPost: 'Sharedost'
@@ -220,6 +205,21 @@ export class PostExtension extends Enum {
   }
 }
 
+export type PostType = {
+  id: PostId;
+  blog_id: BlogId;
+  created: ChangeType;
+  updated: OptionChange;
+  extension: PostExtension;
+  ipfs_hash: IpfsHash;
+  comments_count: u16;
+  upvotes_count: u16;
+  downvotes_count: u16;
+  shares_count: u16;
+  edit_history: VecPostHistoryRecord;
+  score: i32;
+};
+
 export class Post extends Struct {
   constructor (value?: PostType) {
     super(
@@ -229,7 +229,6 @@ export class Post extends Struct {
         created: Change,
         updated: OptionChange,
         extension: PostExtension,
-        slug: Text,
         ipfs_hash: IpfsHash,
         comments_count: u16,
         upvotes_count: u16,
@@ -260,10 +259,6 @@ export class Post extends Struct {
 
   get extension (): PostExtension {
     return this.get('extension') as PostExtension;
-  }
-
-  get slug (): Text {
-    return this.get('slug') as Text;
   }
 
   get ipfs_hash (): string {
@@ -298,7 +293,6 @@ export class Post extends Struct {
 
 export type PostUpdateType = {
   blog_id: OptionBlogId;
-  slug: OptionText;
   ipfs_hash: OptionIpfsHash;
 };
 
@@ -307,7 +301,6 @@ export class PostUpdate extends Struct {
     super(
       {
         blog_id: OptionBlogId,
-        slug: OptionText,
         ipfs_hash: OptionIpfsHash
       },
       value
@@ -316,10 +309,6 @@ export class PostUpdate extends Struct {
 
   get ipfs_hash (): OptionIpfsHash {
     return this.get('ipfs_hash') as OptionIpfsHash;
-  }
-
-  get slug (): OptionIpfsHash {
-    return this.get('slug') as OptionIpfsHash;
   }
 
   set ipfs_hash (value: OptionIpfsHash) {
