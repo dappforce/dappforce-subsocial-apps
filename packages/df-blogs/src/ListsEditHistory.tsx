@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { withMulti, withCalls } from '@polkadot/ui-api/with';
 import { Modal, Comment as SuiComment, Button } from 'semantic-ui-react';
-import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord, ProfileHistoryRecord, ProfileData, Profile, VecProfileHistoryRecord } from './types';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
@@ -78,7 +77,7 @@ const CommentFromHistory = (props: PropsCommentFromHistory) => {
       setContent(data);
     };
     loadData().catch(err => new Error(err));
-  });
+  }, [ ipfs_hash ]);
 
   return (<div style={{ textAlign: 'left', margin: '1rem' }}>
     <SuiComment>
@@ -349,11 +348,11 @@ const ProfileFromHistory = (props: PropsProfileFromHistory) => {
   const { ipfs_hash, username } = old_data;
   const [ content, setContent ] = useState({} as ProfileData);
   const [ ipfsHash, setIpfsHash ] = useState('');
-  const [ _username, setSlug ] = useState('');
+  const [ _username, setUsername ] = useState(''); // TODO inconsistent naming
 
   useEffect(() => {
     ipfs_hash.isNone ? setIpfsHash(current_data.ipfs_hash) : setIpfsHash(ipfs_hash.unwrap().toString());
-    username.isNone ? setSlug(current_data.username) : setSlug(username.unwrap().toString());
+    username.isNone ? setUsername(current_data.username) : setUsername(username.unwrap().toString());
     const loadData = async () => {
       const data = await getJsonFromIpfs<ProfileData>(ipfsHash);
       setContent(data);
@@ -392,7 +391,7 @@ const InnerProfileHistoryModal = (props: ProfileHistoryProps) => {
 
   const socialAccount = socialAccountOpt.unwrap();
   const profileOpt = socialAccount.profile;
-
+  // TODO use new Component to load Profile
   if (profileOpt.isNone) return <Modal>Profile not found</Modal>;
 
   const profile = profileOpt.unwrap() as Profile;

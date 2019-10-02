@@ -7,7 +7,6 @@ import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import TxButton from '@polkadot/df-utils/TxButton';
 import { api } from '@polkadot/ui-api';
-import _ from 'lodash';
 
 type PropsShareButtonPost = {
   postId: PostId

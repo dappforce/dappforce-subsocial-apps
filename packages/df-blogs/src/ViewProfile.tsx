@@ -9,7 +9,6 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
 import { withIdFromMyAddress, withSocialAccount, withRequireProfile, pluralizeText } from './utils';
-import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
@@ -86,7 +85,7 @@ function Component (props: Props) {
 
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
-        {<Link className='item' to={`/blogs/accounts/${address}/edit`}>Edit</Link>}
+        {<Link className='item' to={`/blogs/accounts/edit`}>Edit</Link>}
         <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
         {open && <ProfileHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>

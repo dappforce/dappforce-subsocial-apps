@@ -16,6 +16,7 @@ import { ProfileData, Profile, ProfileUpdate } from './types';
 import { withIdFromMyAddress, getNewIdFromEvent, withSocialAccount, withRequireProfile } from './utils';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { SocialAccount } from '@dappforce/types/blogs';
+import { withMyAccount } from '@polkadot/df-utils/MyAccount';
 
 // TODO get next settings from Substrate:
 const USERNAME_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -90,7 +91,7 @@ const LabelledText = DfForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
-    id,
+    myAddress,
     history,
     profile,
     values,
@@ -113,9 +114,9 @@ const InnerForm = (props: FormProps) => {
     instagram
   } = values;
 
-  const goToView = (id: AccountId) => {
-    if (history && id) {
-      history.push(`/blogs/accounts/${id.toString()}`);
+  const goToView = () => {
+    if (history && myAddress) {
+      history.push(`/blogs/accounts/${myAddress}`);
     }
   };
 
@@ -143,11 +144,7 @@ const InnerForm = (props: FormProps) => {
 
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
-
-    if (!history) return;
-    const _id = id ? id : getNewIdFromEvent<AccountId>(_txResult);
-    console.log(_id);
-    _id && goToView(_id);
+    goToView();
   };
 
   const buildTxParams = () => {
@@ -298,62 +295,18 @@ const EditForm = withFormik<OuterProps, FormValues>({
   }
 })(InnerForm);
 
-// type LoadStructProps = OuterProps & {
-//   socialAccountOpt: Option<SocialAccount>
-// };
-
-// type StructJson = ProfileData | undefined;
-
-// type Struct = Profile | undefined;
-
-// function LoadStruct (props: LoadStructProps) {
-
-//   const { state: { address: myAddress } } = useMyAccount();
-//   const { socialAccountOpt } = props;
-//   const [ profileData, setJson ] = useState(undefined as StructJson);
-//   const [ profile, setStruct ] = useState(undefined as Struct);
-//   const profileDataIsNone = profileData === undefined;
-
-//   const loadingProfile = <em>Loading profile...</em>;
-//   // const noProfile = <em>No profile for this account</em>;
-
-//   useEffect(() => {
-//     if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return;
-
-//     const socialAccount = socialAccountOpt.unwrap();
-//     const profileOpt = socialAccount.profile;
-//     if (profileOpt.isNone) return;
-
-//     setStruct(profileOpt.unwrap() as Profile);
-
-//     if (profile === undefined) return;
-
-//     getJsonFromIpfs<ProfileData>(profile.ipfs_hash).then(json => {
-//       setJson(json);
-//     }).catch(err => console.log(err));
-//   }); // TODO add guard for loading from ipfs
-
-//   if (!myAddress || !socialAccountOpt || profileDataIsNone) {
-//     return loadingProfile;
-//   }
-
-//   if (socialAccountOpt.isNone) {
-//     return <em>Profile not found...</em>;
-//   }
-
-//   return <EditForm {...props} profile={profile} profileData={profileData} />;
-// }
 
 export const NewProfile = withMulti(
-  EditForm
+  EditForm,
+  withMyAccount
 );
 
 export const EditProfile = withMulti(
   EditForm,
-  withIdFromMyAddress,
+  withMyAccount,
   withCalls<OuterProps>(
     queryBlogsToProp('socialAccountById',
-      { paramName: 'id', propName: 'socialAccountOpt' })
+      { paramName: 'myAddress', propName: 'socialAccountOpt' })
   ),
   withRequireProfile,
   withSocialAccount
