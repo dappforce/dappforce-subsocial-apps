@@ -25,16 +25,23 @@ export enum ActiveVoters {
 const InnerModalVoters = (props: VotersProps) => {
 
   const { reactions, open, close, active = ActiveVoters.All } = props;
+  console.log({props});
   const votersCount = reactions && reactions.length;
-  const [ reactionView, setReactionView ] = useState(new Array<Reaction>());
+  const [ reactionView, setReactionView ] = useState(undefined as (Array<Reaction> | undefined));
+  const [ trigger, setTrigger ] = useState(false);
+
+  const toggleTrigger = () => {
+    reactions === undefined && setTrigger(!trigger);
+    return;
+  };
 
   useEffect(() => {
 
-    if (!open) return;
+    if (!open) return toggleTrigger();
 
     const loadVoters = async () => {
 
-      if (!reactions) return;
+      if (!reactions) return toggleTrigger();
 
       const apiCalls: Promise<Option<Reaction>>[] = reactions.map(async reactionId =>
         await api.query.blogs.reactionById(reactionId) as Option<Reaction>);
@@ -42,8 +49,10 @@ const InnerModalVoters = (props: VotersProps) => {
       setReactionView(loadedReaction);
     };
     loadVoters().catch(err => console.log(err));
-  }, [ open ]);
+  }, [ trigger ]);
 
+  if (!reactionView) return null;
+  
   const renderVoters = (state: Array<Reaction>) => {
     return state.map(reaction => {
       return <div key={reaction.id.toNumber()} style={{ textAlign: 'left', margin: '1rem' }}>
@@ -77,7 +86,7 @@ const InnerModalVoters = (props: VotersProps) => {
     >
       <Modal.Header><h1>{votersCount} voters</h1></Modal.Header>
       <Modal.Content scrolling>
-      <Tab panes={panes} activeIndex={active}/>
+      <Tab panes={panes} defaultActiveIndex={active}/>
       </Modal.Content>
       <Modal.Actions>
         <Button content='Close' onClick={close} />

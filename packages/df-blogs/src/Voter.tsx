@@ -7,7 +7,7 @@ import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { CommentVoters, PostVoters } from './ListVoters';
-import { Post, Reaction, CommentId, PostId, ReactionKind, Comment } from './types'; 
+import { Post, Reaction, CommentId, PostId, ReactionKind, Comment } from './types';
 
 type VoterValue = {
   struct: Comment | Post;
@@ -20,18 +20,15 @@ export const Voter = (props: VoterProps) => {
     struct
   } = props;
 
-  const resetState: any = 'None'; // TODO create type
-  const [ reactionState, setReactionState ] = useState(resetState);
+  const [ reactionState, setReactionState ] = useState(undefined as (Reaction | undefined));
 
   const { state: { address } } = useMyAccount();
 
-  const reactionIsNone = !(reactionState instanceof Reaction);
-  const reactionKind = reactionIsNone ? 'None' : reactionState.kind.toString();
-
+  const kind = reactionState ? reactionState && reactionState.kind.toString(): 'None';
+  const [ reactionKind, setReactionKind ] = useState(kind);
   const [ state , setState ] = useState(struct);
   const { id } = state;
-  const isComment = struct instanceof Comment;
-  console.log(isComment);
+  const isComment = struct.Type['id'] === 'CommentId';
   const Id = isComment ? CommentId : PostId;
 
   const dataForQuery = new Tuple([AccountId, Id], [new AccountId(address), id]);
@@ -54,18 +51,19 @@ export const Voter = (props: VoterProps) => {
     api.query.blogs[`${structQuery}ReactionIdByAccount`](dataForQuery, reactionId => {
       api.query.blogs.reactionById(reactionId, x => {
         if (x.isNone) {
-          setReactionState('None');
+          setReactionState(undefined);
           return;
         }
         const reaction = x.unwrap() as Reaction;
         setReactionState(reaction);
+        setReactionKind(reaction.kind.toString());
       }).catch(err => console.log(err));
     }).catch(err => console.log(err));
 
   }, [ reactionKind ]);
 
   const buildTxParams = (param: 'Downvote' | 'Upvote') => {
-    if (reactionIsNone) {
+    if (reactionState === undefined) {
       return [ id, new ReactionKind(param) ];
     } else if (reactionKind !== param) {
       return [ id, reactionState.id, new ReactionKind(param) ];
@@ -95,7 +93,7 @@ export const Voter = (props: VoterProps) => {
         icon={`thumbs ${icon} outline`}
         className={`${color} ${isActive}`}
         params={buildTxParams(reactionName)}
-        tx={reactionIsNone
+        tx={reactionState === undefined
           ? `blogs.create${struct}Reaction`
           : (reactionKind !== `${reactionName}`)
           ? `blogs.update${struct}Reaction`
@@ -103,15 +101,16 @@ export const Voter = (props: VoterProps) => {
       />);
     };
 
-    return <><Button.Group vertical={isComment} className={`DfVoter`}>
+    return <>
+      <Button.Group vertical={isComment} className={`DfVoter`}>
         {renderTxButton(true)}
         <Button content={count} variant='primary' className={`${colorCount} active`} onClick={() => setOpen(true)}/>
         {renderTxButton(false)}
-    </Button.Group>
-  {isComment
-  ? <CommentVoters id={id} open={open} close={close}/>
-  : <PostVoters id={id} open={open} close={close}/>}
-  </>;
+      </Button.Group>
+      {isComment
+      ? open && <CommentVoters id={id} open={open} close={close}/>
+      : open && <PostVoters id={id} open={open} close={close}/>}
+    </>;
   };
 
   return VoterRender();
