@@ -4,7 +4,6 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Modal, Button } from 'semantic-ui-react';
-import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 
 type Props = {
@@ -34,12 +33,6 @@ const InnerFollowersModal = (props: Props) => {
       </div>
     );
   };
-
-  // const renderAsLink = () => (
-  //   asLink
-  //   ? <Link to='# ' onClick={() => setOpen(true)}>Followers ({followersCount})</Link>
-  //   : <Button basic onClick={() => setOpen(true)}>Followers ({followersCount})</Button>
-  // );
 
   return (
     <Modal
@@ -78,4 +71,3 @@ export const AccountFollowingModal = withMulti(
     queryBlogsToProp('accountsFollowedByAccount', { paramName: 'id', propName: 'following' })
   )
 );
-

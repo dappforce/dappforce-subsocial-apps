@@ -3,7 +3,6 @@ import React from 'react';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import _ from 'lodash';
 import { BlogId } from './types';
 import Section from '@polkadot/df-utils/Section';
 import ViewBlog from './ViewBlog';

@@ -13,7 +13,6 @@ import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import Section from '@polkadot/df-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
-import _ from 'lodash';
 import { BlogFollowersModal } from './AccountListModal';
 import { BlogHistoryModal } from './ListsEditHistory';
 import { Dropdown, Button } from 'semantic-ui-react';

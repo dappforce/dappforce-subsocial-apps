@@ -10,7 +10,6 @@ import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
 import { withIdFromMyAddress } from './utils';
-import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';

@@ -20,8 +20,9 @@ type ActivityProps = {
 
 const InnerViewNewsFeed = (props: MyAccountProps) => {
   const { myAddress } = props;
-  if (!myAddress) return <em>Opps...Incorect Account</em>;
+  if (!myAddress) return <em>Oops...Incorect Account</em>;
 
+  //TODO rename -> items
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
   const [ offset, setOffset ] = useState(0);
 
@@ -64,6 +65,7 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   const { myAddress } = props;
   if (!myAddress) return <em>Opps...Incorect Account</em>;
 
+  //TODO rename -> items
   const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
 
   const [ offset, setOffset ] = useState(0);
@@ -106,7 +108,7 @@ const InnerViewNotifications = (props: MyAccountProps) => {
 function ViewActivity (props: ActivityProps) {
   const { activity } = props;
   const { post_id } = activity;
-  const postId = new PostId(hexToNumber('0x' + post_id));
+  const postId = new PostId(hexToNumber('0x' + post_id));// TODO create function
 
   return <ViewPost id={postId} preview/>;
 }
