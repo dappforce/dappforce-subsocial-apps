@@ -252,7 +252,7 @@ type Struct = Blog | undefined;
 
 function LoadStruct (props: LoadStructProps) {
 
-  const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
+  const { state: { address: myAddress } } = useMyAccount();
   const { structOpt } = props;
   const [ json, setJson ] = useState(undefined as StructJson);
   const [ struct, setStruct ] = useState(undefined as Struct);

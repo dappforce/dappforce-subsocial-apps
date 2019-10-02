@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { CreatedBy } from './CreatedBy';
 import { getJsonFromIpfs } from './OffchainUtils';
 import { SocialAccount, OptionText } from '@dappforce/types/blogs';
+import { withRequireProfile, withSocialAccount } from './utils';
 
 type ModalController = {
   open: boolean,
@@ -331,7 +332,10 @@ export const BlogHistoryModal = withMulti(
 
 type ProfileHistoryProps = ModalController & {
   id: AccountId,
-  socialAccountOpt?: Option<SocialAccount>
+  socialAccountOpt?: Option<SocialAccount>,
+  socailAccount?: SocialAccount,
+  profile?: Profile
+  profileData: ProfileData
 };
 
 type PropsProfileFromHistory = {
@@ -385,16 +389,9 @@ const ProfileFromHistory = (props: PropsProfileFromHistory) => {
 
 const InnerProfileHistoryModal = (props: ProfileHistoryProps) => {
 
-  const { open, close, socialAccountOpt } = props;
+  const { open, close, profile } = props;
 
-  if (!socialAccountOpt || socialAccountOpt.isNone) return null;
-
-  const socialAccount = socialAccountOpt.unwrap();
-  const profileOpt = socialAccount.profile;
-  // TODO use new Component to load Profile
-  if (profileOpt.isNone) return <Modal>Profile not found</Modal>;
-
-  const profile = profileOpt.unwrap() as Profile;
+  if (!profile) return <em>Profile not found</em>;
 
   const { edit_history } = profile;
 
@@ -430,5 +427,7 @@ export const ProfileHistoryModal = withMulti(
   withCalls<ProfileHistoryProps>(
     queryBlogsToProp('socialAccountById',
     { paramName: 'id', propName: 'socialAccountOpt' })
-  )
+  ),
+  withRequireProfile,
+  withSocialAccount
 );

@@ -22,13 +22,12 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
   const { myAddress } = props;
   if (!myAddress) return <em>Oops...Incorect Account</em>;
 
-  //TODO rename -> items
-  const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
+  const [ items, setItems ] = useState([] as Activity[]);
   const [ offset, setOffset ] = useState(0);
 
   const getNewsArray = async () => {
     const data = await getNewsFeed(myAddress, offset, LIMIT);
-    setMyFeeds(data);
+    setItems(data);
     setOffset(offset + LIMIT);
   };
 
@@ -38,8 +37,8 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
     getNewsArray().catch(err => new Error(err));
 
   },[false]);
-  const totalCount = myFeeds && myFeeds.length;
-  const NewsFeedArray = myFeeds.map((item, id) =>
+  const totalCount = items && items.length;
+  const NewsFeedArray = items.map((item, id) =>
     <ViewActivity key={id} activity={item}/>);
   return (
   <Section title={`News Feed (${totalCount})`}>{
@@ -65,14 +64,13 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   const { myAddress } = props;
   if (!myAddress) return <em>Opps...Incorect Account</em>;
 
-  //TODO rename -> items
-  const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
+  const [ items, setItems ] = useState([] as Activity[]);
 
   const [ offset, setOffset ] = useState(0);
 
   const getNotificationsArray = async () => {
     const data = await getNotifications(myAddress, offset, LIMIT);
-    setMyFeeds(data);
+    setItems(data);
     setOffset(offset + LIMIT);
   };
 
@@ -82,8 +80,8 @@ const InnerViewNotifications = (props: MyAccountProps) => {
     getNotificationsArray().catch(err => new Error(err));
   },[false]);
 
-  const totalCount = myFeeds && myFeeds.length;
-  const NotificationsArray = myFeeds.map((item, id) =>
+  const totalCount = items && items.length;
+  const NotificationsArray = items.map((item, id) =>
     <Notification key={id} activity={item}/>);
   return (
   <Section title={`Notifications (${totalCount})`}>{
