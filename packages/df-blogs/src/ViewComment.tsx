@@ -131,11 +131,12 @@ export function ViewComment (props: ViewCommentProps) {
 
   const renderDropDownMenu = () => {
     const [open, setOpen] = useState(false);
-
     const close = () => setOpen(false);
+
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
         {(isMyStruct || showEditForm) && <Dropdown.Item text='Edit' onClick={() => setShowEditForm(true)} />}
+        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
         {open && <CommentHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
     </Dropdown>);
