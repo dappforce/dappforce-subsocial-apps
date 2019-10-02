@@ -109,6 +109,51 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           {renderCreateProfileButton}
+          <div className='about'>
+            <ReactMarkdown className='DfMd' source={about} linkTarget='_blank' />
+            <div className='DfSocialLinks'>
+              {hasFacebookLink &&
+                <a
+                  href={facebook}
+                  target='_blank'
+                >
+                  <Icon className='facebook'/>Facebook
+                </a>
+              }
+              {hasTwitterLink &&
+                <a
+                  href={twitter}
+                  target='_blank'
+                >
+                  <Icon className='twitter' />Twitter
+                </a>}
+              {hasLinkedInLink &&
+                <a
+                  href={linkedIn}
+                  target='_blank'
+                >
+                  <Icon className='linkedin' />LinkedIn
+                </a>
+              }
+              {hasGithubLink &&
+                <a
+                  href={github}
+                  target='_blank'
+                >
+                  <Icon className='github' />GitHub
+                </a>
+              }
+              {hasInstagramLink &&
+                <a
+                  href={instagram}
+                  target='_blank'
+                >
+                <Icon className='instagram' />Instagram
+                </a>
+              }
+            </div>
+          </div>
+        </div>
       </div>
     </>;
   };
@@ -140,48 +185,3 @@ export default withMulti(
   ),
   withSocialAccount
 );
-
-          <div className='about'>
-            <ReactMarkdown className='DfMd' source={about} linkTarget='_blank' />
-            <div className='DfSocialLinks'>
-              {hasFacebookLink &&
-                <a
-                  href={facebook}
-                >
-                  target='_blank'
-                  <Icon className='facebook'/>Facebook
-                </a>
-              }
-              {hasTwitterLink &&
-                <a
-                  href={twitter}
-                  target='_blank'
-                >
-                  <Icon className='twitter' />Twitter
-              }
-                </a>
-              {hasLinkedInLink &&
-                <a
-                  href={linkedIn}
-                  target='_blank'
-                  <Icon className='linkedin' />LinkedIn
-                >
-                </a>
-              }
-                <a
-              {hasGithubLink &&
-                  href={github}
-                  target='_blank'
-                >
-                  <Icon className='github' />GitHub
-                </a>
-              }
-                  href={instagram}
-                  target='_blank'
-              {hasInstagramLink &&
-                <a
-                >
-                <Icon className='instagram' />Instagram
-                </a>
-              }
-            </div>

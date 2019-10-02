@@ -16,7 +16,7 @@ import { CreatedBy } from './CreatedBy';
 import _ from 'lodash';
 import { BlogFollowersModal } from './AccountsListModal';
 import { BlogHistoryModal } from './ListsEditHistory';
-import { Dropdown, Button } from 'semantic-ui-react';
+import { Dropdown } from 'semantic-ui-react';
 import { FollowBlogButton } from './FollowButton';
 import TxButton from '@polkadot/df-utils/TxButton';
 import { pluralizeText } from './utils';
@@ -51,12 +51,10 @@ function Component (props: Props) {
     followers_count
   } = blog;
   const followers = followers_count.toNumber();
-  const [ modalOpen, setModalOpen ] = useState(false);
   const [ content , setContent ] = useState({} as BlogData);
   const { desc, name, image } = content;
 
   const [ followersOpen, setFollowersOpen ] = useState(false);
-  const followers = blog.followers_count.toNumber();
 
   useEffect(() => {
     if (!ipfs_hash) return;

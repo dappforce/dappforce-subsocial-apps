@@ -121,7 +121,7 @@ function ViewPostInternal (props: ViewPostProps) {
         </div>
         {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         <div className='DfCountsPreview'>
-          <MutedSpan><HashLink to={`#commentsForPost${id}`} onClick={() => setCommentsSection(!commentsSection)}>
+          <MutedSpan><HashLink to={`#comments-on-post${id}`} onClick={() => setCommentsSection(!commentsSection)}>
           {pluralizeText(comments_count, 'comment')}</HashLink></MutedSpan>
           <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)} className={upvotes ? '' : 'disable'}>{pluralizeText(upvotes_count, 'upvote')}</Link></MutedSpan>
           <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)} className={downvotes ? '' : 'disable'}> {pluralizeText(downvotes_count, 'downvote')}</Link></MutedSpan>

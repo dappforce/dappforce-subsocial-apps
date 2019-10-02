@@ -31,6 +31,7 @@ export const Voter = (props: VoterProps) => {
   const [ state , setState ] = useState(struct);
   const { id } = state;
   const isComment = struct instanceof Comment;
+  console.log(isComment);
   const Id = isComment ? CommentId : PostId;
 
   const dataForQuery = new Tuple([AccountId, Id], [new AccountId(address), id]);
@@ -75,7 +76,6 @@ export const Voter = (props: VoterProps) => {
 
   const VoterRender = () => {
 
-    const orientation = isComment ? true : false;
     const count = (state.upvotes_count.toNumber() - state.downvotes_count.toNumber()).toString();
     const colorCount = count > '0' ? 'green' : count < '0' ? 'red' : '';
     const [open, setOpen] = useState(false);
@@ -103,7 +103,7 @@ export const Voter = (props: VoterProps) => {
       />);
     };
 
-    return <><Button.Group vertical={orientation} className={`DfVoter`}>
+    return <><Button.Group vertical={isComment} className={`DfVoter`}>
         {renderTxButton(true)}
         <Button content={count} variant='primary' className={`${colorCount} active`} onClick={() => setOpen(true)}/>
         {renderTxButton(false)}
