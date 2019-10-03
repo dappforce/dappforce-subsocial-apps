@@ -133,26 +133,23 @@ function AddressMini (props: Props) {
           />
         }
         <div className='DfAddressMini-popup'>
-          {myAddress !== address
-            ? <Popup
-              trigger={renderAddress(address)}
-              onClose={() => setPopupOpen(false)}
-              onOpen={() => setPopupOpen(true)}
-              open={popupOpen}
-              flowing
-              hoverable
-            >
-            {renderProfilePreview()}
-            </Popup>
-            : renderAddress(address)
+          <Popup
+            trigger={renderAddress(address)}
+            onClose={() => setPopupOpen(false)}
+            onOpen={() => setPopupOpen(true)}
+            open={popupOpen}
+            flowing
+            hoverable
+          >
+          {renderProfilePreview()}
+          </Popup>
+          {followersOpen && <AccountFollowersModal id={address} followersCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'Follower')}/>}
+          {followingOpen && <AccountFollowingModal id={address} followingCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'Following'}/>}
+          {renderName(address)}
+          {asActivity
+            ? renderPreviewForActivity()
+            : renderPreviewForAddress()
           }
-            {followersOpen && <AccountFollowersModal id={address} followersCount={followers} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'follower')}/>}
-            {followingOpen && <AccountFollowingModal id={address} followingCount={following} open={followingOpen} close={() => setFollowingOpen(false)} title={'Following'}/>}
-            {renderName(address)}
-            {asActivity
-              ? renderPreviewForActivity()
-              : renderPreviewForAddress()
-            }
         </div>
         {withFollowButton && renderFollowButton}
         {children}
@@ -203,8 +200,8 @@ function AddressMini (props: Props) {
         <ReactMarkdown source={summary} linkTarget='_blank' />
       </div>
       <div className='DfPopup-links'>
-        <Link to='#' onClick={openFollowersModal} className={followers ? '' : 'disable'}>{pluralizeText(followers, 'follower', 'followers')}</Link>
-        <Link to='#' onClick={openFollowingModal} className={following ? '' : 'disable'}><b>{following}</b> following</Link>
+        <Link to='#' onClick={openFollowersModal} className={followers ? '' : 'disable'}>{pluralizeText(followers, 'Follower')}</Link>
+        <Link to='#' onClick={openFollowingModal} className={following ? '' : 'disable'}><b>{following}</b> Following</Link>
       </div>
     </div>;
   }

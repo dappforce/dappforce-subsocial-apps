@@ -55,7 +55,7 @@ class App extends PureComponent<Props> {
       },
       {
         name: 'feed',
-        text: t('News feed')
+        text: t('My feed')
       },
       {
         name: 'notifications',

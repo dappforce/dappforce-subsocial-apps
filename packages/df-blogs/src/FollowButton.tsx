@@ -9,11 +9,12 @@ import TxButton from '@polkadot/df-utils/TxButton';
 import { api } from '@polkadot/ui-api';
 
 type FollowBlogButtonProps = {
-  blogId: BlogId
+  blogId: BlogId,
+  size?: string
 };
 
 export function FollowBlogButton (props: FollowBlogButtonProps) {
-  const { blogId } = props;
+  const { blogId, size = 'medium' } = props;
   const { state: { address: myAddress } } = useMyAccount();
 
   const dataForQuery = new Tuple([AccountId, BlogId], [new AccountId(myAddress), blogId]);
@@ -37,11 +38,12 @@ export function FollowBlogButton (props: FollowBlogButtonProps) {
   return <TxButton
     type='submit'
     compact
+    size = {size}
     isBasic={isFollow}
     isPrimary={!isFollow}
     label={isFollow
-      ? 'Unfollow blog'
-      : 'Follow blog'}
+      ? 'Unfollow'
+      : 'Follow'}
     params={buildTxParams()}
     tx={isFollow
       ? `blogs.unfollowBlog`

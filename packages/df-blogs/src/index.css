@@ -27,7 +27,7 @@
   display: flex !important;
   padding-left: 1rem !important;
   .content {
-    margin-left: 1rem;
+    margin-left: .3rem;
   }
   .header { 
     font-size: 1.7rem;
@@ -147,4 +147,8 @@ hr {
   a {
     margin-right: 1rem
   }
+}
+
+.DfBlog-links{
+  background: #fff8e1;
 }

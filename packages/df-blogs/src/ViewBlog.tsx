@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { HashLink } from 'react-router-hash-link';
 import ReactMarkdown from 'react-markdown';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
@@ -23,6 +24,8 @@ import { pluralizeText } from './utils';
 type Props = MyAccountProps & {
   preview?: boolean,
   nameOnly?: boolean,
+  previewDetails?: boolean,
+  withFollowButton?: boolean,
   id: BlogId,
   blogById?: Option<Blog>,
   postIds?: PostId[],
@@ -38,6 +41,8 @@ function Component (props: Props) {
   const {
     preview = false,
     nameOnly = false,
+    previewDetails = false,
+    withFollowButton = false,
     myAddress,
     postIds = []
   } = props;
@@ -99,9 +104,20 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='description'>
-            <ReactMarkdown className='DfMd' source={desc} linkTarget='_blank' />
+          <ReactMarkdown className='DfMd' source={desc} linkTarget='_blank' />
           </div>
         </div>
+        {withFollowButton && <FollowBlogButton blogId={id} />}
+      </div>
+    </>;
+  };
+
+  const renderPreviewExtraDetails = () => {
+    return <>
+      <div className='DfBlog-links'>
+        <Link to='#' onClick={() => setFollowersOpen(true)} className={followers ? '' : 'disable'}>{pluralizeText(followers, 'Follower')}</Link>
+        {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'Follower')} />}
+        <HashLink to={`/blogs/${id}#posts`} className={postsCount ? '' : 'disable'}>{pluralizeText(postsCount, 'Post')}</HashLink>
       </div>
     </>;
   };
@@ -110,6 +126,11 @@ function Component (props: Props) {
     return renderNameOnly();
   } else if (preview) {
     return renderPreview();
+  } else if (previewDetails) {
+    return <>
+    {renderPreview()}
+    {renderPreviewExtraDetails()}
+    </>;
   }
 
   const renderPostPreviews = () => {
@@ -122,7 +143,7 @@ function Component (props: Props) {
 
   const postsSectionTitle = () => {
     return <>
-      <span style={{ marginRight: '.5rem' }}>{pluralizeText(postsCount, 'post')}</span>
+      <span style={{ marginRight: '.5rem' }}>{pluralizeText(postsCount, 'Post')}</span>
       <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
         <i className='plus icon' />
         Write post
@@ -136,9 +157,9 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <TxButton isBasic={true} isPrimary={false} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{pluralizeText(followers, 'follower')}</TxButton>
-    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'follower')} />}
-    <Section title={postsSectionTitle()}>
+    <TxButton isBasic={true} isPrimary={false} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{pluralizeText(followers, 'Follower')}</TxButton>
+    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'Follower')} />}
+    <Section id='posts' title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>
   </>;
