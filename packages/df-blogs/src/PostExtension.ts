@@ -1,5 +1,6 @@
 import { Null } from '@polkadot/types';
-import { EnumType, u64 } from '@polkadot/types';
+import { u64, EnumType } from '@polkadot/types';
+import { PostId, CommentId } from '../../df-types/src/types';
 
 export class RegularPost extends Null {}
 export class SharedPost extends u64 {}

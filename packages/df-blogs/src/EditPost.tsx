@@ -48,9 +48,7 @@ type OuterProps = ValidationProps & {
   json?: PostData
 };
 
-type FormValues = PostData & {
-  slug: string
-};
+type FormValues = PostData;
 
 type FormProps = OuterProps & FormikProps<FormValues>;
 
@@ -73,7 +71,6 @@ const InnerForm = (props: FormProps) => {
   } = props;
 
   const {
-    slug,
     title,
     body,
     image,
@@ -118,13 +115,12 @@ const InnerForm = (props: FormProps) => {
     if (!isValid) return [];
 
     if (!struct) {
-      return [ blogId, slug, ipfsCid ];
+      return [ blogId, ipfsCid ];
     } else {
       // TODO update only dirty values.
       const update = new PostUpdate({
         // TODO setting new blog_id will move the post to another blog.
         blog_id: new Option(BlogId, null),
-        slug: new Option(Text, slug),
         ipfs_hash: new Option(Text, ipfsCid)
       });
       return [ struct.id, update ];
@@ -135,8 +131,6 @@ const InnerForm = (props: FormProps) => {
     <Form className='ui form DfForm EditEntityForm'>
 
       <LabelledText name='title' label='Post title' placeholder={`What is a title of you post?`} {...props} />
-
-      <LabelledText name='slug' label='URL slug' placeholder={`You can use a-z, 0-9, dashes and underscores.`} style={{ maxWidth: '30rem' }} {...props} />
 
       <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
 
@@ -193,14 +187,11 @@ const EditForm = withFormik<OuterProps, FormValues>({
     const { struct, json } = props;
 
     if (struct && json) {
-      const slug = struct.slug.toString();
       return {
-        slug,
         ...json
       };
     } else {
       return {
-        slug: '',
         title: '',
         body: '',
         image: '',

@@ -4,7 +4,7 @@ import { Pagination as SuiPagination } from 'semantic-ui-react';
 import { AccountId, AccountIndex, Address } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { SubmittableResult } from '@polkadot/api';
-import { CommentId, PostId, BlogId } from './types';../../df-types/src/types
+import { CommentId, PostId, BlogId } from '@dappforce/types/blogs';
 import { OuterProps } from './EditProfile';
 
 type AuthorPreviewProps = {
