@@ -1,6 +1,7 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32 } from '@polkadot/types';
 import moment from 'moment-timezone';
+import { PostExtension } from './PostExtension';
 
 export type IpfsData = CommentData | PostData | BlogData | ProfileData;
 export type Activity = {
@@ -187,23 +188,6 @@ export type PostData = {
   image: string;
   tags: string[];
 };
-
-export const PostExtensions: { [key: string]: string } = {
-  SimplePost: 'SimplePost',
-  SharedPost: 'Sharedost'
-};
-
-export class PostExtension extends Enum {
-  constructor (value?: any) {
-    super(
-      [
-        'SimplePost',
-        'SharedPost'
-      ],
-      value
-    );
-  }
-}
 
 export type PostType = {
   id: PostId;
