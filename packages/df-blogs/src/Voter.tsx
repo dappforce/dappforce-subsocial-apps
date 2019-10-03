@@ -28,7 +28,7 @@ export const Voter = (props: VoterProps) => {
   const [ reactionKind, setReactionKind ] = useState(kind);
   const [ state , setState ] = useState(struct);
   const { id } = state;
-  const isComment = struct.Type['id'] === 'CommentId';
+  const isComment = struct.Type['id'] === CommentId.name;
   const Id = isComment ? CommentId : PostId;
 
   const dataForQuery = new Tuple([AccountId, Id], [new AccountId(address), id]);
