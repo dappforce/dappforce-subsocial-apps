@@ -13,7 +13,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
+import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from '@dappforce/types/blogs';
 import { UrlHasIdProps, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 

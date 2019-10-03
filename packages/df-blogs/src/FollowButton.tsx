@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { AccountId, Bool } from '@polkadot/types';
 
-import { BlogId } from './types';
+import { BlogId } from '@dappforce/types/blogs';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import TxButton from '@polkadot/df-utils/TxButton';

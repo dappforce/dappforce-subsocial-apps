@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Section from '@polkadot/df-utils/Section';
 import { hexToNumber } from '@polkadot/util';
-import { PostId, CommentId, OptionComment, Comment, BlogId, Activity } from './types';
+import { PostId, CommentId, OptionComment, Comment, BlogId, Activity } from '@dappforce/types/blogs';
 import { ViewPost } from './ViewPost';
 import { Segment } from 'semantic-ui-react';
 import { api, withMulti } from '@polkadot/ui-api';

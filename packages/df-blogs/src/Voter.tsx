@@ -7,7 +7,7 @@ import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { CommentVoters, PostVoters } from './ListVoters';
-import { Post, Reaction, CommentId, PostId, ReactionKind, Comment } from './types'; 
+import { Post, Reaction, CommentId, PostId, ReactionKind, Comment } from '@dappforce/types/blogs';
 
 type VoterValue = {
   struct: Comment | Post;

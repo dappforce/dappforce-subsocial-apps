@@ -11,7 +11,7 @@ import { api } from '@polkadot/ui-api';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { partition } from 'lodash';
-import { PostId, CommentId, Comment, OptionComment, Post, CommentData } from './types';
+import { PostId, CommentId, Comment, OptionComment, Post, CommentData } from '@dappforce/types/blogs';
 import { NewComment } from './EditComment';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Voter } from './Voter';

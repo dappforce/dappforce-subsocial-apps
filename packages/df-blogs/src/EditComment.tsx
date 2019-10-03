@@ -13,7 +13,7 @@ import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { PostId, CommentId, Comment, CommentUpdate, CommentData } from './types';
+import { PostId, CommentId, Comment, CommentUpdate, CommentData } from '@dappforce/types/blogs';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
 

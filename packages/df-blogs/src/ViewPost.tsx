@@ -8,7 +8,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { Option } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
-import { PostId, Post, CommentId, PostData } from './types';
+import { PostId, Post, CommentId, PostData } from '@dappforce/types/blogs';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { UrlHasIdProps } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';

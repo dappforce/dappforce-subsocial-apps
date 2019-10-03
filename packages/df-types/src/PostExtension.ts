@@ -1,6 +1,6 @@
 import { Null } from '@polkadot/types';
 import { EnumType } from '@polkadot/types/codec';
-import { PostId, CommentId } from './types';
+import { PostId, CommentId } from './blogs';
 
 export class RegularPost extends Null {}
 export class SharedPost extends PostId {}

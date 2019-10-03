@@ -8,7 +8,7 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
-import { BlogId, Blog, PostId, BlogData } from './types';
+import { BlogId, Blog, PostId, BlogData } from '@dappforce/types/blogs';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import Section from '@polkadot/df-utils/Section';
 import { ViewPost } from './ViewPost';

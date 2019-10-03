@@ -8,7 +8,7 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
-import { SocialAccount, ProfileData, Profile } from './types';
+import { SocialAccount, ProfileData, Profile } from '@dappforce/types/blogs';
 import { withIdFromMyAddress } from './utils';
 import _ from 'lodash';
 import { Dropdown, Icon } from 'semantic-ui-react';

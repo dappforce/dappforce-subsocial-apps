@@ -1,6 +1,7 @@
 import { Option, Struct, Enum } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32 } from '@polkadot/types';
 import moment from 'moment-timezone';
+import { PostExtension } from './PostExtension';
 
 export type IpfsData = CommentData | PostData | BlogData | ProfileData;
 export type Activity = {
@@ -193,7 +194,7 @@ export type PostType = {
   blog_id: BlogId;
   created: ChangeType;
   updated: OptionChange;
-  slug: Text;
+  extension: PostExtension;
   ipfs_hash: IpfsHash;
   comments_count: u16;
   upvotes_count: u16;
@@ -211,7 +212,7 @@ export class Post extends Struct {
         blog_id: BlogId,
         created: Change,
         updated: OptionChange,
-        slug: Text,
+        extension: PostExtension,
         ipfs_hash: IpfsHash,
         comments_count: u16,
         upvotes_count: u16,
@@ -240,8 +241,8 @@ export class Post extends Struct {
     return this.get('updated') as OptionChange;
   }
 
-  get slug (): Text {
-    return this.get('slug') as Text;
+  get extension (): PostExtension {
+    return this.get('extension') as PostExtension;
   }
 
   get ipfs_hash (): string {
@@ -276,7 +277,6 @@ export class Post extends Struct {
 
 export type PostUpdateType = {
   blog_id: OptionBlogId;
-  slug: OptionText;
   ipfs_hash: OptionIpfsHash;
 };
 
@@ -285,7 +285,6 @@ export class PostUpdate extends Struct {
     super(
       {
         blog_id: OptionBlogId,
-        slug: OptionText,
         ipfs_hash: OptionIpfsHash
       },
       value
@@ -294,10 +293,6 @@ export class PostUpdate extends Struct {
 
   get ipfs_hash (): OptionIpfsHash {
     return this.get('ipfs_hash') as OptionIpfsHash;
-  }
-
-  get slug (): OptionIpfsHash {
-    return this.get('slug') as OptionIpfsHash;
   }
 
   set ipfs_hash (value: OptionIpfsHash) {
@@ -750,6 +745,7 @@ export function registerBlogsTypes () {
       Blog,
       BlogUpdate,
       BlogHistoryRecord,
+      PostExtension,
       Post,
       PostUpdate,
       PostHistoryRecord,

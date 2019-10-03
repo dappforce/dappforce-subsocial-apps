@@ -3,7 +3,7 @@ import { withMulti, withCalls } from '@polkadot/ui-api/with';
 import { Modal, Comment as SuiComment, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
-import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord, ProfileHistoryRecord, ProfileData, Profile, VecProfileHistoryRecord } from './types';
+import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord, ProfileHistoryRecord, ProfileData, Profile, VecProfileHistoryRecord } from '@dappforce/types/blogs';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Option, AccountId } from '@polkadot/types';
 import ReactMarkdown from 'react-markdown';

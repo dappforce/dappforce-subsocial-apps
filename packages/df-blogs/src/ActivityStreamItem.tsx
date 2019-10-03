@@ -10,7 +10,7 @@ import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import { BareProps } from '@polkadot/ui-app/types';
 import { classes, toShortAddress } from '@polkadot/ui-app/util';
 import IdentityIcon from '@polkadot/ui-identicon/Identicon';
-import { ProfileData, Profile, SocialAccount } from './types';
+import { ProfileData, Profile, SocialAccount } from '@dappforce/types/blogs';
 import { getJsonFromIpfs } from './OffchainUtils';
 
 type Props = MyAccountProps & BareProps & {

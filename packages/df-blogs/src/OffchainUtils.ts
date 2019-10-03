@@ -1,4 +1,4 @@
-import { IpfsData, Activity } from './types';
+import { IpfsData, Activity } from '@dappforce/types/blogs';
 import axios from 'axios';
 
 export const host = 'http://localhost:3001/v1';

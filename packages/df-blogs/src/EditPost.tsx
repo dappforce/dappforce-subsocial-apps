@@ -11,7 +11,7 @@ import { addJsonToIpfs, getJsonFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
-import { PostId, Post, PostData, PostUpdate, BlogId } from './types';
+import { PostId, Post, PostData, PostUpdate, BlogId } from '@dappforce/types/blogs';
 import Section from '@polkadot/df-utils/Section';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';

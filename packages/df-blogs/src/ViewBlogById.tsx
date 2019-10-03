@@ -4,7 +4,7 @@ import { I18nProps } from '@polkadot/ui-app/types';
 
 import translate from './translate';
 import ViewBlog from './ViewBlog';
-import { BlogId } from './types';
+import { BlogId } from '@dappforce/types/blogs';
 import { UrlHasIdProps } from './utils';
 
 type Props = I18nProps & UrlHasIdProps;

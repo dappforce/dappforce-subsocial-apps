@@ -9,7 +9,7 @@ import Section from '@polkadot/df-utils/Section';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import translate from './translate';
 import ViewBlog from './ViewBlog';
-import { BlogId } from './types';
+import { BlogId } from '@dappforce/types/blogs';
 import { AccountId } from '@polkadot/types';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 

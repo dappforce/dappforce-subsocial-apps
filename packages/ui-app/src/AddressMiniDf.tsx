@@ -15,7 +15,7 @@ import BalanceDisplay from './Balance';
 import IdentityIcon from './IdentityIcon';
 import { findNameByAddress, nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
 import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
-import { Popup } from 'semantic-ui-react';
+import { Popup } from 'semantic-ui-react';@dappforce/types/types
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
 import { getJsonFromIpfs } from '@dappforce/blogs/OffchainUtils';
