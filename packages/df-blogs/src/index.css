@@ -189,3 +189,15 @@ hr {
     margin-right: 1rem
   }
 }
+
+.DfPostPreview {
+  h2 {
+    margin-top: 1rem; 
+  }
+  .DfSharedSummary {
+    margin-left: 3rem;
+    margin-top: .5rem;
+    font-size: 1.2rem;
+    width: 95%;
+  }
+}

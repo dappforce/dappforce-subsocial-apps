@@ -1,7 +1,6 @@
-import { Option, Struct, Enum } from '@polkadot/types/codec';
-import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32 } from '@polkadot/types';
+import { Option, Struct, Enum, EnumType } from '@polkadot/types/codec';
+import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32, Null } from '@polkadot/types';
 import moment from 'moment-timezone';
-import { PostExtension } from './PostExtension';
 
 export type IpfsData = CommentData | PostData | BlogData | ProfileData;
 export type Activity = {
@@ -15,12 +14,37 @@ export type Activity = {
   date: Date,
   agg_count: number
 };
-export class IpfsHash extends Text {}
 export class BlogId extends u64 {}
-export class OptionIpfsHash extends Option.with(IpfsHash) {}
 export class PostId extends u64 {}
 export class CommentId extends u64 {}
 export class ReactionId extends u64 {}
+
+export class IpfsHash extends Text {}
+export class OptionIpfsHash extends Option.with(IpfsHash) {}
+
+export class RegularPost extends Null {}
+export class SharedPost extends PostId {}
+export class SharedComment extends CommentId {}
+
+export type PostExtensionEnum =
+  RegularPost |
+  SharedPost |
+  SharedComment;
+
+type PostExtensionEnumValue =
+  { RegularPost: RegularPost } |
+  { SharedPost: SharedPost } |
+  { SharedComment: SharedComment };
+
+export class PostExtension extends EnumType<PostExtensionEnumValue> {
+  constructor (value?: PostExtensionEnumValue, index?: number) {
+    super({
+      RegularPost,
+      SharedPost,
+      SharedComment
+    }, value, index);
+  }
+}
 
 export type ChangeType = {
   account: AccountId,
@@ -272,6 +296,18 @@ export class Post extends Struct {
 
   get score (): i32 {
     return this.get('score') as i32;
+  }
+
+  get isRegularPost (): boolean {
+    return this.extension.value instanceof RegularPost;
+  }
+
+  get isSharedPost (): boolean {
+    return this.extension.value instanceof SharedPost;
+  }
+
+  get isSharedComment (): boolean {
+    return this.extension.value instanceof SharedComment;
   }
 }
 

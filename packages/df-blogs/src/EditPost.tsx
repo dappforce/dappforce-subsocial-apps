@@ -16,6 +16,7 @@ import Section from '@polkadot/df-utils/Section';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { UrlHasIdProps, getNewIdFromEvent } from './utils';
+import { PostExtension, RegularPost } from '@dappforce/types/blogs';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()
@@ -83,13 +84,13 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  const [ ipfsCid, setIpfsCid ] = useState('');
+  const [ ipfsHash, setIpfsCid ] = useState('');
 
   const onSubmit = (sendTx: () => void) => {
     if (isValid) {
       const json = { title, body, image, tags };
-      addJsonToIpfs(json).then(cid => {
-        setIpfsCid(cid);
+      addJsonToIpfs(json).then(hash => {
+        setIpfsCid(hash);
         sendTx();
       }).catch(err => new Error(err));
     }
@@ -115,13 +116,13 @@ const InnerForm = (props: FormProps) => {
     if (!isValid) return [];
 
     if (!struct) {
-      return [ blogId, ipfsCid ];
+      return [ blogId, ipfsHash, new PostExtension({ RegularPost: new RegularPost() }) ];
     } else {
       // TODO update only dirty values.
       const update = new PostUpdate({
         // TODO setting new blog_id will move the post to another blog.
         blog_id: new Option(BlogId, null),
-        ipfs_hash: new Option(Text, ipfsCid)
+        ipfs_hash: new Option(Text, ipfsHash)
       });
       return [ struct.id, update ];
     }
