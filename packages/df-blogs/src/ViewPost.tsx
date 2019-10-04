@@ -65,7 +65,7 @@ function ViewPostInternal (props: ViewPostProps) {
     isSharedComment,
     isSharedPost
   } = post;
-  console.log(extension.value);
+
   const [ content , setContent ] = useState({} as PostContent);
   const [ commentsSection, setCommentsSection ] = useState(false);
   const [ openPostVoters, setOpenPostVoters ] = useState(false);
@@ -92,13 +92,11 @@ function ViewPostInternal (props: ViewPostProps) {
       setContent({...json, summary: makeSummary(json.body) });
     }).catch(err => console.log(err));
 
-    console.log('before is shared');
     if (isSharedPost) {
-      console.log('after is shared');
       const loadSharedPost = async () => {
         const originalPostId = extension.value as PostId;
-        console.log(originalPostId);
         const originalPostOpt = await api.query.blogs.postById(originalPostId) as Option<Post>;
+        
         if (originalPostOpt.isSome) {
           const originalPost = originalPostOpt.unwrap();
           setOriginalPost(originalPost);
@@ -106,7 +104,7 @@ function ViewPostInternal (props: ViewPostProps) {
           setOriginalContent({ ...originalContent, summary: makeSummary(originalContent.body) });
         }
       };
-      console.log('before is loadShared');
+
       loadSharedPost().catch(err => new Error(err));
     }
   }, [ false ]);
@@ -127,8 +125,6 @@ function ViewPostInternal (props: ViewPostProps) {
   };
 
   const renderNameOnly = (title: string, id: PostId, consoles?: string) => {
-    console.log(consoles);
-    console.log({title}, {id});
     if (!title || !id) return null;
     return withLink
       ? <Link
@@ -155,7 +151,6 @@ function ViewPostInternal (props: ViewPostProps) {
     if (!post || !content) return null;
 
     const { title, image, summary } = content;
-    console.log({content});
     return <>
       <h2>
         {renderNameOnly(title, post.id, consoles)}
@@ -193,8 +188,6 @@ function ViewPostInternal (props: ViewPostProps) {
   };
   
   const renderSharedPreview = () => {
-    console.log('OriginalPost',{originalPost});
-    console.log({originalContent});
     return <>
       <Segment className='DfPostPreview'>
         {renderPostCreator(created)}
