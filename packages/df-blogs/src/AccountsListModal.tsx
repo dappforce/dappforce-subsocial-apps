@@ -5,6 +5,7 @@ import { AccountId } from '@polkadot/types';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Modal, Button } from 'semantic-ui-react';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
+import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
 
 type Props = {
   accounts?: AccountId[],
@@ -22,13 +23,11 @@ const InnerAccountsListModal = (props: Props) => {
   const renderAccounts = () => {
     return accounts && accounts.map((account, index) =>
       <div key={index} style={{ textAlign: 'left', margin: '1rem' }}>
-        <AddressMini
+        <AddressMiniDf
           value={account}
           isShort={true}
           isPadded={false}
           size={48}
-          withName
-          withBalance
           withFollowButton
         />
       </div>

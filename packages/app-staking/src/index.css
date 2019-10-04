@@ -54,6 +54,7 @@
 }
 
 .modal{
+  width: 50% !important;
   .ui--AddressMini-info{
     display: inline;
   }
