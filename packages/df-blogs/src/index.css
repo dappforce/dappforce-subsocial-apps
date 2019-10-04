@@ -75,6 +75,14 @@
   margin-top: 2rem;
 }
 
+.ui.button{
+  min-width: 8rem;
+  max-height: 2.8rem;
+}
+
+.ui.basic.button{
+  background-color: #fff !important;
+}
 .DfVoter {
   &.vertical {
     margin-right: .5rem;
@@ -150,5 +158,19 @@ hr {
 }
 
 .DfBlog-links{
-  background: #fff8e1;
+  padding-left: 4.8rem;
+  a{
+    margin-right: .7rem;
+    font-size: .9rem;
+  }
+}
+
+.DfCountsPreview{
+  a{
+    margin-right: .4rem;
+  }
+}
+
+.ui.attached:not(.message)+.ui.attached.segment:not(.top){
+  border: none;
 }

@@ -67,7 +67,7 @@ const InnerListMyBlogs = (props: MyBlogProps) => {
       ? <em>No blogs created yet.</em>
       : <div className='ui huge relaxed middle aligned divided list ProfilePreviews'>
           {myblogsIds && myblogsIds.map((id, i) =>
-            <ViewBlog {...props} key={i} id={id} preview />
+            <ViewBlog {...props} key={i} id={id} previewDetails withFollowButton />
           )}
         </div>
   }</Section>

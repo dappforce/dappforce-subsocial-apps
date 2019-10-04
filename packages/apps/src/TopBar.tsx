@@ -12,7 +12,7 @@ function renderAddress (address: string) {
   const marginRight = { marginRight: '.5rem' };
   return <div className='DfTopBar'>
     <span style={marginRight}>My key: </span>
-    <AddressMini value={address} isShort={false} isPadded={false} withBalance={true} withName={true} size={36} style={marginRight} />
+    <AddressMini value={address} isShort isPadded={false} withBalance={true} withName={true} size={36} style={marginRight} />
     <Link className='ui small button inverted' to='/accounts'>Change key</Link>
   </div>;
 }

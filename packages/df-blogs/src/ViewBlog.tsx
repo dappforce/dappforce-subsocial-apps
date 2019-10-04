@@ -114,7 +114,7 @@ function Component (props: Props) {
 
   const renderPreviewExtraDetails = () => {
     return <>
-      <div className='DfBlog-links'>
+      <div className={`DfBlog-links ${isMyBlog && 'MyProfile'}`}>
         <Link to='#' onClick={() => setFollowersOpen(true)} className={followers ? '' : 'disable'}>{pluralizeText(followers, 'Follower')}</Link>
         {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'Follower')} />}
         <HashLink to={`/blogs/${id}#posts`} className={postsCount ? '' : 'disable'}>{pluralizeText(postsCount, 'Post')}</HashLink>
