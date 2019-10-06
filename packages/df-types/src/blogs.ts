@@ -2,7 +2,7 @@ import { Option, Struct, Enum, EnumType } from '@polkadot/types/codec';
 import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32, Null } from '@polkadot/types';
 import moment from 'moment-timezone';
 
-export type IpfsData = CommentData | PostData | BlogData | ProfileData;
+export type IpfsData = CommentData | PostData | BlogData | ProfileData | SharedPostData;
 export type Activity = {
   id: number,
   account: string,
@@ -206,9 +206,12 @@ export class BlogUpdate extends Struct {
   }
 }
 
-export type PostData = {
+export type SharedPostData = {
+  body: string
+};
+
+export type PostData = SharedPostData & {
   title: string;
-  body: string;
   image: string;
   tags: string[];
 };

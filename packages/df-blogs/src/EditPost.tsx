@@ -11,11 +11,11 @@ import { addJsonToIpfs, getJsonFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
-import { PostId, Post, PostData, PostUpdate, BlogId } from '@dappforce/types/blogs';
+import { PostId, Post, PostData, PostUpdate, BlogId, SharedPostData, SharedPost } from '@dappforce/types/blogs';
 import Section from '@polkadot/df-utils/Section';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { UrlHasIdProps, getNewIdFromEvent } from './utils';
+import { UrlHasIdProps, getNewIdFromEvent, withIdFromMyAddress } from './utils';
 import { PostExtension, RegularPost } from '@dappforce/types/blogs';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
@@ -45,8 +45,10 @@ type OuterProps = ValidationProps & {
   history?: History,
   blogId?: BlogId,
   id?: PostId,
+  extention?: PostExtension,
   struct?: Post
-  json?: PostData
+  json?: PostData,
+  preview?: React.ReactNode
 };
 
 type FormValues = PostData;
@@ -63,7 +65,9 @@ const InnerForm = (props: FormProps) => {
     id,
     blogId,
     struct,
+    extention = new PostExtension({ RegularPost: new RegularPost() }),
     values,
+    preview,
     dirty,
     isValid,
     isSubmitting,
@@ -77,6 +81,8 @@ const InnerForm = (props: FormProps) => {
     image,
     tags
   } = values;
+  console.log(extention.value);
+  const isRegularPost = extention.value instanceof RegularPost;
 
   const goToView = (id: PostId) => {
     if (history) {
@@ -116,7 +122,7 @@ const InnerForm = (props: FormProps) => {
     if (!isValid) return [];
 
     if (!struct) {
-      return [ blogId, ipfsHash, new PostExtension({ RegularPost: new RegularPost() }) ];
+      return [ blogId, ipfsHash, extention ];
     } else {
       // TODO update only dirty values.
       const update = new PostUpdate({
@@ -128,51 +134,69 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
+  const renderButtons = () => (
+    <>
+      <TxButton
+        type='submit'
+        size='large'
+        label={!struct
+          ? `Create a post`
+          : `Update a post`
+        }
+        isDisabled={isRegularPost && (!dirty || isSubmitting)}
+        params={buildTxParams()}
+        tx={struct
+          ? 'blogs.updatePost'
+          : 'blogs.createPost'
+        }
+        onClick={onSubmit}
+        txCancelledCb={onTxCancelled}
+        txFailedCb={onTxFailed}
+        txSuccessCb={onTxSuccess}
+      />
+      <Button
+        type='button'
+        size='large'
+        disabled={isRegularPost && (!dirty || isSubmitting)}
+        onClick={() => resetForm()}
+        content='Reset form'
+      />
+    </>
+  );
+
   const form =
     <Form className='ui form DfForm EditEntityForm'>
 
-      <LabelledText name='title' label='Post title' placeholder={`What is a title of you post?`} {...props} />
+      {isRegularPost
+        ? <>
+          <LabelledText name='title' label='Post title' placeholder={`What is a title of you post?`} {...props} />
 
-      <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
+          <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
 
-      {/* TODO ask a post summary or auto-generate and show under an "Advanced" tab. */}
+          {/* TODO ask a post summary or auto-generate and show under an "Advanced" tab. */}
 
-      <LabelledField name='body' label='Your post' {...props}>
-        <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={5} placeholder={`Write your post here. You can use Markdown.`} />
-      </LabelledField>
+          <LabelledField name='body' label='Your post' {...props}>
+            <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={5} placeholder={`Write your post here. You can use Markdown.`} />
+          </LabelledField>
+        </>
+        : <>
+          <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write your post here. You can use Markdown.`} />
+        </>
+      }
 
-      {/* TODO tags */}
-
-      <LabelledField {...props}>
-        <TxButton
-          type='submit'
-          size='large'
-          label={!struct
-            ? `Create a post`
-            : `Update a post`
-          }
-          isDisabled={!dirty || isSubmitting}
-          params={buildTxParams()}
-          tx={struct
-            ? 'blogs.updatePost'
-            : 'blogs.createPost'
-          }
-          onClick={onSubmit}
-          txCancelledCb={onTxCancelled}
-          txFailedCb={onTxFailed}
-          txSuccessCb={onTxSuccess}
-        />
-        <Button
-          type='button'
-          size='large'
-          disabled={!dirty || isSubmitting}
-          onClick={() => resetForm()}
-          content='Reset form'
-        />
-      </LabelledField>
+      {isRegularPost
+        ? <>
+          <LabelledField {...props}>
+            {renderButtons()}
+          </LabelledField></>
+        : <>
+          {preview}
+          {renderButtons()}
+        </>
+      }
     </Form>;
 
-  const sectionTitle = !struct ? `New post` : `Edit my post`;
+  const sectionTitle = isRegularPost && (!struct ? `New post` : `Edit my post`);
 
   return <>
     <Section className='EditEntityBox' title={sectionTitle}>
@@ -201,7 +225,10 @@ const EditForm = withFormik<OuterProps, FormValues>({
     }
   },
 
-  validationSchema: buildSchema,
+  validationSchema: (props: OuterProps) => {
+    const { extention } = props;
+    return extention ? null : buildSchema;
+  },
 
   handleSubmit: values => {
     // do submitting things
@@ -209,8 +236,11 @@ const EditForm = withFormik<OuterProps, FormValues>({
 })(InnerForm);
 
 function withIdFromUrl (Component: React.ComponentType<OuterProps>) {
-  return function (props: UrlHasIdProps) {
-    const { match: { params: { id } } } = props;
+  return function (props: UrlHasIdProps & OuterProps) {
+    const { match: { params: { id } }, id: postId } = props;
+
+    if (postId) return <Component {...props}/>;
+
     try {
       return <Component id={new PostId(id)} {...props}/>;
     } catch (err) {
@@ -237,48 +267,54 @@ type LoadStructProps = OuterProps & {
 type StructJson = PostData | undefined;
 type Struct = Post | undefined;
 
-function LoadStruct (props: LoadStructProps) {
-  const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
-  const { structOpt } = props;
-  const [ json, setJson ] = useState(undefined as StructJson);
-  const [ struct, setStruct ] = useState(undefined as Struct);
-  const jsonIsNone = json === undefined;
+function LoadStruct (Component: React.ComponentType<OuterProps>) {
+  return function (props: LoadStructProps) {
+    const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
+    const { structOpt } = props;
+    const [ json, setJson ] = useState(undefined as StructJson);
+    const [ struct, setStruct ] = useState(undefined as Struct);
+    const jsonIsNone = json === undefined;
 
-  useEffect(() => {
+    useEffect(() => {
 
-    if (!myAddress || !structOpt || structOpt.isNone) return;
+      if (!myAddress || !structOpt || structOpt.isNone) return;
 
-    setStruct(structOpt.unwrap());
+      setStruct(structOpt.unwrap());
 
-    if (struct === undefined) return;
+      if (struct === undefined) return;
 
-    getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
-      setJson(json);
-    }).catch(err => console.log(err));
-  }); // TODO add guard for loading from ipfs
+      getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
+        setJson(json);
+      }).catch(err => console.log(err));
+    }); // TODO add guard for loading from ipfs
 
-  if (!myAddress || !structOpt || jsonIsNone) {
-    return <em>Loading post...</em>;
-  }
+    if (!myAddress || !structOpt || jsonIsNone) {
+      return <em>Loading post...</em>;
+    }
 
-  if (structOpt.isNone) {
-    return <em>Post not found</em>;
-  }
+    if (structOpt.isNone) {
+      return <em>Post not found</em>;
+    }
 
-  return <EditForm {...props} struct={struct} json={json}/>;// TODO
+    return <Component {...props} struct={struct} json={json}/>;// TODO
+  };
 }
 
 export const NewPost = withMulti(
   EditForm,
   withBlogIdFromUrl
-  // , withOnlyMembers
 );
 
-export const EditPost = withMulti(
-  LoadStruct,
+export const NewSharePost = withMulti(
+  EditForm
+);
+
+export const EditPost = withMulti<OuterProps>(
+  EditForm,
   withIdFromUrl,
   withCalls<OuterProps>(
     queryBlogsToProp('postById',
       { paramName: 'id', propName: 'structOpt' })
-  )
+  ),
+  LoadStruct
 );

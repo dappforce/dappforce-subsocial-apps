@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import ReactMarkdown from 'react-markdown';
-import { Segment, Dropdown } from 'semantic-ui-react';
+import { Segment, Dropdown, Button, Icon } from 'semantic-ui-react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { Option, AccountId } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
-import { PostId, Post, CommentId, PostData, CommentData, Change } from '@dappforce/types/blogs';
+import { PostId, Post, CommentId, PostData, CommentData, Change, SharedPost } from '@dappforce/types/blogs';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { UrlHasIdProps } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
@@ -20,11 +20,13 @@ import { PostHistoryModal } from './ListsEditHistory';
 import { PostVoters, ActiveVoters } from './ListVoters';
 import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
 import { api } from '@polkadot/ui-api';
+import { ShareModal } from './ShareModal';
 
 const LIMIT_SUMMARY = 150;
 
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
+  miniPreview?: boolean,
   nameOnly?: boolean,
   withLink?: boolean,
   withCreatedBy?: boolean,
@@ -46,6 +48,7 @@ function ViewPostInternal (props: ViewPostProps) {
   const {
     myAddress,
     preview = false,
+    miniPreview = false,
     nameOnly = false,
     withLink = true,
     id,
@@ -96,7 +99,7 @@ function ViewPostInternal (props: ViewPostProps) {
       const loadSharedPost = async () => {
         const originalPostId = extension.value as PostId;
         const originalPostOpt = await api.query.blogs.postById(originalPostId) as Option<Post>;
-        
+
         if (originalPostOpt.isSome) {
           const originalPost = originalPostOpt.unwrap();
           setOriginalPost(originalPost);
@@ -136,7 +139,7 @@ function ViewPostInternal (props: ViewPostProps) {
       : <>{title}</>;
   };
 
-  const renderPostCreator = (created: Change) => {
+  const renderPostCreator = (created: Change, size?: number) => {
     if (!created) return null;
     {/*Add shared post*/}
     const { account, time, block } = created;
@@ -144,6 +147,7 @@ function ViewPostInternal (props: ViewPostProps) {
       value={account}
       isShort={true}
       isPadded={false}
+      size={size}
       extraDetails={`${time} at block #${block.toNumber()}`}/>;
   };
 
@@ -164,7 +168,23 @@ function ViewPostInternal (props: ViewPostProps) {
     </>;
   };
 
-  const renderActionsModule = () => {
+  const renderActionsPanel = () => {
+    const [open, setOpen] = useState(false);
+    const close = () => setOpen(false);
+    return (
+    <>
+      <Voter struct={post} />
+      <div
+        className='ui tiny button basic'
+        onClick={() => setOpen(true)}>
+        <Icon name='share square'/>
+        Share
+      </div>
+      {open && <ShareModal postId={id} open={open} close={close} />}
+    </>);
+  };
+
+  const renderStatsPanel = () => {
     return (<>
     <div className='DfCountsPreview'>
       <MutedSpan><HashLink to={`#comments-on-post-${id}`} onClick={() => setCommentsSection(!commentsSection)}>
@@ -172,9 +192,16 @@ function ViewPostInternal (props: ViewPostProps) {
       <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)}>Upvotes: <b>{upvotes_count.toString()}</b></Link></MutedSpan>
       <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)}>Downvotes: <b>{downvotes_count.toString()}</b></Link></MutedSpan>
     </div>
-    {commentsSection && <CommentsByPost postId={post.id} post={post} />}
-    {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
     </>);
+  };
+
+  const renderRegularMiniPreview = () => {
+    return (
+    <Segment className='DfPostPreview'>
+      {renderPostCreator(created)}
+      {renderContent(post, content)}
+      {renderStatsPanel()}
+    </Segment>);
   };
 
   const renderRegularPreview = () => {
@@ -182,7 +209,10 @@ function ViewPostInternal (props: ViewPostProps) {
       <Segment className='DfPostPreview'>
       {renderPostCreator(created)}
       {renderContent(post, content)}
-      {renderActionsModule()}
+      {renderStatsPanel()}
+      {renderActionsPanel()}
+      {commentsSection && <CommentsByPost postId={post.id} post={post} />}
+      {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
       </Segment>
     </>;
   };
@@ -198,7 +228,10 @@ function ViewPostInternal (props: ViewPostProps) {
           {renderContent(originalPost, originalContent, 'shared')}
           {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         </Segment>
-        {renderActionsModule()}
+        {renderStatsPanel()}
+        {renderActionsPanel()}
+        {commentsSection && <CommentsByPost postId={post.id} post={post} />}
+        {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
       </Segment>
     </>;
   };
@@ -222,14 +255,16 @@ function ViewPostInternal (props: ViewPostProps) {
     </>;
   };
 
-  const renderSharedDetails = () =>  (<>TODO create renderSharedDetails</>);
+  const renderSharedDetails = () =>  (renderSharedPreview());
 
   if (nameOnly) {
     return renderNameOnly(content.title,id)
   } else if (isRegularPost) {
-    return preview
-      ? renderRegularPreview()
-      : renderDetails(content);
+    if (preview) {
+      return renderRegularPreview();
+    } else if (miniPreview) {
+      return renderRegularMiniPreview();
+    } else return renderDetails(content);
   } else if (isSharedPost) {
     return preview
       ? renderSharedPreview()
