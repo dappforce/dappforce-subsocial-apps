@@ -135,7 +135,7 @@ const InnerForm = (props: FormProps) => {
   };
 
   const renderButtons = () => (
-    <>
+    <div className='DfTxButton'>
       <TxButton
         type='submit'
         size='large'
@@ -161,7 +161,7 @@ const InnerForm = (props: FormProps) => {
         onClick={() => resetForm()}
         content='Reset form'
       />
-    </>
+    </div>
   );
 
   const form =
@@ -180,7 +180,7 @@ const InnerForm = (props: FormProps) => {
           </LabelledField>
         </>
         : <>
-          <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write your post here. You can use Markdown.`} />
+          <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write your comment for this post. You can use Markdown.`} />
         </>
       }
 
@@ -196,7 +196,7 @@ const InnerForm = (props: FormProps) => {
       }
     </Form>;
 
-  const sectionTitle = isRegularPost && (!struct ? `New post` : `Edit my post`);
+  const sectionTitle = isRegularPost ? (!struct ? `New post` : `Edit my post`) : '';
 
   return <>
     <Section className='EditEntityBox' title={sectionTitle}>

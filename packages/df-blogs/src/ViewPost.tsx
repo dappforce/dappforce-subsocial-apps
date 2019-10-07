@@ -26,10 +26,11 @@ const LIMIT_SUMMARY = 150;
 
 type ViewPostProps = MyAccountProps & {
   preview?: boolean,
-  miniPreview?: boolean,
   nameOnly?: boolean,
   withLink?: boolean,
   withCreatedBy?: boolean,
+  withStats?: boolean,
+  withActions?: boolean,
   id: PostId,
   postById?: Option<Post>,
   commentIds?: CommentId[]
@@ -37,7 +38,7 @@ type ViewPostProps = MyAccountProps & {
 
 type PostContent = PostData & {
   summary: string;
-}
+};
 
 function ViewPostInternal (props: ViewPostProps) {
   const { postById } = props;
@@ -48,9 +49,10 @@ function ViewPostInternal (props: ViewPostProps) {
   const {
     myAddress,
     preview = false,
-    miniPreview = false,
     nameOnly = false,
     withLink = true,
+    withActions = true,
+    withStats = true,
     id,
     withCreatedBy = true
   } = props;
@@ -172,7 +174,7 @@ function ViewPostInternal (props: ViewPostProps) {
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     return (
-    <>
+    <div className='DfActionsPanel'>
       <Voter struct={post} />
       <div
         className='ui tiny button basic'
@@ -181,7 +183,7 @@ function ViewPostInternal (props: ViewPostProps) {
         Share
       </div>
       {open && <ShareModal postId={id} open={open} close={close} />}
-    </>);
+    </div>);
   };
 
   const renderStatsPanel = () => {
@@ -195,22 +197,13 @@ function ViewPostInternal (props: ViewPostProps) {
     </>);
   };
 
-  const renderRegularMiniPreview = () => {
-    return (
-    <Segment className='DfPostPreview'>
-      {renderPostCreator(created)}
-      {renderContent(post, content)}
-      {renderStatsPanel()}
-    </Segment>);
-  };
-
   const renderRegularPreview = () => {
     return <>
       <Segment className='DfPostPreview'>
       {renderPostCreator(created)}
       {renderContent(post, content)}
-      {renderStatsPanel()}
-      {renderActionsPanel()}
+      {withStats && renderStatsPanel()}
+      {withActions && renderActionsPanel()}
       {commentsSection && <CommentsByPost postId={post.id} post={post} />}
       {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
       </Segment>
@@ -228,8 +221,8 @@ function ViewPostInternal (props: ViewPostProps) {
           {renderContent(originalPost, originalContent, 'shared')}
           {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
         </Segment>
-        {renderStatsPanel()}
-        {renderActionsPanel()}
+        {withStats && renderStatsPanel()}
+        {withActions && renderActionsPanel()}
         {commentsSection && <CommentsByPost postId={post.id} post={post} />}
         {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
       </Segment>
@@ -262,9 +255,9 @@ function ViewPostInternal (props: ViewPostProps) {
   } else if (isRegularPost) {
     if (preview) {
       return renderRegularPreview();
-    } else if (miniPreview) {
-      return renderRegularMiniPreview();
-    } else return renderDetails(content);
+    } else {
+      return renderDetails(content);
+    }
   } else if (isSharedPost) {
     return preview
       ? renderSharedPreview()

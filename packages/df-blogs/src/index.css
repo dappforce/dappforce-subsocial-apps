@@ -201,3 +201,23 @@ hr {
     width: 95%;
   }
 }
+.DfShareModal {
+  .DfSection {
+    margin-top: .5rem;
+    margin-bottom: 0;
+  }
+  .EditEntityBox {
+    width: 100%;
+    max-width: none;
+  }
+  .DfTxButton {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .ui.input>input, .ui.selection.dropdown {
+    width: 100%;
+  }
+  .ui.segment.DfPostPreview {
+    text-align: left;
+  }
+}

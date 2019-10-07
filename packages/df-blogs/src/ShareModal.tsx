@@ -30,7 +30,7 @@ const InnerShareModal = (props: Props) => {
     const saveBlog = (event: any, data: any) => {
       setBlogId(data);
     };
-    return (<div>
+    return (<div className='DfShareModal'>
       <Dropdown
         placeholder='Select blog...'
         selection
@@ -43,7 +43,7 @@ const InnerShareModal = (props: Props) => {
       <NewSharePost
         blogId={blogId}
         extention={new PostExtension({ SharedPost: new SharedPost(postId) })}
-        preview={<ViewPost id={postId} miniPreview/>}
+        preview={<ViewPost id={postId} preview withStats={false} withActions={false}/>}
       />
     </div>
     );
@@ -51,6 +51,7 @@ const InnerShareModal = (props: Props) => {
 
   return (
     <Modal
+      onClose={close}
       open={open}
       style={{ marginTop: '3rem' }}
     >
@@ -58,9 +59,6 @@ const InnerShareModal = (props: Props) => {
       <Modal.Content scrolling>
         {renderShareView()}
       </Modal.Content>
-      <Modal.Actions>
-        <Button content='Close' onClick={close} />
-      </Modal.Actions>
     </Modal>
   );
 };
