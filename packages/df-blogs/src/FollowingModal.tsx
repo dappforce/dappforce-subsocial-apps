@@ -35,6 +35,7 @@ const InnerFollowingModal = (props: Props) => {
 
   return (
     <Modal
+      onClose={close}
       open={open}
       trigger={<Button basic onClick={() => setOpen(true)}>Following ({followingCount})</Button>}
       centered={true}

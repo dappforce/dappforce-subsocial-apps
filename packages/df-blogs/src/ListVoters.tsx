@@ -72,6 +72,7 @@ const InnerModalVoters = (props: VotersProps) => {
 
   return (
     <Modal
+      onClose={close}
       open={open}
       centered={true}
       style={{ marginTop: '3rem' }}
