@@ -8,8 +8,11 @@ import { PostId, PostExtension, SharedPost, BlogId } from '@dappforce/types/blog
 import { NewSharePost } from './EditPost';
 import { ViewPost } from './ViewPost';
 import ViewBlog from './ViewBlog';
+import { Link } from 'react-router-dom';
+import { History } from 'history';
 
 type Props = MyAccountProps & {
+  history: History,
   postId: PostId,
   open: boolean,
   close: () => void,
@@ -17,15 +20,24 @@ type Props = MyAccountProps & {
 };
 
 const InnerShareModal = (props: Props) => {
+  const { open, close } = props;
 
-  const { postId, open, close, blogsIds } = props;
-
-  if (!blogsIds) return <em>Loading...</em>;
-
-  const blogs = blogsIds.map(id => ({key: id.toNumber(), text: <ViewBlog id={id} key={id} nameOnly/>, value: id.toNumber()}));
-
-  console.log(blogs);
   const renderShareView = () => {
+
+    const { postId, blogsIds, history } = props;
+
+    if (!blogsIds) return <em>Loading...</em>;
+  
+    if (blogsIds.length === 0) {
+      return (
+        <Link to='/blogs/new' className='ui button primary'>Create your firs blog</Link>
+      );
+    }
+  
+    const blogs = blogsIds.map(id => ({key: id.toNumber(), text: <ViewBlog id={id} key={id} nameOnly/>, value: id.toNumber()}));
+  
+    console.log(blogs);
+
     const [ blogId, setBlogId ] = useState(blogsIds[0]);
     const saveBlog = (event: any, data: any) => {
       setBlogId(data);
@@ -44,6 +56,7 @@ const InnerShareModal = (props: Props) => {
         blogId={blogId}
         extention={new PostExtension({ SharedPost: new SharedPost(postId) })}
         preview={<ViewPost id={postId} preview withStats={false} withActions={false}/>}
+        history={history}
       />
     </div>
     );

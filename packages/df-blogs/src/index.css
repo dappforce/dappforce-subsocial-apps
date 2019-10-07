@@ -203,6 +203,10 @@ hr {
 }
 .DfPostPreview {
   max-width: 45rem;
+  .DfRow {
+    display: flex;
+    justify-content: space-between;
+  }
   .DfCountsPreview {
     display: flex;
     justify-content: flex-end;
@@ -224,11 +228,12 @@ hr {
   }
   .ui.tiny.button.basic.DfAction {
     font-weight: bold;
-    font-size: .9rem;
+    font-size: 1rem;
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
   }
 }
+
 .DfShareModal {
   .DfSection {
     margin-top: .5rem;
@@ -248,4 +253,12 @@ hr {
   .ui.segment.DfPostPreview {
     text-align: left;
   }
+}
+
+.DfGreyLink {
+  color: rgba(34,36,38,.8) !important;
+}
+.DfGreyLink:hover {
+  color: rgba(34,36,38,.8) !important;
+  text-decoration: underline;
 }
