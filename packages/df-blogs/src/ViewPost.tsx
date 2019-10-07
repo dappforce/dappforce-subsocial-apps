@@ -175,13 +175,22 @@ function ViewPostInternal (props: ViewPostProps) {
     const close = () => setOpen(false);
     return (
     <div className='DfActionsPanel'>
-      <Voter struct={post} />
+      <div className='DfAction'><Voter struct={post} /></div>
       <div
-        className='ui tiny button basic'
-        onClick={() => setOpen(true)}>
+        className='ui tiny button basic DfAction'
+        onClick={() => setOpen(true)}
+      >
         <Icon name='share square'/>
         Share
       </div>
+      <HashLink
+        to='#'
+        className='ui tiny button basic DfAction'
+        onClick={() => setCommentsSection(!commentsSection)}
+      >
+        <Icon name='comment'/>
+        Write comment
+      </HashLink>
       {open && <ShareModal postId={id} open={open} close={close} />}
     </div>);
   };
