@@ -64,6 +64,7 @@ function ViewPostInternal (props: ViewPostProps) {
     comments_count,
     upvotes_count,
     downvotes_count,
+    shares_count,
     ipfs_hash,
     extension,
     isRegularPost,
@@ -142,32 +143,35 @@ function ViewPostInternal (props: ViewPostProps) {
   };
 
   const renderPostCreator = (created: Change, size?: number) => {
+    const renderedDropdown = renderDropDownMenu();
     if (!created) return null;
-    {/*Add shared post*/}
     const { account, time, block } = created;
-    return withCreatedBy && <AddressMiniDf
-      value={account}
-      isShort={true}
-      isPadded={false}
-      size={size}
-      extraDetails={<Link to={`/blogs/posts/${id.toString()}`} className='DfGreyLink'>{time} at block #{block.toNumber()}</Link>}
-    />;
+    return <div className='DfRow'>
+      <AddressMiniDf
+        value={account}
+        isShort={true}
+        isPadded={false}
+        size={size}
+        extraDetails={<Link to={`/blogs/posts/${id.toString()}`} className='DfGreyLink'>{time} at block #{block.toNumber()}</Link>}
+      />
+      {renderedDropdown}
+    </div>;
   };
 
   const renderContent = (post: Post, content: PostContent, consoles?: string) => {
     if (!post || !content) return null;
 
     const { title, image, summary } = content;
-    return <>
-      <h2>
-        {renderNameOnly(title, post.id, consoles)}
-      </h2>
-      {/* TODO create image*/}
-      <div style={{ margin: '1rem 0' }}>
-        <ReactMarkdown className='DfMd' source={summary} linkTarget='_blank' />
+    return <div>
+      <div className='DfPostText'>
+        <h2>
+          {renderNameOnly(title ? title : summary, post.id)}
+        </h2>
+        <div style={{ margin: '1rem 0' }}>
+          <ReactMarkdown className='DfMd' source={summary} linkTarget='_blank' />
+        </div>
       </div>
-      {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
-    </>;
+    </div>;
   };
 
   const renderActionsPanel = () => {
@@ -190,17 +194,18 @@ function ViewPostInternal (props: ViewPostProps) {
         <Icon name='share square'/>
         Share
       </div>
-      {open && <ShareModal postId={id} open={open} close={close} />}
+      {open && <ShareModal postId={isRegularPost ? id : originalPost.id} open={open} close={close} />}
     </div>);
   };
 
   const renderStatsPanel = () => {
     return (<>
     <div className='DfCountsPreview'>
-      <MutedSpan><HashLink to={`#comments-on-post-${id}`} onClick={() => setCommentsSection(!commentsSection)}>
-        Comments: <b>{comments_count.toString()}</b></HashLink></MutedSpan>
       <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)}>Upvotes: <b>{upvotes_count.toString()}</b></Link></MutedSpan>
       <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)}>Downvotes: <b>{downvotes_count.toString()}</b></Link></MutedSpan>
+      <MutedSpan><HashLink to={`#comments-on-post-${id}`} onClick={() => setCommentsSection(!commentsSection)}>
+        Comments: <b>{comments_count.toString()}</b></HashLink></MutedSpan>
+      <MutedSpan><Link to='#'>Shared: <b>{shares_count.toString()}</b></Link></MutedSpan>
     </div>
     </>);
   };
@@ -208,11 +213,13 @@ function ViewPostInternal (props: ViewPostProps) {
   const renderRegularPreview = () => {
     return <>
       <Segment className='DfPostPreview'>
-      <div className='DfRow'>
-        {renderPostCreator(created)}
-        {renderDropDownMenu()}
+      <div className='DfContent'>
+        <div className='DfInfo'>
+          {renderPostCreator(created)}
+          {renderContent(post, content)}
+        </div>
+        {content.image && <img src={content.image} className='DfPostImagePreview' /* add onError handler */ />}
       </div>
-      {renderContent(post, content)}
       {withStats && renderStatsPanel()}
       {withActions && renderActionsPanel()}
       {commentsSection && <CommentsByPost postId={post.id} post={post} />}
@@ -224,16 +231,18 @@ function ViewPostInternal (props: ViewPostProps) {
   const renderSharedPreview = () => {
     return <>
       <Segment className='DfPostPreview'>
-        <div className='DfRow'>
-          {renderPostCreator(created)}
-          {renderDropDownMenu()}
-        </div>
+        {renderPostCreator(created)}
         <div className='DfSharedSummary'>{renderNameOnly(content.summary, id)}</div>
         {/* TODO add body*/}
-        <Segment>
-          {renderPostCreator(originalPost.created)}
-          {renderContent(originalPost, originalContent, 'shared')}
-          {/* <div style={{ marginTop: '1rem' }}><ShareButtonPost postId={post.id}/></div> */}
+        <Segment className='DfPostPreview'>
+          <div className='DfContent'>
+            <div className='DfInfo'>
+              {renderPostCreator(originalPost.created)}
+              {renderContent(originalPost, originalContent)}
+            </div>
+            {originalContent.image && <img src={originalContent.image} className='DfPostImagePreview' /* add onError handler */ />}
+          </div>
+          {withStats && renderStatsPanel() /* todo params originPost */}
         </Segment>
         {withStats && renderStatsPanel()}
         {withActions && renderActionsPanel()}

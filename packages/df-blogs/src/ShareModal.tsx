@@ -9,7 +9,7 @@ import { NewSharePost } from './EditPost';
 import { ViewPost } from './ViewPost';
 import ViewBlog from './ViewBlog';
 import { Link } from 'react-router-dom';
-import { History } from 'history';
+import { browserHistory } from 'react-router';
 
 type Props = MyAccountProps & {
   history: History,
@@ -56,7 +56,7 @@ const InnerShareModal = (props: Props) => {
         blogId={blogId}
         extention={new PostExtension({ SharedPost: new SharedPost(postId) })}
         preview={<ViewPost id={postId} preview withStats={false} withActions={false}/>}
-        history={history}
+        history={browserHistory}
       />
     </div>
     );

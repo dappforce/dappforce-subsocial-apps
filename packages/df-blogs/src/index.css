@@ -201,11 +201,20 @@ hr {
     width: 95%;
   }
 }
-.DfPostPreview {
+
+.ui.segment.DfPostPreview {
+  padding: 1rem 1rem 0rem 1rem;
   max-width: 45rem;
   .DfRow {
     display: flex;
     justify-content: space-between;
+    padding-right: .5rem;
+  }
+  .DfInfo {
+    margin-right: .5rem;
+  }
+  .DfContent {
+    display: flex;
   }
   .DfCountsPreview {
     display: flex;
@@ -219,7 +228,6 @@ hr {
     display: flex;
     margin-top: 1rem;
     border-top: 1px solid rgba(34,36,38,.15);
-    border-bottom: 1px solid rgba(34,36,38,.15);
   }
   .DfAction {
     width: 32%;
@@ -231,6 +239,11 @@ hr {
     font-size: 1rem;
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
+  }
+  img.DfPostImagePreview {
+    border-radius: .2rem;
+    max-width: 16rem;
+    max-height: 12rem;
   }
 }
 
