@@ -60,11 +60,6 @@ function ViewPostInternal (props: ViewPostProps) {
   const post = postById.unwrap();
   const {
     created,
-    created: { account },
-    comments_count,
-    upvotes_count,
-    downvotes_count,
-    shares_count,
     ipfs_hash,
     extension,
     isRegularPost,
@@ -115,9 +110,11 @@ function ViewPostInternal (props: ViewPostProps) {
     }
   }, [ false ]);
 
-  const isMyStruct = myAddress === account.toString();
 
   const renderDropDownMenu = () => {
+
+    const account = isRegularPost ? post && created.account.toString() : originalPost.id && originalPost.created.account.toString(); 
+    const isMyStruct = myAddress === account;
 
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
@@ -143,7 +140,7 @@ function ViewPostInternal (props: ViewPostProps) {
   };
 
   const renderPostCreator = (created: Change, size?: number) => {
-    const renderedDropdown = renderDropDownMenu();
+    const renderedDropDownMenu = renderDropDownMenu();
     if (!created) return null;
     const { account, time, block } = created;
     return <div className='DfRow'>
@@ -154,14 +151,14 @@ function ViewPostInternal (props: ViewPostProps) {
         size={size}
         extraDetails={<Link to={`/blogs/posts/${id.toString()}`} className='DfGreyLink'>{time} at block #{block.toNumber()}</Link>}
       />
-      {renderedDropdown}
+      {renderedDropDownMenu}
     </div>;
   };
 
-  const renderContent = (post: Post, content: PostContent, consoles?: string) => {
+  const renderContent = (post: Post, content: PostContent) => {
     if (!post || !content) return null;
 
-    const { title, image, summary } = content;
+    const { title, summary } = content;
     return <div>
       <div className='DfPostText'>
         <h2>
@@ -198,11 +195,16 @@ function ViewPostInternal (props: ViewPostProps) {
     </div>);
   };
 
-  const renderStatsPanel = () => {
+  const renderStatsPanel = (post: Post) => {
+    console.log(post);
+
+    if (post.id === undefined) return null;
+
+    const { upvotes_count, downvotes_count, comments_count, shares_count } = post;
+    const counts = downvotes_count.toNumber() + upvotes_count.toNumber();
     return (<>
     <div className='DfCountsPreview'>
-      <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Upvote)}>Upvotes: <b>{upvotes_count.toString()}</b></Link></MutedSpan>
-      <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.Downvote)}>Downvotes: <b>{downvotes_count.toString()}</b></Link></MutedSpan>
+      <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.All)}>Reactions: <b>{counts}</b></Link></MutedSpan>
       <MutedSpan><HashLink to={`#comments-on-post-${id}`} onClick={() => setCommentsSection(!commentsSection)}>
         Comments: <b>{comments_count.toString()}</b></HashLink></MutedSpan>
       <MutedSpan><Link to='#'>Shared: <b>{shares_count.toString()}</b></Link></MutedSpan>
@@ -220,7 +222,7 @@ function ViewPostInternal (props: ViewPostProps) {
         </div>
         {content.image && <img src={content.image} className='DfPostImagePreview' /* add onError handler */ />}
       </div>
-      {withStats && renderStatsPanel()}
+      {withStats && renderStatsPanel(post)}
       {withActions && renderActionsPanel()}
       {commentsSection && <CommentsByPost postId={post.id} post={post} />}
       {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
@@ -242,9 +244,9 @@ function ViewPostInternal (props: ViewPostProps) {
             </div>
             {originalContent.image && <img src={originalContent.image} className='DfPostImagePreview' /* add onError handler */ />}
           </div>
-          {withStats && renderStatsPanel() /* todo params originPost */}
+          {withStats && renderStatsPanel(originalPost) /* todo params originPost */}
         </Segment>
-        {withStats && renderStatsPanel()}
+        {withStats && renderStatsPanel(post) /* todo voters %%%*/ }
         {withActions && renderActionsPanel()}
         {commentsSection && <CommentsByPost postId={post.id} post={post} />}
         {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
@@ -257,7 +259,7 @@ function ViewPostInternal (props: ViewPostProps) {
     return <>
       <h1 style={{ display: 'flex' }}>
         <span style={{ marginRight: '.5rem' }}>{title}</span>
-        {renderDropDownMenu()}
+        {renderDropDownMenu(created.account.toString())}
       </h1>
       {withCreatedBy && <CreatedBy created={post.created} />}
       <div style={{ margin: '1rem 0' }}>
