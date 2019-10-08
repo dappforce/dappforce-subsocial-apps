@@ -259,7 +259,7 @@ function ViewPostInternal (props: ViewPostProps) {
     return <>
       <h1 style={{ display: 'flex' }}>
         <span style={{ marginRight: '.5rem' }}>{title}</span>
-        {renderDropDownMenu(created.account.toString())}
+        {renderDropDownMenu()}
       </h1>
       {withCreatedBy && <CreatedBy created={post.created} />}
       <div style={{ margin: '1rem 0' }}>
