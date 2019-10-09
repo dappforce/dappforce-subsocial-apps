@@ -75,9 +75,35 @@ export const Voter = (props: VoterProps) => {
 
   const VoterRender = () => {
 
+    let colorCount = '';
+
+    const calcUpvotesPercentage = () => {
+      const upvotes = state.upvotes_count.toNumber();
+      const downvotes = state.downvotes_count.toNumber();
+      const count = upvotes + downvotes;
+  
+      const calcPercentage = () => {
+        const res = upvotes / count * 100;
+        if (res === 0) {
+          colorCount = '';
+          return '0';
+        }
+
+        return (res).toString() + '%';
+      };
+  
+      if (count === 0) {
+        return '0';
+      } else if (upvotes >= downvotes) {
+        colorCount = 'green';
+        return calcPercentage();
+      } else {
+        colorCount = 'red';
+        return calcPercentage();
+      }
+    };
+
     const orientation = isComment ? true : false;
-    const count = (state.upvotes_count.toNumber() - state.downvotes_count.toNumber()).toString();
-    const colorCount = count > '0' ? 'green' : count < '0' ? 'red' : '';
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
 
@@ -105,7 +131,7 @@ export const Voter = (props: VoterProps) => {
 
     return <><Button.Group vertical={orientation} className={`DfVoter`}>
         {renderTxButton(true)}
-        <Button content={count} variant='primary' className={`${colorCount} active`} onClick={() => setOpen(true)}/>
+        <Button content={calcUpvotesPercentage()} variant='primary' className={`${colorCount} active`} onClick={() => setOpen(true)}/>
         {renderTxButton(false)}
     </Button.Group>
   {isComment

@@ -113,7 +113,7 @@ function ViewPostInternal (props: ViewPostProps) {
 
   const renderDropDownMenu = () => {
 
-    const account = isRegularPost ? post && created.account.toString() : originalPost.id && originalPost.created.account.toString(); 
+    const account = isRegularPost ? post && created.account.toString() : originalPost.id && originalPost.created.account.toString();
     const isMyStruct = myAddress === account;
 
     const [open, setOpen] = useState(false);
@@ -140,10 +140,9 @@ function ViewPostInternal (props: ViewPostProps) {
   };
 
   const renderPostCreator = (created: Change, size?: number) => {
-    const renderedDropDownMenu = renderDropDownMenu();
     if (!created) return null;
     const { account, time, block } = created;
-    return <div className='DfRow'>
+    return <>
       <AddressMiniDf
         value={account}
         isShort={true}
@@ -151,8 +150,7 @@ function ViewPostInternal (props: ViewPostProps) {
         size={size}
         extraDetails={<Link to={`/blogs/posts/${id.toString()}`} className='DfGreyLink'>{time} at block #{block.toNumber()}</Link>}
       />
-      {renderedDropDownMenu}
-    </div>;
+    </>;
   };
 
   const renderContent = (post: Post, content: PostContent) => {
@@ -196,8 +194,6 @@ function ViewPostInternal (props: ViewPostProps) {
   };
 
   const renderStatsPanel = (post: Post) => {
-    console.log(post);
-
     if (post.id === undefined) return null;
 
     const { upvotes_count, downvotes_count, comments_count, shares_count } = post;
@@ -217,7 +213,10 @@ function ViewPostInternal (props: ViewPostProps) {
       <Segment className='DfPostPreview'>
       <div className='DfContent'>
         <div className='DfInfo'>
-          {renderPostCreator(created)}
+          <div className='DfRow'>
+            {renderPostCreator(created)}
+            {renderDropDownMenu()}
+          </div>
           {renderContent(post, content)}
         </div>
         {content.image && <img src={content.image} className='DfPostImagePreview' /* add onError handler */ />}
@@ -233,13 +232,19 @@ function ViewPostInternal (props: ViewPostProps) {
   const renderSharedPreview = () => {
     return <>
       <Segment className='DfPostPreview'>
-        {renderPostCreator(created)}
+          <div className='DfRow'>
+            {renderPostCreator(created)}
+            {renderDropDownMenu()}
+          </div>
         <div className='DfSharedSummary'>{renderNameOnly(content.summary, id)}</div>
         {/* TODO add body*/}
         <Segment className='DfPostPreview'>
           <div className='DfContent'>
             <div className='DfInfo'>
-              {renderPostCreator(originalPost.created)}
+              <div className='DfRow'>
+                {renderPostCreator(originalPost.created)}
+                {renderDropDownMenu()}
+              </div>
               {renderContent(originalPost, originalContent)}
             </div>
             {originalContent.image && <img src={originalContent.image} className='DfPostImagePreview' /* add onError handler */ />}
