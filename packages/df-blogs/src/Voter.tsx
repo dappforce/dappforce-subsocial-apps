@@ -85,14 +85,14 @@ export const Voter = (props: VoterProps) => {
       const calcPercentage = () => {
         const res = upvotes / count * 100;
         if (res === 0) {
-          colorCount = '';
-          return '0';
+          return '0%';
         }
 
         return (res).toString() + '%';
       };
   
       if (count === 0) {
+        colorCount = '';
         return '0';
       } else if (upvotes >= downvotes) {
         colorCount = 'green';

@@ -11,12 +11,11 @@ import { addJsonToIpfs, getJsonFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
-import { PostId, Post, PostData, PostUpdate, BlogId, SharedPostData, SharedPost } from '@dappforce/types/blogs';
+import { PostId, Post, PostData, PostUpdate, BlogId, PostExtension, RegularPost } from '@dappforce/types/blogs';
 import Section from '@polkadot/df-utils/Section';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { UrlHasIdProps, getNewIdFromEvent, withIdFromMyAddress } from './utils';
-import { PostExtension, RegularPost } from '@dappforce/types/blogs';
+import { UrlHasIdProps, getNewIdFromEvent } from './utils';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()

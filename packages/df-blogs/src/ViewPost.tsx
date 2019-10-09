@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import ReactMarkdown from 'react-markdown';
-import { Segment, Dropdown, Button, Icon } from 'semantic-ui-react';
+import { Segment, Dropdown, Icon } from 'semantic-ui-react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import { Option, AccountId } from '@polkadot/types';
+import { Option } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
-import { PostId, Post, CommentId, PostData, CommentData, Change, SharedPost } from '@dappforce/types/blogs';
+import { PostId, Post, CommentId, PostData, Change } from '@dappforce/types/blogs';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { UrlHasIdProps } from './utils';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
@@ -210,7 +210,7 @@ function ViewPostInternal (props: ViewPostProps) {
 
   const renderRegularPreview = () => {
     return <>
-      <Segment className='DfPostPreview'>
+      <Segment className={`DfPostPreview ${withActions && 'p-b-0'}`}>
       <div className='DfContent'>
         <div className='DfInfo'>
           <div className='DfRow'>
@@ -231,7 +231,7 @@ function ViewPostInternal (props: ViewPostProps) {
   
   const renderSharedPreview = () => {
     return <>
-      <Segment className='DfPostPreview'>
+      <Segment className={`DfPostPreview ${withActions && 'p-b-0'}`}>
           <div className='DfRow'>
             {renderPostCreator(created)}
             {renderDropDownMenu()}
@@ -260,7 +260,7 @@ function ViewPostInternal (props: ViewPostProps) {
   };
 
   const renderDetails = (content: PostContent) => {
-    const { title, body, image, summary } = content;
+    const { title, body, image } = content;
     return <>
       <h1 style={{ display: 'flex' }}>
         <span style={{ marginRight: '.5rem' }}>{title}</span>

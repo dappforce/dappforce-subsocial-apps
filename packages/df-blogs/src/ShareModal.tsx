@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { Modal, Button, Dropdown, DropdownItemProps } from 'semantic-ui-react';
+import { Modal, Dropdown } from 'semantic-ui-react';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import { PostId, PostExtension, SharedPost, BlogId } from '@dappforce/types/blogs';
 import { NewSharePost } from './EditPost';
 import { ViewPost } from './ViewPost';
 import ViewBlog from './ViewBlog';
 import { Link } from 'react-router-dom';
-import { browserHistory } from 'react-router';
+import { History } from 'history';
 
 type Props = MyAccountProps & {
   history: History,
@@ -24,7 +24,7 @@ const InnerShareModal = (props: Props) => {
 
   const renderShareView = () => {
 
-    const { postId, blogsIds, history } = props;
+    const { postId, blogsIds, history = History } = props;
 
     if (!blogsIds) return <em>Loading...</em>;
   
@@ -56,7 +56,7 @@ const InnerShareModal = (props: Props) => {
         blogId={blogId}
         extention={new PostExtension({ SharedPost: new SharedPost(postId) })}
         preview={<ViewPost id={postId} preview withStats={false} withActions={false}/>}
-        history={browserHistory}
+        history={history}
       />
     </div>
     );
