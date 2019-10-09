@@ -121,6 +121,7 @@ function Notification (props: ActivityProps) {
 
   enum Events {
     AccountFollowed = 'followed your account',
+    PostShared = 'shared yout post',
     BlogFollowed = 'followed your blog',
     BlogCreated = 'created blog',
     CommentCreated = 'commented your post',
@@ -165,6 +166,13 @@ function Notification (props: ActivityProps) {
             }
           }
           setSubject(<><HashLink to={`/blogs/posts/${postId.toString()}#comment-${comment_id}`}><ViewPost id={postId} withCreatedBy={false} nameOnly withLink={false}/></HashLink></>);
+          break;
+        }
+        case 'PostShared' : {
+          console.log('shared');
+          postId = new PostId(hexToNumber('0x' + post_id));
+          setMessage(Events.PostShared);
+          setSubject(<ViewPost id={postId} withCreatedBy={false} nameOnly/>);
           break;
         }
         case 'PostReactionCreated': {
