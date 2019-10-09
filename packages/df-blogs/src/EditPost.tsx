@@ -47,7 +47,9 @@ type OuterProps = ValidationProps & {
   extention?: PostExtension,
   struct?: Post
   json?: PostData,
-  preview?: React.ReactNode
+  preview?: React.ReactNode,
+  extButton?: React.ReactNode,
+  closeModal?: () => void 
 };
 
 type FormValues = PostData;
@@ -65,14 +67,28 @@ const InnerForm = (props: FormProps) => {
     blogId,
     struct,
     extention = new PostExtension({ RegularPost: new RegularPost() }),
+    extButton,
     values,
     preview,
     dirty,
     isValid,
     isSubmitting,
     setSubmitting,
-    resetForm
+    resetForm,
+    closeModal
   } = props;
+
+  const isRegularPost = extention.value instanceof RegularPost;
+
+  const renderResetButton = () => (
+    <Button
+      type='button'
+      size='large'
+      disabled={isSubmitting || (isRegularPost && !dirty)}
+      onClick={() => resetForm()}
+      content='Reset form'
+    />
+  );
 
   const {
     title,
@@ -80,8 +96,6 @@ const InnerForm = (props: FormProps) => {
     image,
     tags
   } = values;
-  console.log(extention.value);
-  const isRegularPost = extention.value instanceof RegularPost;
 
   const goToView = (id: PostId) => {
     if (history) {
@@ -92,8 +106,10 @@ const InnerForm = (props: FormProps) => {
   const [ ipfsHash, setIpfsCid ] = useState('');
 
   const onSubmit = (sendTx: () => void) => {
-    if (isValid) {
+    if (isValid || !isRegularPost) {
+      console.log('here1');
       const json = { title, body, image, tags };
+      console.log(json);
       addJsonToIpfs(json).then(hash => {
         setIpfsCid(hash);
         sendTx();
@@ -111,6 +127,8 @@ const InnerForm = (props: FormProps) => {
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
 
+    closeModal && closeModal();
+
     if (!history) return;
 
     const _id = id ? id : getNewIdFromEvent<PostId>(_txResult);
@@ -118,23 +136,27 @@ const InnerForm = (props: FormProps) => {
   };
 
   const buildTxParams = () => {
-    if (!isValid) return [];
+    if (isValid || !isRegularPost) {
 
-    if (!struct) {
-      return [ blogId, ipfsHash, extention ];
+      if (!struct) {
+        return [ blogId, ipfsHash, extention ];
+      } else {
+        // TODO update only dirty values.
+        const update = new PostUpdate({
+          // TODO setting new blog_id will move the post to another blog.
+          blog_id: new Option(BlogId, null),
+          ipfs_hash: new Option(Text, ipfsHash)
+        });
+        return [ struct.id, update ];
+      }
     } else {
-      // TODO update only dirty values.
-      const update = new PostUpdate({
-        // TODO setting new blog_id will move the post to another blog.
-        blog_id: new Option(BlogId, null),
-        ipfs_hash: new Option(Text, ipfsHash)
-      });
-      return [ struct.id, update ];
+      return [];
     }
   };
 
   const renderButtons = () => (
     <div className='DfTxButton'>
+      {extButton && extButton}
       <TxButton
         type='submit'
         size='large'
@@ -142,7 +164,7 @@ const InnerForm = (props: FormProps) => {
           ? `Create a post`
           : `Update a post`
         }
-        isDisabled={isRegularPost && (!dirty || isSubmitting)}
+        isDisabled={isSubmitting || (isRegularPost && !dirty)}
         params={buildTxParams()}
         tx={struct
           ? 'blogs.updatePost'
@@ -153,13 +175,7 @@ const InnerForm = (props: FormProps) => {
         txFailedCb={onTxFailed}
         txSuccessCb={onTxSuccess}
       />
-      <Button
-        type='button'
-        size='large'
-        disabled={isRegularPost && (!dirty || isSubmitting)}
-        onClick={() => resetForm()}
-        content='Reset form'
-      />
+      {!extButton && renderResetButton()}
     </div>
   );
 
@@ -179,20 +195,13 @@ const InnerForm = (props: FormProps) => {
           </LabelledField>
         </>
         : <>
-          <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write your comment for this post. You can use Markdown.`} />
+          <Field component='textarea' name='body' disabled={isSubmitting} rows={3} placeholder={`Say something about this...`} />
         </>
       }
-
-      {isRegularPost
-        ? <>
-          <LabelledField {...props}>
-            {renderButtons()}
-          </LabelledField></>
-        : <>
-          {preview}
-          {renderButtons()}
-        </>
-      }
+      {!isRegularPost && preview}
+      <LabelledField {...props}>
+        {renderButtons()}
+      </LabelledField>
     </Form>;
 
   const sectionTitle = isRegularPost ? (!struct ? `New post` : `Edit my post`) : '';

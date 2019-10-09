@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { Modal, Dropdown } from 'semantic-ui-react';
+import { Modal, Dropdown, Button } from 'semantic-ui-react';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 import { PostId, PostExtension, SharedPost, BlogId } from '@dappforce/types/blogs';
 import { NewSharePost } from './EditPost';
@@ -55,8 +55,9 @@ const InnerShareModal = (props: Props) => {
       <NewSharePost
         blogId={blogId}
         extention={new PostExtension({ SharedPost: new SharedPost(postId) })}
+        extButton={<Button content='Close' onClick={close} />}
         preview={<ViewPost id={postId} preview withStats={false} withActions={false}/>}
-        history={history}
+        closeModal={close}
       />
     </div>
     );
