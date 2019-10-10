@@ -53,6 +53,8 @@ function Component (props: Props) {
   const {
     fullname,
     avatar,
+    email,
+    personal_site,
     about,
     facebook,
     twitter,
@@ -61,6 +63,8 @@ function Component (props: Props) {
     instagram
   } = profileData;
 
+  const hasEmail = email && nonEmptyStr(email);
+  const hasPersonalSite = personal_site && nonEmptyStr(personal_site);
   const hasAvatar = avatar && nonEmptyStr(avatar);
   const hasFacebookLink = facebook && nonEmptyStr(facebook);
   const hasTwitterLink = twitter && nonEmptyStr(twitter);
@@ -109,6 +113,22 @@ function Component (props: Props) {
           <div className='about'>
             <ReactMarkdown className='DfMd' source={about} linkTarget='_blank' />
             <div className='DfSocialLinks'>
+              {hasEmail &&
+                <a
+                  href={`mailto:${email}`}
+                  target='_blank'
+                >
+                  <Icon className='mail'/>Email
+                </a>
+              }
+              {hasPersonalSite &&
+                <a
+                  href={personal_site}
+                  target='_blank'
+                >
+                  <Icon className='address card outline'/>Personal Site
+                </a>
+              }
               {hasFacebookLink &&
                 <a
                   href={facebook}
