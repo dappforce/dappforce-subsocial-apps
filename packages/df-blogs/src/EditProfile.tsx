@@ -12,11 +12,10 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
-import { ProfileData, Profile, ProfileUpdate } from '@dappforce/types/blogs';
+import { ProfileData, Profile, ProfileUpdate, SocialAccount } from '@dappforce/types/blogs';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { withIdFromMyAddress, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
-import { SocialAccount } from '@dappforce/types/blogs';
 
 // TODO get next settings from Substrate:
 const USERNAME_REGEX = /^[A-Za-z0-9_-]+$/;

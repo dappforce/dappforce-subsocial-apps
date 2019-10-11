@@ -91,7 +91,7 @@ function ViewPostInternal (props: ViewPostProps) {
     if (!ipfs_hash) return;
 
     getJsonFromIpfs<PostData>(ipfs_hash).then(json => {
-      setContent({...json, summary: makeSummary(json.body) });
+      setContent({ ...json, summary: makeSummary(json.body) });
     }).catch(err => console.log(err));
 
     if (isSharedPost) {
@@ -110,7 +110,6 @@ function ViewPostInternal (props: ViewPostProps) {
       loadSharedPost().catch(err => new Error(err));
     }
   }, [ false ]);
-
 
   const renderDropDownMenu = () => {
 
@@ -230,7 +229,7 @@ function ViewPostInternal (props: ViewPostProps) {
       </Segment>
     </>;
   };
-  
+
   const renderSharedPreview = () => {
     return <>
       <Segment className={`DfPostPreview ${withActions && 'p-b-0'}`}>
