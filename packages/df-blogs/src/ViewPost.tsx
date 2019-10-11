@@ -62,6 +62,7 @@ function ViewPostInternal (props: ViewPostProps) {
     created,
     ipfs_hash,
     extension,
+    score,
     isRegularPost,
     isSharedComment,
     isSharedPost
@@ -204,6 +205,7 @@ function ViewPostInternal (props: ViewPostProps) {
       <MutedSpan><HashLink to={`#comments-on-post-${id}`} onClick={() => setCommentsSection(!commentsSection)}>
         Comments: <b>{comments_count.toString()}</b></HashLink></MutedSpan>
       <MutedSpan><Link to='#'>Shared: <b>{shares_count.toString()}</b></Link></MutedSpan>
+      <MutedSpan>Score: <b>{score.toString()}</b></MutedSpan>
     </div>
     </>);
   };
@@ -266,6 +268,7 @@ function ViewPostInternal (props: ViewPostProps) {
         <span style={{ marginRight: '.5rem' }}>{title}</span>
         {renderDropDownMenu()}
       </h1>
+      {renderStatsPanel(post)}
       {withCreatedBy && <CreatedBy created={post.created} />}
       <div style={{ margin: '1rem 0' }}>
         {image && <img src={image} className='DfPostImage' /* add onError handler */ />}

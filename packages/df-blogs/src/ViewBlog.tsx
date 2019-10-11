@@ -18,6 +18,7 @@ import { BlogFollowersModal } from './AccountListModal';
 import { BlogHistoryModal } from './ListsEditHistory';
 import { Dropdown, Button } from 'semantic-ui-react';
 import { FollowBlogButton } from './FollowButton';
+import { MutedSpan } from '@polkadot/df-utils/MutedText';
 
 type Props = MyAccountProps & {
   preview?: boolean,
@@ -44,6 +45,7 @@ function Component (props: Props) {
   const blog = blogById.unwrap();
   const {
     id,
+    score,
     created: { account },
     ipfs_hash,
     followers_count
@@ -97,6 +99,7 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='description'>
+            <MutedSpan>Score: <b>{score.toString()}</b></MutedSpan>
             <ReactMarkdown className='DfMd' source={desc} linkTarget='_blank' />
           </div>
         </div>

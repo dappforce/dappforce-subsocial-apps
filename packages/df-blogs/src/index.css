@@ -205,6 +205,14 @@ hr {
   padding: 1rem 1rem 0rem 1rem;
 }
 
+.DfCountsPreview {
+  margin-top: 0;
+  a, span {
+    color: rgba(34,36,38,.8) !important;
+    font-size: .9rem;
+  }
+}
+
 .ui.segment.DfPostPreview {
   max-width: 45rem;
   .DfRow {
@@ -222,14 +230,15 @@ hr {
   .DfCountsPreview {
     display: flex;
     justify-content: flex-end;
-    a {
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+    a, span {
       color: rgba(34,36,38,.8) !important;
       font-size: .9rem;
     }
   }
   .DfActionsPanel {
     display: flex;
-    margin-top: 1rem;
     border-top: 1px solid rgba(34,36,38,.15);
   }
   .DfAction {

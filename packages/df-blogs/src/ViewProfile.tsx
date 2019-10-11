@@ -16,6 +16,7 @@ import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
 import { AccountFollowersModal, AccountFollowingModal } from './AccountListModal';
 import { ProfileHistoryModal } from './ListsEditHistory';
+import { MutedSpan } from '@polkadot/df-utils/MutedText';
 
 type Props = {
   preview?: boolean,
@@ -38,7 +39,7 @@ function Component (props: Props) {
   if (profileOpt.isNone) return <em>Profile is not created yet.</em>; // TODO show social account info even if profile is not created
   const profile = profileOpt.unwrap() as Profile;
 
-  const { followers_count, following_accounts_count } = socialAccount;
+  const { followers_count, following_accounts_count, reputation } = socialAccount;
 
   const {
     id,
@@ -109,6 +110,7 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='about'>
+            <MutedSpan className='DfScore'>Reputation: {reputation.toString()}</MutedSpan>
             <ReactMarkdown className='DfMd' source={about} linkTarget='_blank' />
             <div className='DfSocialLinks'>
               {hasFacebookLink &&

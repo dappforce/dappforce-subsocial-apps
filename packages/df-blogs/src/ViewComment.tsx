@@ -96,7 +96,7 @@ export function ViewComment (props: ViewCommentProps) {
   const { state: { address: myAddress } } = useMyAccount();
   const [parentComments, childrenComments] = partition(commentsWithParentId, (e) => e.parent_id.eq(comment.id));
 
-  const { id, created: { account, block, time } } = comment;
+  const { id, score, created: { account, block, time } } = comment;
   const [ struct , setStruct ] = useState(comment);
   const [ content , setContent ] = useState({} as CommentData);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -165,7 +165,7 @@ export function ViewComment (props: ViewCommentProps) {
               isShort={true}
               isPadded={false}
               size={28}
-              extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}`}
+              extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}, comment score: ${score}` }
             />
             {renderDropDownMenu()}
           </SuiComment.Metadata>
