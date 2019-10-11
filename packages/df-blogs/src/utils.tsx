@@ -121,7 +121,7 @@ export function withSocialAccount<P extends LoadSocialAccount> (Component: React
     const profile = profileOpt.unwrap() as Profile;
 
     const ipfsHash = profile.ipfs_hash;
-    const [ profileData , setProfileData ] = useState({} as ProfileData);
+    const [ profileData , setProfileData ] = useState(undefined as (ProfileData | undefined));
 
     useEffect(() => {
       if (!ipfsHash) return;
@@ -129,6 +129,8 @@ export function withSocialAccount<P extends LoadSocialAccount> (Component: React
         setProfileData(json);
       }).catch(err => console.log(err));
     }, [ false ]);
+
+    if (requireProfile && !profileData) return <em>Loading profile data...</em>;
 
     return <Component {...props} socialAccount={socialAccount} profile={profile} profileData={profileData}/>;
   };

@@ -72,7 +72,7 @@ type ValidationProps = {
 
 export type OuterProps = ValidationProps & {
   history?: History,
-  id?: AccountId,
+  myAddress?: AccountId,
   profile?: Profile,
   profileData?: ProfileData,
   socialAccount?: SocialAccount,
@@ -267,6 +267,7 @@ const EditForm = withFormik<OuterProps, FormValues>({
   // Transform outer props into form values
   mapPropsToValues: (props): FormValues => {
     const { profile, profileData } = props;
+    console.log(profile, profileData);
     if (profile && profileData) {
       const username = profile.username.toString();
       return {
@@ -294,7 +295,6 @@ const EditForm = withFormik<OuterProps, FormValues>({
     // do submitting things
   }
 })(InnerForm);
-
 
 export const NewProfile = withMulti(
   EditForm,
