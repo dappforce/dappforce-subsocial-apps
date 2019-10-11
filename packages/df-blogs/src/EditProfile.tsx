@@ -16,6 +16,8 @@ import { ProfileData, Profile, ProfileUpdate, SocialAccount } from '@dappforce/t
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { withIdFromMyAddress, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
+import { SocialAccount } from '@dappforce/types/blogs';
+import { withMyAccount } from '@polkadot/df-utils/MyAccount';
 
 // TODO get next settings from Substrate:
 const USERNAME_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -71,7 +73,7 @@ type ValidationProps = {
 
 export type OuterProps = ValidationProps & {
   history?: History,
-  id?: AccountId,
+  myAddress?: string,
   struct?: Profile,
   json?: ProfileData
 };
@@ -88,7 +90,7 @@ const LabelledText = DfForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
-    id,
+    myAddress,
     history,
     struct,
     values,
@@ -111,9 +113,9 @@ const InnerForm = (props: FormProps) => {
     instagram
   } = values;
 
-  const goToView = (id: AccountId) => {
-    if (history && id) {
-      history.push(`/blogs/accounts/${id.toString()}`);
+  const goToView = () => {
+    if (history && myAddress) {
+      history.push(`/blogs/accounts/${myAddress}`);
     }
   };
 
@@ -141,11 +143,7 @@ const InnerForm = (props: FormProps) => {
 
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
-
-    if (!history) return;
-
-    const _id = id ? id : getNewIdFromEvent<AccountId>(_txResult);
-    _id && goToView(_id);
+    goToView();
   };
 
   const buildTxParams = () => {
@@ -310,26 +308,33 @@ function LoadStruct (props: LoadStructProps) {
   const { socialAccountOpt } = props;
   const [ json, setJson ] = useState(undefined as StructJson);
   const [ struct, setStruct ] = useState(undefined as Struct);
+  const [ trigger, setTrigger ] = useState(false);
   const jsonIsNone = json === undefined;
 
   const loadingProfile = <em>Loading profile...</em>;
-  // const noProfile = <em>No profile for this account</em>;
+
+  const toggleTrigger = () => {
+    json === undefined && setTrigger(!trigger);
+    return;
+  };
 
   useEffect(() => {
-    if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return;
+    if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return toggleTrigger();
 
     const socialAccount = socialAccountOpt.unwrap();
     const profileOpt = socialAccount.profile;
-    if (profileOpt.isNone) return;
+    if (profileOpt.isNone) return toggleTrigger();
 
     setStruct(profileOpt.unwrap() as Profile);
 
-    if (struct === undefined) return;
+    if (struct === undefined) return toggleTrigger();
 
+    console.log('Loading profile JSON from IPFS');
     getJsonFromIpfs<ProfileData>(struct.ipfs_hash).then(json => {
       setJson(json);
     }).catch(err => console.log(err));
-  }); // TODO add guard for loading from ipfs
+
+  }, [ trigger ]);
 
   if (!myAddress || !socialAccountOpt || jsonIsNone) {
     return loadingProfile;
@@ -343,14 +348,15 @@ function LoadStruct (props: LoadStructProps) {
 }
 
 export const NewProfile = withMulti(
-  EditForm
+  EditForm,
+  withMyAccount
 );
 
 export const EditProfile = withMulti(
   LoadStruct,
-  withIdFromMyAddress,
+  withMyAccount,
   withCalls<OuterProps>(
     queryBlogsToProp('socialAccountById',
-      { paramName: 'id', propName: 'socialAccountOpt' })
+      { paramName: 'myAddress', propName: 'socialAccountOpt' })
   )
 );

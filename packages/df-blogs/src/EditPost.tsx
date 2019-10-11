@@ -275,26 +275,33 @@ type LoadStructProps = OuterProps & {
 type StructJson = PostData | undefined;
 type Struct = Post | undefined;
 
-function LoadStruct (Component: React.ComponentType<OuterProps>) {
-  return function (props: LoadStructProps) {
-    const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
-    const { structOpt } = props;
-    const [ json, setJson ] = useState(undefined as StructJson);
-    const [ struct, setStruct ] = useState(undefined as Struct);
-    const jsonIsNone = json === undefined;
+function LoadStruct (props: LoadStructProps) {
+  const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
+  const { structOpt } = props;
+  const [ json, setJson ] = useState(undefined as StructJson);
+  const [ struct, setStruct ] = useState(undefined as Struct);
+  const [ trigger, setTrigger ] = useState(false);
+  const jsonIsNone = json === undefined;
 
-    useEffect(() => {
+  const toggleTrigger = () => {
+    json === undefined && setTrigger(!trigger);
+    return;
+  };
 
-      if (!myAddress || !structOpt || structOpt.isNone) return;
+  useEffect(() => {
+
+    if (!myAddress || !structOpt || structOpt.isNone) return toggleTrigger();;
 
       setStruct(structOpt.unwrap());
 
-      if (struct === undefined) return;
+    if (struct === undefined) return toggleTrigger();;
 
-      getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
-        setJson(json);
-      }).catch(err => console.log(err));
-    }); // TODO add guard for loading from ipfs
+    console.log('Loading post JSON from IPFS');
+
+    getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
+      setJson(json);
+    }).catch(err => console.log(err));
+  }, [ trigger ]);
 
     if (!myAddress || !structOpt || jsonIsNone) {
       return <em>Loading post...</em>;

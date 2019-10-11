@@ -103,7 +103,7 @@ const CommentFromHistory = (props: PropsCommentFromHistory) => {
       setContent(data);
     };
     loadData().catch(err => new Error(err));
-  });
+  }, [ ipfs_hash ]);
 
   return (<div style={{ textAlign: 'left', margin: '1rem' }}>
     <SuiComment>

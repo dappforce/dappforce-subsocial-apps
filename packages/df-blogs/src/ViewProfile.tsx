@@ -87,7 +87,7 @@ function Component (props: Props) {
 
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
-        {<Link className='item' to={`/blogs/accounts/${id.toString()}/edit`}>Edit</Link>}
+        {<Link className='item' to={`/blogs/accounts/edit`}>Edit</Link>}
         <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
         {open && <ProfileHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
