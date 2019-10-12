@@ -5,7 +5,6 @@ import { AccountId, AccountIndex, Address, Option } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { SubmittableResult } from '@polkadot/api';
 import { CommentId, PostId, BlogId, Profile, ProfileData } from './types';
-import { OuterProps as PropsWithEditProfile } from './EditProfile';
 import { getJsonFromIpfs } from './OffchainUtils';
 import { SocialAccount } from '@dappforce/types/blogs';
 import BN from 'bn.js';
@@ -80,7 +79,7 @@ export type UrlHasAddressProps = {
 type LoadProps = {
   history?: History,
   id: AccountId
-}
+};
 
 export function withIdFromMyAddress (Component: React.ComponentType<LoadProps>) {
   return function (props: UrlHasAddressProps) {

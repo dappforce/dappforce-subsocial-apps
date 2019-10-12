@@ -266,7 +266,7 @@ function LoadStruct (props: LoadStructProps) {
 
   useEffect(() => {
 
-    if (!myAddress || !structOpt || structOpt.isNone) return toggleTrigger();;
+    if (!myAddress || !structOpt || structOpt.isNone) return toggleTrigger();
 
     setStruct(structOpt.unwrap());
 
