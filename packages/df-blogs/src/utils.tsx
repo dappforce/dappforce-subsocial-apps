@@ -10,21 +10,19 @@ import { SocialAccount } from '@dappforce/types/blogs';
 import BN from 'bn.js';
 
 type AuthorPreviewProps = {
-  address: AccountId | AccountIndex | Address | string
+  address: AccountId | AccountIndex | Address | string;
 };
 
 // TODO show member instead of address.
 export function AuthorPreview ({ address }: AuthorPreviewProps) {
-  return (
-    <AddressMini value={address} isShort={false} isPadded={false} withBalance={true} withName={true} size={36} />
-  );
+  return <AddressMini value={address} isShort={false} isPadded={false} withBalance={true} withName={true} size={36} />;
 }
 
 type PaginationProps = {
-  currentPage?: number,
-  totalItems: number,
-  itemsPerPage?: number,
-  onPageChange: (activePage?: string | number) => void
+  currentPage?: number;
+  totalItems: number;
+  itemsPerPage?: number;
+  onPageChange: (activePage?: string | number) => void;
 };
 
 export const Pagination = (p: PaginationProps) => {
@@ -42,15 +40,17 @@ export const Pagination = (p: PaginationProps) => {
   );
 };
 
-export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId>
-  (_txResult: SubmittableResult): IdType | undefined {
-
+export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId> (
+  _txResult: SubmittableResult
+): IdType | undefined {
   let id: IdType | undefined;
 
   _txResult.events.find(event => {
-    const { event: { data, method } } = event;
+    const {
+      event: { data, method }
+    } = event;
     if (method.indexOf(`Created`) >= 0) {
-      const [/* owner */, newId ] = data.toArray();
+      const [, /* owner */ newId] = data.toArray();
       id = newId as IdType;
       return true;
     }
@@ -63,29 +63,33 @@ export function getNewIdFromEvent<IdType extends BlogId | PostId | CommentId>
 export type UrlHasIdProps = {
   match: {
     params: {
-      id: string
-    }
-  }
+      id: string;
+    };
+  };
 };
 
 export type UrlHasAddressProps = {
   match: {
     params: {
-      address: string
-    }
-  }
+      address: string;
+    };
+  };
 };
 
 type LoadProps = {
-  history?: History,
-  id: AccountId
+  history?: History;
+  id: AccountId;
 };
 
 export function withIdFromMyAddress (Component: React.ComponentType<LoadProps>) {
   return function (props: UrlHasAddressProps) {
-    const { match: { params: { address } } } = props;
+    const {
+      match: {
+        params: { address }
+      }
+    } = props;
     try {
-      return <Component id={new AccountId(address)} {...props}/>;
+      return <Component id={new AccountId(address)} {...props} />;
     } catch (err) {
       return <em>Invalid address: {address}</em>;
     }
@@ -93,14 +97,14 @@ export function withIdFromMyAddress (Component: React.ComponentType<LoadProps>) 
 }
 
 type PropsWithSocialAccount = {
-  profile?: Profile,
-  profileData?: ProfileData,
-  socialAccount?: SocialAccount,
-  requireProfile?: boolean
+  profile?: Profile;
+  profileData?: ProfileData;
+  socialAccount?: SocialAccount;
+  requireProfile?: boolean;
 };
 
 type LoadSocialAccount = PropsWithSocialAccount & {
-  socialAccountOpt?: Option<SocialAccount>
+  socialAccountOpt?: Option<SocialAccount>;
 };
 
 export function withSocialAccount<P extends LoadSocialAccount> (Component: React.ComponentType<P>) {
@@ -120,30 +124,36 @@ export function withSocialAccount<P extends LoadSocialAccount> (Component: React
     const profile = profileOpt.unwrap() as Profile;
 
     const ipfsHash = profile.ipfs_hash;
-    const [ profileData , setProfileData ] = useState(undefined as (ProfileData | undefined));
+    const [profileData, setProfileData] = useState(undefined as (ProfileData | undefined));
 
     useEffect(() => {
       if (!ipfsHash) return;
-      getJsonFromIpfs<ProfileData>(ipfsHash).then(json => {
-        setProfileData(json);
-      }).catch(err => console.log(err));
-    }, [ false ]);
+      getJsonFromIpfs<ProfileData>(ipfsHash)
+        .then(json => {
+          setProfileData(json);
+        })
+        .catch(err => console.log(err));
+    }, [false]);
 
     if (requireProfile && !profileData) return <em>Loading profile data...</em>;
 
-    return <Component {...props} socialAccount={socialAccount} profile={profile} profileData={profileData}/>;
+    return <Component {...props} socialAccount={socialAccount} profile={profile} profileData={profileData} />;
   };
 }
 
 export function withRequireProfile<P extends LoadSocialAccount> (Component: React.ComponentType<P>) {
   return function (props: P) {
-    return <Component {...props} requireProfile/>;
+    return <Component {...props} requireProfile />;
   };
 }
 
 export function pluralizeText (count: number | BN, singularText: string, pluralText?: string) {
   count = typeof count !== 'number' ? count.toNumber() : count;
-  const plural = () => !pluralText ? singularText + 's' : pluralText;
+  const plural = () => (!pluralText ? singularText + 's' : pluralText);
   const text = count === 1 ? singularText : plural();
-  return <><b>{count}</b> {text}</>;
+  return (
+    <>
+      <b>{count}</b> {text}
+    </>
+  );
 }

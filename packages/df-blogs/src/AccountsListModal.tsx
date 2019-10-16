@@ -16,7 +16,7 @@ type Props = {
 
 const InnerAccountsListModal = (props: Props) => {
 
-  const { accounts, accountsCount = 0, open, close, title } = props;
+  const { accounts, open, close, title } = props;
   console.log(accounts);
 
   const renderAccounts = () => {

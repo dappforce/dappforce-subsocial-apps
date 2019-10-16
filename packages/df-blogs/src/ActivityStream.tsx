@@ -9,10 +9,10 @@ import { api, withMulti } from '@polkadot/ui-api';
 import ViewBlog from './ViewBlog';
 import moment from 'moment-timezone';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
-import ActivityStreamItem from './ActivityStreamItem';
 import { getNewsFeed, getNotifications, LIMIT } from './OffchainUtils';
 import { HashLink } from 'react-router-hash-link';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
 
 type ActivityProps = {
   activity: Activity;

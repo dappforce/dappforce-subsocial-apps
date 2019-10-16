@@ -8,14 +8,12 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
 import { SocialAccount, ProfileData, Profile } from './types';
-import { withIdFromMyAddress, withSocialAccount, withRequireProfile, pluralizeText } from './utils';
+import { withIdFromMyAddress, withSocialAccount, pluralizeText } from './utils';
 import { Dropdown, Icon } from 'semantic-ui-react';
-import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { FollowAccountButton } from './FollowButton';
 import { AccountFollowersModal, AccountFollowingModal } from './AccountsListModal';
 import { ProfileHistoryModal } from './ListsEditHistory';
 import TxButton from '@polkadot/df-utils/TxButton';
-import { toShortAddress } from '@polkadot/ui-app/util';
 
 export type Props = {
   preview?: boolean,
