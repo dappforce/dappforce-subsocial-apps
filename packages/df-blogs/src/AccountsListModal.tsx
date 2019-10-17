@@ -38,6 +38,7 @@ const InnerAccountsListModal = (props: Props) => {
 
   return (
     <Modal
+      onClose={close}
       open={open}
       centered={true}
       style={{ marginTop: '3rem' }}

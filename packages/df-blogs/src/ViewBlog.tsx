@@ -9,7 +9,7 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
-import { BlogId, Blog, PostId, BlogData } from './types';
+import { BlogId, Blog, PostId, BlogData } from '@dappforce/types/blogs';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import Section from '@polkadot/df-utils/Section';
 import { ViewPost } from './ViewPost';
@@ -50,6 +50,7 @@ function Component (props: Props) {
   const blog = blogById.unwrap();
   const {
     id,
+    score,
     created: { account },
     ipfs_hash,
     followers_count
@@ -104,7 +105,8 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='description'>
-          <ReactMarkdown className='DfMd' source={desc} linkTarget='_blank' />
+            <MutedSpan>Score: <b>{score.toString()}</b></MutedSpan>
+            <ReactMarkdown className='DfMd' source={desc} linkTarget='_blank' />
           </div>
         </div>
         {withFollowButton && <FollowBlogButton blogId={id} />}

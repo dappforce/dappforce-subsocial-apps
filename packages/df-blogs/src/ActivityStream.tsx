@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Section from '@polkadot/df-utils/Section';
 import { hexToNumber } from '@polkadot/util';
-import { PostId, CommentId, OptionComment, Comment, BlogId, Activity } from './types';
+import { PostId, CommentId, OptionComment, Comment, BlogId, Activity } from '@dappforce/types/blogs';
 import { ViewPost } from './ViewPost';
 import { Segment } from 'semantic-ui-react';
 import { api, withMulti } from '@polkadot/ui-api';
@@ -24,10 +24,12 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
 
   const [ items, setItems ] = useState([] as Activity[]);
   const [ offset, setOffset ] = useState(0);
+  const [ hasMore, setHasMore ] = useState(true);
 
   const getNewsArray = async () => {
     const data = await getNewsFeed(myAddress, offset, LIMIT);
-    setItems(data);
+    if (data.length < LIMIT) setHasMore(false);
+    setMyFeeds(myFeeds.concat(data));
     setOffset(offset + LIMIT);
   };
 
@@ -41,21 +43,19 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
   const NewsFeedArray = items.map((item, id) =>
     <ViewActivity key={id} activity={item}/>);
   return (
-  <Section title={`My Feed (${totalCount})`}>{
-    <div id='newsFeedContainer' className='ui huge relaxed middle aligned divided list ProfilePreviews'>
-      {totalCount === 0
-      ? <em>News is not yet</em>
-      :
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={getNewsArray}
-        hasMore={true}
-        loader={<h4>Loading...</h4>}
-        scrollableTarget='newsFeedContainer'
-      >
-        {NewsFeedArray}
-      </InfiniteScroll>}
-    </div>
+  <Section title={`News Feed (${totalCount})`}>{
+    totalCount === 0
+    ? <em>News is not yet</em>
+    :
+    <InfiniteScroll
+      dataLength={totalCount}
+      next={getNewsArray}
+      hasMore={hasMore}
+      endMessage={<em>End</em>}
+      loader={<h4>Loading...</h4>}
+    >
+      {NewsFeedArray}
+    </InfiniteScroll>
   }</Section>
   );
 };
@@ -64,13 +64,14 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   const { myAddress } = props;
   if (!myAddress) return <em>Opps...Incorect Account</em>;
 
-  const [ items, setItems ] = useState([] as Activity[]);
-
+  const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
+  const [ hasMore, setHasMore ] = useState(true);
   const [ offset, setOffset ] = useState(0);
 
   const getNotificationsArray = async () => {
     const data = await getNotifications(myAddress, offset, LIMIT);
-    setItems(data);
+    if (data.length < LIMIT) setHasMore(false);
+    setMyFeeds(myFeeds.concat(data));
     setOffset(offset + LIMIT);
   };
 
@@ -84,21 +85,19 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   const NotificationsArray = items.map((item, id) =>
     <Notification key={id} activity={item}/>);
   return (
-  <Section title={`Notifications (${totalCount})`}>{
-    <div id='notificationsContainer' className='ui huge relaxed middle aligned divided list ProfilePreviews'>
-      {totalCount === 0
-      ? <em>News is not yet</em>
-      :
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={getNotificationsArray}
-        hasMore={true}
-        loader={<h4>Loading...</h4>}
-        scrollableTarget='newsFeedContainer'
-      >
-        {NotificationsArray}
-      </InfiniteScroll>}
-    </div>
+  <Section title={`Notifications (${totalCount})`}>
+    {totalCount === 0
+    ? <em>News is not yet</em>
+    :
+    <InfiniteScroll
+      dataLength={totalCount}
+      next={getNotificationsArray}
+      hasMore={hasMore}
+      endMessage={<em>End</em>}
+      loader={<h4>Loading...</h4>}
+    >
+      {NotificationsArray}
+    </InfiniteScroll>
   }</Section>
   );
 };
@@ -121,6 +120,7 @@ function Notification (props: ActivityProps) {
 
   enum Events {
     AccountFollowed = 'followed your account',
+    PostShared = 'shared yout post',
     BlogFollowed = 'followed your blog',
     BlogCreated = 'created blog',
     CommentCreated = 'commented your post',
@@ -165,6 +165,13 @@ function Notification (props: ActivityProps) {
             }
           }
           setSubject(<><HashLink to={`/blogs/posts/${postId.toString()}#comment-${comment_id}`}><ViewPost id={postId} withCreatedBy={false} nameOnly withLink={false}/></HashLink></>);
+          break;
+        }
+        case 'PostShared' : {
+          console.log('shared');
+          postId = new PostId(hexToNumber('0x' + post_id));
+          setMessage(Events.PostShared);
+          setSubject(<ViewPost id={postId} withCreatedBy={false} nameOnly/>);
           break;
         }
         case 'PostReactionCreated': {

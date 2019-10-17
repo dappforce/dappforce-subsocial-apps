@@ -13,7 +13,7 @@ import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { PostId, CommentId, Comment, CommentUpdate, CommentData } from './types';
+import { PostId, CommentId, Comment, CommentUpdate, CommentData } from '@dappforce/types/blogs';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
 
@@ -126,7 +126,7 @@ const InnerForm = (props: FormProps) => {
 
   const form = () => (
     <Form className='ui form DfForm EditEntityForm'>
-      <LabelledField name='body' {...props}>
+      <LabelledField name='body' {...props} >
         <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write a comment...`} style={{ minWidth: '40rem', marginTop: '1rem' }} autoFocus={autoFocus}/>
       </LabelledField>
 

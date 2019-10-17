@@ -4,7 +4,7 @@ import { Table } from 'semantic-ui-react';
 import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
 import { formatNumber } from '@polkadot/util';
 
-import { Change } from './types';
+import { Change } from '@dappforce/types/blogs';
 
 type CreatedByProps = {
   created: Change,

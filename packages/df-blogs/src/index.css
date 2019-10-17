@@ -174,3 +174,101 @@ hr {
 .ui.attached:not(.message)+.ui.attached.segment:not(.top){
   border: none;
 }
+
+.DfPostPreview {
+  h2 {
+    margin-top: 1rem; 
+  }
+  .DfSharedSummary {
+    margin-left: 3rem;
+    margin-top: .5rem;
+    font-size: 1.2rem;
+    width: 95%;
+  }
+}
+.ui.segment.DfPostPreview.p-b-0 {
+  padding: 1rem 1rem 0rem 1rem;
+}
+
+.DfCountsPreview {
+  margin-top: 0;
+  a, span {
+    color: rgba(34,36,38,.8) !important;
+    font-size: .9rem;
+  }
+}
+
+.ui.segment.DfPostPreview {
+  max-width: 45rem;
+  .DfRow {
+    display: flex;
+    justify-content: space-between;
+    padding-right: .5rem;
+  }
+  .DfInfo {
+    margin-right: .5rem;
+  }
+  .DfContent {
+    display: flex;
+    justify-content: space-between;
+  }
+  .DfCountsPreview {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+    a, span {
+      color: rgba(34,36,38,.8) !important;
+      font-size: .9rem;
+    }
+  }
+  .DfActionsPanel {
+    display: flex;
+    border-top: 1px solid rgba(34,36,38,.15);
+  }
+  .DfAction {
+    width: 32%;
+    display: flex;
+    justify-content: center;
+  }
+  .ui.tiny.button.basic.DfAction {
+    font-weight: bold;
+    font-size: 1rem;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+  }
+  img.DfPostImagePreview {
+    border-radius: .2rem;
+    max-width: 16rem;
+    max-height: 12rem;
+  }
+}
+
+.DfShareModal {
+  .DfSection {
+    margin-top: .5rem;
+    margin-bottom: 0;
+  }
+  .EditEntityBox {
+    width: 100%;
+    max-width: none;
+  }
+  .DfTxButton {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .ui.input>input, .ui.selection.dropdown {
+    width: 100%;
+  }
+  .ui.segment.DfPostPreview {
+    text-align: left;
+  }
+}
+
+.DfGreyLink {
+  color: rgba(34,36,38,.8) !important;
+}
+.DfGreyLink:hover {
+  color: rgba(34,36,38,.8) !important;
+  text-decoration: underline;
+}

@@ -5,7 +5,7 @@ import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Modal, Button, Tab } from 'semantic-ui-react';
 import { Option } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
-import { ReactionId, Reaction, CommentId, PostId } from './types';
+import { ReactionId, Reaction, CommentId, PostId } from '@dappforce/types/blogs';
 import { api } from '@polkadot/ui-api/Api';
 
 type VotersProps = {
@@ -80,6 +80,7 @@ const InnerModalVoters = (props: VotersProps) => {
 
   return (
     <Modal
+      onClose={close}
       open={open}
       centered={true}
       style={{ marginTop: '3rem' }}

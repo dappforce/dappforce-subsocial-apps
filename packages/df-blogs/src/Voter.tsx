@@ -7,7 +7,7 @@ import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { CommentVoters, PostVoters } from './ListVoters';
-import { Post, Reaction, CommentId, PostId, ReactionKind, Comment } from './types';
+import { Post, Reaction, CommentId, PostId, ReactionKind, Comment } from '@dappforce/types/blogs';
 
 type VoterValue = {
   struct: Comment | Post;
@@ -74,8 +74,35 @@ export const Voter = (props: VoterProps) => {
 
   const VoterRender = () => {
 
-    const count = (state.upvotes_count.toNumber() - state.downvotes_count.toNumber()).toString();
-    const colorCount = count > '0' ? 'green' : count < '0' ? 'red' : '';
+    let colorCount = '';
+
+    const calcUpvotesPercentage = () => {
+      const upvotes = state.upvotes_count.toNumber();
+      const downvotes = state.downvotes_count.toNumber();
+      const count = upvotes + downvotes;
+  
+      const calcPercentage = () => {
+        const res = upvotes / count * 100;
+        if (res === 0) {
+          return '0%';
+        }
+
+        return (res).toString() + '%';
+      };
+  
+      if (count === 0) {
+        colorCount = '';
+        return '0';
+      } else if (upvotes >= downvotes) {
+        colorCount = 'green';
+        return calcPercentage();
+      } else {
+        colorCount = 'red';
+        return calcPercentage();
+      }
+    };
+
+    const orientation = isComment ? true : false;
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
 
@@ -104,7 +131,7 @@ export const Voter = (props: VoterProps) => {
     return <>
       <Button.Group vertical={isComment} className={`DfVoter`}>
         {renderTxButton(true)}
-        <Button content={count} variant='primary' className={`${colorCount} active`} onClick={() => setOpen(true)}/>
+        <Button content={calcUpvotesPercentage()} variant='primary' className={`${colorCount} active`} onClick={() => setOpen(true)}/>
         {renderTxButton(false)}
       </Button.Group>
       {isComment

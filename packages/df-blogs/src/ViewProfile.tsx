@@ -111,6 +111,7 @@ function Component (props: Props) {
           </div>
           {renderCreateProfileButton}
           <div className='about'>
+            <MutedSpan className='DfScore'>Reputation: {reputation.toString()}</MutedSpan>
             <ReactMarkdown className='DfMd' source={about} linkTarget='_blank' />
             <div className='DfSocialLinks'>
               {hasEmail &&

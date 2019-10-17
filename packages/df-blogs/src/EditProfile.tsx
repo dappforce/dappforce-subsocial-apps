@@ -4,7 +4,7 @@ import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
 
-import { Option, Text, AccountId } from '@polkadot/types';
+import { Option, Text } from '@polkadot/types';
 import Section from '@polkadot/df-utils/Section';
 import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
