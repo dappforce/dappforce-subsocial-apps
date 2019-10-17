@@ -39,6 +39,8 @@ export type Props = MyAccountProps & BareProps & {
   withAddress?: boolean,
   withBalance?: boolean,
   withName?: boolean,
+  withProfilePreview?: boolean,
+  withoutCounters?: boolean,
   withFollowButton?: boolean,
   optionalProfile: boolean,
   date: string,
@@ -63,6 +65,8 @@ function AddressMini (props: Props) {
     profile = {} as Profile,
     profileData = {} as ProfileData,
     withFollowButton,
+    withProfilePreview,
+    withoutCounters,
     asActivity = false,
     date,
     event,
@@ -157,6 +161,10 @@ function AddressMini (props: Props) {
     </div>
   );
 
+  if (withProfilePreview) {
+    return renderProfilePreview();
+  }
+
   return renderAutorPreview();
 
   function renderPreviewForAddress () {
@@ -167,7 +175,8 @@ function AddressMini (props: Props) {
   }
 
   function renderPreviewForActivity () {
-    return <><div>
+    return <>
+    <div>
       {renderCount()}
       <div className='DfActivityStreamItem-details event'>
         {event}
@@ -199,10 +208,11 @@ function AddressMini (props: Props) {
       <div className='DfPopup-about'>
         <ReactMarkdown source={summary} linkTarget='_blank' />
       </div>
-      <div className='DfPopup-links'>
+      {!withoutCounters && <div className='DfPopup-links'>
         <Link to='#' onClick={openFollowersModal} className={followers ? '' : 'disable'}>{pluralizeText(followers, 'Follower')}</Link>
         <Link to='#' onClick={openFollowingModal} className={following ? '' : 'disable'}><b>{following}</b> Following</Link>
       </div>
+      }
     </div>;
   }
 
@@ -213,10 +223,10 @@ function AddressMini (props: Props) {
     }
 
     return (
-      <div className='ui--AddressMini-address'>
+      <Link to={`/blogs/accounts/${address}`} className='ui--AddressMini-address'>
         <b>{fullname || toShortAddress(address)}</b>
         <div className='DfPopup-username'>{username}</div>
-      </div>
+      </Link>
     );
   }
 
@@ -227,9 +237,9 @@ function AddressMini (props: Props) {
     }
 
     return (
-      <div className='ui--AddressMini-address'>
+      <Link to={`/blogs/accounts/${address}`} className='ui--AddressMini-address'>
         <p>{fullname || username || (isShort ? toShortAddress(address) : address)}</p>
-      </div>
+      </Link>
     );
   }
 

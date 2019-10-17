@@ -58,6 +58,11 @@
   .ui--AddressMini-info{
     display: inline;
   }
+  .ProfileDetails .header{
+    font-size: 1.3rem;
+    padding-left: .5rem;
+    padding-bottom: .5rem;
+  }
 }
 .DfActivity{
   .ui--AddressMini-info div{
@@ -80,6 +85,11 @@
   .ui--AddressMini .ui--AddressMini-details{
     color: #ffff;
   }
+  a, a:hover{
+    color: #ffff;
+    text-decoration: none;
+    cursor: default;
+  }
 }
 
 .DfAddressMini-popup{
@@ -88,6 +98,11 @@
   }
 }
 
+.DfPopup-about{
+  p{
+    padding-left: 4.5rem;
+  }
+}
 .DfCommentBox{
   .DfAddressMini-popup{
     p {

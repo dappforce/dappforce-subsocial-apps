@@ -5,6 +5,7 @@ import { AccountId } from '@polkadot/types';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Modal, Button } from 'semantic-ui-react';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
+import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
 
 type Props = {
   following?: AccountId[],
@@ -19,7 +20,7 @@ const InnerFollowingModal = (props: Props) => {
   const renderFollowing = () => {
     return following && following.map((account, index) =>
       <div key={index} style={{ textAlign: 'left', margin: '1rem' }}>
-        <AddressMini
+        <AddressMiniDf
           value={account}
           isShort={true}
           isPadded={false}
@@ -27,6 +28,8 @@ const InnerFollowingModal = (props: Props) => {
           withName
           withBalance
           withFollowButton
+          withProfilePreview
+          withoutCounters
         />
       </div>
     );
