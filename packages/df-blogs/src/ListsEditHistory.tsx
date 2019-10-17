@@ -10,7 +10,6 @@ import IdentityIcon from '@polkadot/ui-identicon/Identicon';
 import { Link } from 'react-router-dom';
 import { CreatedBy } from './CreatedBy';
 import { getJsonFromIpfs } from './OffchainUtils';
-import { SocialAccount, OptionText } from '@dappforce/types/blogs';
 import { withRequireProfile, withSocialAccount } from './utils';
 
 type ModalController = {

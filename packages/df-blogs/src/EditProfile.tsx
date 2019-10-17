@@ -4,7 +4,7 @@ import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
 
-import { Option, Text } from '@polkadot/types';
+import { Option, Text, AccountId } from '@polkadot/types';
 import Section from '@polkadot/df-utils/Section';
 import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
@@ -12,10 +12,9 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
 import { addJsonToIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
-import { ProfileData, Profile, ProfileUpdate } from './types';
+import { ProfileData, Profile, ProfileUpdate, SocialAccount } from '@dappforce/types/blogs';
 import { withSocialAccount, withRequireProfile } from './utils';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { SocialAccount } from '@dappforce/types/blogs';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 
 // TODO get next settings from Substrate:

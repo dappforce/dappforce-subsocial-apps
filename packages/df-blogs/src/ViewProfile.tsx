@@ -7,7 +7,7 @@ import { AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
-import { SocialAccount, ProfileData, Profile } from './types';
+import { SocialAccount, ProfileData, Profile } from '@dappforce/types/blogs';
 import { withIdFromMyAddress, withSocialAccount, pluralizeText } from './utils';
 import { Dropdown, Icon } from 'semantic-ui-react';
 import { FollowAccountButton } from './FollowButton';

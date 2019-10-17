@@ -20,6 +20,7 @@ import { Dropdown } from 'semantic-ui-react';
 import { FollowBlogButton } from './FollowButton';
 import TxButton from '@polkadot/df-utils/TxButton';
 import { pluralizeText } from './utils';
+import { MutedSpan } from '@polkadot/df-utils/MutedText';
 
 type Props = MyAccountProps & {
   preview?: boolean,

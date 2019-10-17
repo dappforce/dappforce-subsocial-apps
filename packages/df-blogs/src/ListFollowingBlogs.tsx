@@ -3,7 +3,7 @@ import React from 'react';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { BlogId } from './types';
+import { BlogId } from '@dappforce/types/blogs';
 import Section from '@polkadot/df-utils/Section';
 import ViewBlog from './ViewBlog';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';

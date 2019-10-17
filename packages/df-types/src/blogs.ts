@@ -548,6 +548,8 @@ export class SocialAccount extends Struct {
 export type ProfileData = {
   fullname: string;
   avatar: string;
+  email: string;
+  personal_site: string;
   about: string;
   facebook: string;
   twitter: string;

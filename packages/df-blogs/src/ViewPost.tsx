@@ -68,6 +68,8 @@ function ViewPostInternal (props: ViewPostProps) {
     isSharedPost
   } = post;
 
+  
+
   const [ content , setContent ] = useState({} as PostContent);
   const [ commentsSection, setCommentsSection ] = useState(false);
   const [ postVotersOpen, setPostVotersOpen ] = useState(false);
@@ -77,9 +79,6 @@ function ViewPostInternal (props: ViewPostProps) {
   const [ originalPost, setOriginalPost ] = useState({} as Post);
 
   const openVoters = (type: ActiveVoters) => {
-    if (type === ActiveVoters.Upvote && !upvotes) return;
-    if (type === ActiveVoters.Downvote && !downvotes) return;
-
     setPostVotersOpen(true);
     setActiveVoters(type);
   };
@@ -203,12 +202,13 @@ function ViewPostInternal (props: ViewPostProps) {
     const counts = downvotes_count.toNumber() + upvotes_count.toNumber();
     return (<>
     <div className='DfCountsPreview'>
-      <MutedSpan><Link to='#' onClick={() => openVoters(ActiveVoters.All)}>Reactions: <b>{counts}</b></Link></MutedSpan>
+      <MutedSpan><Link to='#' onClick={() => counts && openVoters(ActiveVoters.All)} className={counts ? '' : 'disable'}>Reactions: <b>{counts}</b></Link></MutedSpan>
       <MutedSpan><HashLink to={`#comments-on-post-${id}`} onClick={() => setCommentsSection(!commentsSection)}>
         Comments: <b>{comments_count.toString()}</b></HashLink></MutedSpan>
       <MutedSpan><Link to='#'>Shared: <b>{shares_count.toString()}</b></Link></MutedSpan>
       <MutedSpan>Score: <b>{score.toString()}</b></MutedSpan>
     </div>
+    {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => setPostVotersOpen(false)}/>}
     </>);
   };
 
@@ -228,7 +228,6 @@ function ViewPostInternal (props: ViewPostProps) {
       {withStats && renderStatsPanel(post)}
       {withActions && renderActionsPanel()}
       {commentsSection && <CommentsByPost postId={post.id} post={post} />}
-      {openPostVoters && <PostVoters id={id} active={activeVoters} open={openPostVoters} close={() => setOpenPostVoters(false)}/>}
       </Segment>
     </>;
   };

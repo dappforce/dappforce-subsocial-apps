@@ -75,7 +75,7 @@
   margin-top: 2rem;
 }
 
-.ui.button{
+.ui.modal.button {
   min-width: 8rem;
   max-height: 2.8rem;
 }
