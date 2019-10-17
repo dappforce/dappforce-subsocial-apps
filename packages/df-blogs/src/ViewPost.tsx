@@ -68,8 +68,6 @@ function ViewPostInternal (props: ViewPostProps) {
     isSharedPost
   } = post;
 
-  
-
   const [ content , setContent ] = useState({} as PostContent);
   const [ commentsSection, setCommentsSection ] = useState(false);
   const [ postVotersOpen, setPostVotersOpen ] = useState(false);

@@ -15,6 +15,9 @@ import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils'
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { PostId, CommentId, Comment, CommentUpdate, CommentData } from '@dappforce/types/blogs';
 
+import SimpleMDEReact from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
+
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
 
   body: Yup.string()
@@ -52,8 +55,10 @@ const InnerForm = (props: FormProps) => {
     parentId,
     struct,
     values,
+    errors,
     dirty,
     isValid,
+    setFieldValue,
     isSubmitting,
     setSubmitting,
     resetForm,
@@ -126,8 +131,8 @@ const InnerForm = (props: FormProps) => {
 
   const form = () => (
     <Form className='ui form DfForm EditEntityForm'>
-      <LabelledField name='body' {...props} >
-        <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write a comment...`} style={{ minWidth: '40rem', marginTop: '1rem' }} autoFocus={autoFocus}/>
+      <LabelledField name='body' {...props}>
+        <Field component={SimpleMDEReact} name='body' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} style={{ minWidth: '40rem', marginTop: '1rem' }} autoFocus={autoFocus}/>
       </LabelledField>
 
       <LabelledField {...props}>

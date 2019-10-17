@@ -195,3 +195,33 @@
 .DfPopup-about{
   margin-top: .5rem;
 }
+
+#simplemde-editor-1-wrapper {
+  .CodeMirror-scroll {
+    min-height: 5rem !important;
+  }
+
+  .CodeMirror.cm-s-easymde.CodeMirror-wrap.CodeMirror-fullscreen{
+    z-index: 1000;
+  }
+  .editor-toolbar.fullscreen {
+    z-index: 1000;
+  }
+}
+
+
+.DfMdEditor.error {
+  .editor-statusbar {
+      float: right;
+  }
+
+  .CodeMirror.cm-s-easymde.CodeMirror-wrap {
+      background-color: #fff6f6;
+      border-color: #e0b4b4;
+  }
+
+  .editor-toolbar {
+    border-color: #e0b4b4;
+  }
+
+}

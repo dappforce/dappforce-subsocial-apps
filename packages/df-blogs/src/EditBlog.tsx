@@ -17,6 +17,8 @@ import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from '@dappforce/typ
 import { UrlHasIdProps, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
+import SimpleMDEReact from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
 
@@ -84,8 +86,10 @@ const InnerForm = (props: FormProps) => {
     id,
     struct,
     values,
+    errors,
     dirty,
     isValid,
+    setFieldValue,
     isSubmitting,
     setSubmitting,
     resetForm
@@ -165,7 +169,7 @@ const InnerForm = (props: FormProps) => {
       <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image Url.`} {...props} />
 
       <LabelledField name='desc' label='Description' {...props}>
-        <Field component='textarea' id='desc' name='desc' disabled={isSubmitting} rows={3} placeholder='Tell others what is your blog about. You can use Markdown.' />
+        <Field component={SimpleMDEReact} name='desc' value={desc} onChange={(data: string) => setFieldValue('desc', data)} className={`DfMdEditor ${errors['desc'] && 'error'}`} />
       </LabelledField>
 
       {/* TODO tags */}

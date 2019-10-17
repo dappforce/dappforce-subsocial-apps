@@ -29,7 +29,7 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
   const getNewsArray = async () => {
     const data = await getNewsFeed(myAddress, offset, LIMIT);
     if (data.length < LIMIT) setHasMore(false);
-    setMyFeeds(myFeeds.concat(data));
+    setItems(items.concat(data));
     setOffset(offset + LIMIT);
   };
 
@@ -64,14 +64,14 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   const { myAddress } = props;
   if (!myAddress) return <em>Opps...Incorect Account</em>;
 
-  const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
+  const [ items, setItems ] = useState([] as Activity[]);
   const [ hasMore, setHasMore ] = useState(true);
   const [ offset, setOffset ] = useState(0);
 
   const getNotificationsArray = async () => {
     const data = await getNotifications(myAddress, offset, LIMIT);
     if (data.length < LIMIT) setHasMore(false);
-    setMyFeeds(myFeeds.concat(data));
+    setItems(items.concat(data));
     setOffset(offset + LIMIT);
   };
 

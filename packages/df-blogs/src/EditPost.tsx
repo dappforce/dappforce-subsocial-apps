@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'semantic-ui-react';
-import { Form, Field, withFormik, FormikProps } from 'formik';
+import { Form, Field, withFormik, FormikProps, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
 import TxButton from '@polkadot/df-utils/TxButton';
@@ -16,6 +16,8 @@ import Section from '@polkadot/df-utils/Section';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { UrlHasIdProps, getNewIdFromEvent } from './utils';
+import SimpleMDEReact from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()
@@ -72,6 +74,8 @@ const InnerForm = (props: FormProps) => {
     preview,
     dirty,
     isValid,
+    errors,
+    setFieldValue,
     isSubmitting,
     setSubmitting,
     resetForm,
@@ -190,12 +194,12 @@ const InnerForm = (props: FormProps) => {
 
           {/* TODO ask a post summary or auto-generate and show under an "Advanced" tab. */}
 
-          <LabelledField name='body' label='Your post' {...props}>
-            <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={5} placeholder={`Write your post here. You can use Markdown.`} />
-          </LabelledField>
+          <LabelledField name='body' label='Description' {...props}>
+            <Field component={SimpleMDEReact} name='desc' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} />
+         </LabelledField>
         </>
         : <>
-          <Field component='textarea' name='body' disabled={isSubmitting} rows={3} placeholder={`Say something about this...`} />
+          <Field component={SimpleMDEReact} name='desc' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} />
         </>
       }
       {!isRegularPost && preview}

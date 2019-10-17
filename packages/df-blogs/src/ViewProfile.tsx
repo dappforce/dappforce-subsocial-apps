@@ -14,6 +14,7 @@ import { FollowAccountButton } from './FollowButton';
 import { AccountFollowersModal, AccountFollowingModal } from './AccountsListModal';
 import { ProfileHistoryModal } from './ListsEditHistory';
 import TxButton from '@polkadot/df-utils/TxButton';
+import { MutedSpan } from '@polkadot/df-utils/MutedText';
 
 export type Props = {
   preview?: boolean,
@@ -42,6 +43,7 @@ function Component (props: Props) {
   const profileIsNone = !socialAccount || socialAccount && socialAccount.profile.isNone;
   const followers = socialAccount ? socialAccount.followers_count.toNumber() : 0;
   const following = socialAccount ? socialAccount.following_accounts_count.toNumber() : 0;
+  const reputation = socialAccount ? socialAccount.reputation.toNumber() : 0;
 
   const [ followersOpen, setFollowersOpen ] = useState(false);
   const [ followingOpen, setFollowingOpen ] = useState(false);

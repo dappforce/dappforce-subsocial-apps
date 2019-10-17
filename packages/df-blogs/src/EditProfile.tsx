@@ -17,6 +17,8 @@ import { withSocialAccount, withRequireProfile } from './utils';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 
+import SimpleMDEReact from 'react-simplemde-editor';
+
 // TODO get next settings from Substrate:
 const USERNAME_REGEX = /^[A-Za-z0-9_-]+$/;
 
@@ -100,8 +102,10 @@ const InnerForm = (props: FormProps) => {
     profile,
     profileData,
     values,
+    errors,
     dirty,
     isValid,
+    setFieldValue,
     isSubmitting,
     setSubmitting,
     resetForm
@@ -251,7 +255,7 @@ const InnerForm = (props: FormProps) => {
       />
 
       <LabelledField name='about' label='About' {...props}>
-        <Field component='textarea' id='about' name='about' disabled={isSubmitting} rows={3} placeholder='Tell others something about yourself. You can use Markdown.' />
+        <Field component={SimpleMDEReact} name='about' value={about} onChange={(data: string) => setFieldValue('about', data)} className={`DfMdEditor ${errors['about'] && 'error'}`} />
       </LabelledField>
 
       <LabelledField {...props}>
