@@ -41,7 +41,7 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
   const NewsFeedArray = items.map((item, id) =>
     <ViewActivity key={id} activity={item}/>);
   return (
-  <Section title={`News Feed (${totalCount})`}>{
+  <Section title={`My Feed (${totalCount})`}>{
     <div id='newsFeedContainer' className='ui huge relaxed middle aligned divided list ProfilePreviews'>
       {totalCount === 0
       ? <em>News is not yet</em>

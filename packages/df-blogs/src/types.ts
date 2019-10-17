@@ -515,6 +515,8 @@ export type ProfileData = {
   fullname: string;
   avatar: string;
   about: string;
+  email: string;
+  personal_site: string;
   facebook: string;
   twitter: string;
   linkedIn: string;

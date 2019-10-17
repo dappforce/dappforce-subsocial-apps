@@ -27,7 +27,7 @@
   display: flex !important;
   padding-left: 1rem !important;
   .content {
-    margin-left: 1rem;
+    margin-left: .3rem;
   }
   .header { 
     font-size: 1.7rem;
@@ -75,6 +75,14 @@
   margin-top: 2rem;
 }
 
+.ui.button{
+  min-width: 8rem;
+  max-height: 2.8rem;
+}
+
+.ui.basic.button{
+  background-color: #fff !important;
+}
 .DfVoter {
   &.vertical {
     margin-right: .5rem;
@@ -147,4 +155,22 @@ hr {
   a {
     margin-right: 1rem
   }
+}
+
+.DfBlog-links{
+  padding-left: 4.8rem;
+  a{
+    margin-right: .7rem;
+    font-size: .9rem;
+  }
+}
+
+.DfCountsPreview{
+  a{
+    margin-right: .4rem;
+  }
+}
+
+.ui.attached:not(.message)+.ui.attached.segment:not(.top){
+  border: none;
 }

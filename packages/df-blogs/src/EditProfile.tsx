@@ -16,7 +16,7 @@ import { ProfileData, Profile, ProfileUpdate } from './types';
 import { withSocialAccount, withRequireProfile } from './utils';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { SocialAccount } from '@dappforce/types/blogs';
-import { withMyAccount } from '@polkadot/df-utils/MyAccount';
+import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
 
 // TODO get next settings from Substrate:
 const USERNAME_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -52,6 +52,11 @@ const buildSchema = (p: ValidationProps) => Yup.object().shape({
     .url('Avatar must be a valid URL.')
     .max(URL_MAX_LEN, `Avatar URL is too long. Maximum length is ${URL_MAX_LEN} chars.`),
 
+  email: Yup.string()
+    .email('Enter correct email address'),
+
+  personal_site: urlValidation('Personal site'),
+
   about: Yup.string()
     .max(ABOUT_MAX_LEN, `Text is too long. Maximum length is ${ABOUT_MAX_LEN} chars.`),
 
@@ -70,7 +75,7 @@ type ValidationProps = {
   // TODO get username validation params
 };
 
-export type OuterProps = ValidationProps & {
+export type OuterProps = MyAccountProps & ValidationProps & {
   history?: History,
   myAddress?: AccountId,
   profile?: Profile,
@@ -94,6 +99,7 @@ const InnerForm = (props: FormProps) => {
     myAddress,
     history,
     profile,
+    profileData,
     values,
     dirty,
     isValid,
@@ -106,6 +112,8 @@ const InnerForm = (props: FormProps) => {
     username,
     fullname,
     avatar,
+    email,
+    personal_site,
     about,
     facebook,
     twitter,
@@ -113,6 +121,9 @@ const InnerForm = (props: FormProps) => {
     github,
     instagram
   } = values;
+
+  console.log(profileData);
+  console.log(values);
 
   const goToView = () => {
     if (history && myAddress) {
@@ -124,7 +135,7 @@ const InnerForm = (props: FormProps) => {
 
   const onSubmit = (sendTx: () => void) => {
     if (isValid) {
-      const json = { fullname, avatar, about, facebook, twitter, linkedIn, github, instagram };
+      const json = { fullname, avatar, email, personal_site, about, facebook, twitter, linkedIn, github, instagram };
       addJsonToIpfs(json).then(cid => {
         setIpfsCid(cid);
         sendTx();
@@ -188,6 +199,20 @@ const InnerForm = (props: FormProps) => {
         name='avatar'
         label='Avatar URL'
         placeholder={`Should be a valid image URL.`}
+        {...props}
+      />
+
+      <LabelledText
+        name='email'
+        label='Email'
+        placeholder='Enter your email'
+        {...props}
+      />
+
+      <LabelledText
+        name='personal_site'
+        label='Personal site'
+        placeholder='Address for personal site'
         {...props}
       />
 
@@ -283,7 +308,9 @@ const EditForm = withFormik<OuterProps, FormValues>({
         twitter: '',
         linkedIn: '',
         github: '',
-        instagram: ''
+        instagram: '',
+        email: '',
+        personal_site: ''
       };
     }
   },

@@ -19,12 +19,12 @@ const InnerListMyBlogs = (props: MyBlogProps) => {
   const totalCount = followedBlogsIds !== undefined ? followedBlogsIds && followedBlogsIds.length : 0;
 
   return (
-  <Section title={pluralizeText(totalCount, 'following blog')}>{
+  <Section title={pluralizeText(totalCount, 'Following blog')}>{
     followedBlogsIds && followedBlogsIds.length === 0
       ? <em>No blogs created yet.</em>
       : <div className='ui huge relaxed middle aligned divided list ProfilePreviews'>
           {followedBlogsIds && followedBlogsIds.map((id, i) =>
-            <ViewBlog {...props} key={i} id={id} preview />
+            <ViewBlog {...props} key={i} id={id} previewDetails withFollowButton/>
           )}
         </div>
   }</Section>

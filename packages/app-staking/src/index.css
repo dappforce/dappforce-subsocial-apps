@@ -46,16 +46,22 @@
 .DfSection{
   .ui--AddressMini-details
   {
-    color: #999;
+    color: #999 !important;
   }
 }
 .ui--AddressMini-info div{
   display: table-cell;
 }
 
+.modal{
+  width: 50% !important;
+  .ui--AddressMini-info{
+    display: inline;
+  }
+}
 .DfActivity{
   .ui--AddressMini-info div{
-    display: inline-block;;
+    display: inline-block;
   }
   .ui--AddressMini-info{
     display: flex;
@@ -69,6 +75,19 @@
     color: #999;
   }
 }
+
+.DfTopBar{
+  .ui--AddressMini .ui--AddressMini-details{
+    color: #ffff;
+  }
+}
+
+.DfAddressMini-popup{
+  .ui--AddressMini-details{
+    color:rgba(0,0,0,.87);
+  }
+}
+
 .DfCommentBox{
   .DfAddressMini-popup{
     p {
@@ -84,7 +103,7 @@
 
 .popup{
   .ui--IdentityIcon{
-    margin-right: .5rem;
+    margin-right: .3rem;
   }
   .content{
     margin-right: 1.5rem;
