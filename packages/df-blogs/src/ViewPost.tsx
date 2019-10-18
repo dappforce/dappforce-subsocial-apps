@@ -204,7 +204,7 @@ function ViewPostInternal (props: ViewPostProps) {
       <MutedSpan><HashLink to={`#comments-on-post-${id}`} onClick={() => setCommentsSection(!commentsSection)}>
       {pluralizeText(comments_count.toNumber(), 'Comment')}</HashLink></MutedSpan>
       <MutedSpan><Link to='#'>{pluralizeText(shares_count.toNumber(), 'Share')}</Link></MutedSpan>
-      <MutedSpan>{pluralizeText(score.toNumber(), 'Score', 'Score')}</MutedSpan>
+      <MutedSpan>Score: {score.toNumber()}</MutedSpan>
     </div>
     {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => setPostVotersOpen(false)}/>}
     </>);

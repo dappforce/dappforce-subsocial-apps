@@ -113,8 +113,7 @@ function Component (props: Props) {
           </div>
           {renderCreateProfileButton}
           <div className='about'>
-            <MutedSpan className='DfScore'>{pluralizeText(reputation, 'Reputation', 'Reputation')}</MutedSpan>
-            <ReactMarkdown className='DfMd' source={about} linkTarget='_blank' />
+            <MutedSpan className='DfScore'>Reputaton: {reputation}</MutedSpan>
             <div className='DfSocialLinks'>
               {hasEmail &&
                 <a
@@ -172,6 +171,7 @@ function Component (props: Props) {
                 </a>
               }
             </div>
+            <ReactMarkdown className='DfMd' source={about} linkTarget='_blank' />
           </div>
         </div>
       </div>

@@ -153,7 +153,7 @@ hr {
 }
 
 .DfSocialLinks {
-  margin-top: 1rem;
+  font-size: 1.2rem;
   a {
     margin-right: 1rem
   }
@@ -284,4 +284,8 @@ hr {
 .DfGreyLink:hover {
   color: rgba(34,36,38,.8) !important;
   text-decoration: underline;
+}
+
+.DfScore {
+  font-size: 1rem;
 }
