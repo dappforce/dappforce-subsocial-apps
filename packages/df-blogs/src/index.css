@@ -75,7 +75,7 @@
   margin-top: 2rem;
 }
 
-.ui.modal.button {
+.ui.button {
   min-width: 8rem;
   max-height: 2.8rem;
 }
@@ -90,6 +90,8 @@
   .ui.button {
     background-color: transparent !important;
     color: #2d2d2d;
+    min-width: initial;
+    max-height: initial;
 
     &.red {
       &:hover,
@@ -175,6 +177,13 @@ hr {
   border: none;
 }
 
+.DfPostPreview, .DfPost {
+  .ui.button {
+    min-width: initial;
+    max-height: initial;
+  }  
+}
+
 .DfPostPreview {
   h2 {
     margin-top: 1rem; 
@@ -185,6 +194,10 @@ hr {
     font-size: 1.2rem;
     width: 95%;
   }
+  .ui.button {
+    min-width: initial;
+    max-height: initial;
+  }  
 }
 .ui.segment.DfPostPreview.p-b-0 {
   padding: 1rem 1rem 0rem 1rem;

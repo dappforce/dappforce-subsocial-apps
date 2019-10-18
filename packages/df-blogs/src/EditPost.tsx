@@ -195,11 +195,11 @@ const InnerForm = (props: FormProps) => {
           {/* TODO ask a post summary or auto-generate and show under an "Advanced" tab. */}
 
           <LabelledField name='body' label='Description' {...props}>
-            <Field component={SimpleMDEReact} name='desc' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} />
+            <Field component={SimpleMDEReact} name='body' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} />
          </LabelledField>
         </>
         : <>
-          <Field component={SimpleMDEReact} name='desc' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} />
+          <Field component={SimpleMDEReact} name='body' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} />
         </>
       }
       {!isRegularPost && preview}
@@ -237,10 +237,7 @@ const EditForm = withFormik<OuterProps, FormValues>({
     }
   },
 
-  validationSchema: (props: OuterProps) => {
-    const { extention } = props;
-    return extention ? null : buildSchema;
-  },
+  validationSchema: buildSchema,
 
   handleSubmit: values => {
     // do submitting things
