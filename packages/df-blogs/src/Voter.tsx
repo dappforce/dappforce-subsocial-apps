@@ -102,7 +102,6 @@ export const Voter = (props: VoterProps) => {
       }
     };
 
-    const orientation = isComment ? true : false;
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
 

@@ -16,7 +16,6 @@ import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { PostId, CommentId, Comment, CommentUpdate, CommentData } from '@dappforce/types/blogs';
 
 import SimpleMDEReact from 'react-simplemde-editor';
-import 'easymde/dist/easymde.min.css';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
 

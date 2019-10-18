@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'semantic-ui-react';
-import { Form, Field, withFormik, FormikProps, FieldProps } from 'formik';
+import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { History } from 'history';
 import TxButton from '@polkadot/df-utils/TxButton';
@@ -16,8 +16,9 @@ import Section from '@polkadot/df-utils/Section';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { UrlHasIdProps, getNewIdFromEvent } from './utils';
+
 import SimpleMDEReact from 'react-simplemde-editor';
-import 'easymde/dist/easymde.min.css';
+
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()
@@ -199,7 +200,7 @@ const InnerForm = (props: FormProps) => {
          </LabelledField>
         </>
         : <>
-          <Field component={SimpleMDEReact} name='body' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} />
+          <SimpleMDEReact value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor`}/>
         </>
       }
       {!isRegularPost && preview}

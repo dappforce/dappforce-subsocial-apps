@@ -106,7 +106,7 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='description'>
-            <MutedSpan>Score: <b>{score.toString()}</b></MutedSpan>
+            <MutedSpan>{pluralizeText(score.toNumber(), 'Score','Score')}</MutedSpan>
             <ReactMarkdown className='DfMd' source={desc} linkTarget='_blank' />
           </div>
         </div>

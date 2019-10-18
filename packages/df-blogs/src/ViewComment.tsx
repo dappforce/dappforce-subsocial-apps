@@ -16,6 +16,7 @@ import { NewComment } from './EditComment';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Voter } from './Voter';
 import { CommentHistoryModal } from './ListsEditHistory';
+import ReactMarkdown from 'react-markdown';
 
 type Props = ApiProps & {
   postId: PostId,
@@ -179,7 +180,9 @@ export function ViewComment (props: ViewCommentProps) {
                 onSuccess={() => { setShowEditForm(false); setDoReloadComment(true); }}
               />
               : <>
-                <SuiComment.Text>{content.body}</SuiComment.Text>
+                <SuiComment.Text>
+                  <ReactMarkdown className='DfMd' source={content.body} linkTarget='_blank' />
+                </SuiComment.Text>
                 <SuiComment.Actions>
                   <SuiComment.Action>
                     {/* <ShareButtonComment commentId={id}/> */}

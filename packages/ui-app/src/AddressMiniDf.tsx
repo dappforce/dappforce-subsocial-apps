@@ -15,7 +15,7 @@ import { FollowAccountButton } from '@dappforce/blogs/FollowButton';
 import { Popup } from 'semantic-ui-react';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import { withSocialAccount, pluralizeText } from '@dappforce/blogs/utils';
-import { SocialAccount, Profile, ProfileData } from '@dappforce/blogs/types';
+import { SocialAccount, Profile, ProfileData } from '@dappforce/types/blogs';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import { AccountFollowersModal, AccountFollowingModal } from '@dappforce/blogs/AccountsListModal';

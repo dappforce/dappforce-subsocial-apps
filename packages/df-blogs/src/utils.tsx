@@ -4,9 +4,8 @@ import { Pagination as SuiPagination } from 'semantic-ui-react';
 import { AccountId, AccountIndex, Address, Option } from '@polkadot/types';
 import AddressMini from '@polkadot/ui-app/AddressMiniDf';
 import { SubmittableResult } from '@polkadot/api';
-import { CommentId, PostId, BlogId, Profile, ProfileData } from './types';
+import { CommentId, PostId, BlogId, Profile, ProfileData, SocialAccount } from '@dappforce/types/blogs';
 import { getJsonFromIpfs } from './OffchainUtils';
-import { SocialAccount } from '@dappforce/types/blogs';
 import BN from 'bn.js';
 
 type AuthorPreviewProps = {
@@ -150,7 +149,7 @@ export function withRequireProfile<P extends LoadSocialAccount> (Component: Reac
 export function pluralizeText (count: number | BN, singularText: string, pluralText?: string) {
   count = typeof count !== 'number' ? count.toNumber() : count;
   const plural = () => (!pluralText ? singularText + 's' : pluralText);
-  const text = count === 1 ? singularText : plural();
+  const text = count <= 1 ? singularText : plural();
   return (
     <>
       <b>{count}</b> {text}

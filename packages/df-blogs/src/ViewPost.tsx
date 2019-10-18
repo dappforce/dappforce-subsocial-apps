@@ -200,11 +200,11 @@ function ViewPostInternal (props: ViewPostProps) {
     const counts = downvotes_count.toNumber() + upvotes_count.toNumber();
     return (<>
     <div className='DfCountsPreview'>
-      <MutedSpan><Link to='#' onClick={() => counts && openVoters(ActiveVoters.All)} className={counts ? '' : 'disable'}>Reactions: <b>{counts}</b></Link></MutedSpan>
+      <MutedSpan><Link to='#' onClick={() => counts && openVoters(ActiveVoters.All)} className={counts ? '' : 'disable'}>{pluralizeText(counts, 'Reaction')}</Link></MutedSpan>
       <MutedSpan><HashLink to={`#comments-on-post-${id}`} onClick={() => setCommentsSection(!commentsSection)}>
-        Comments: <b>{comments_count.toString()}</b></HashLink></MutedSpan>
-      <MutedSpan><Link to='#'>Shared: <b>{shares_count.toString()}</b></Link></MutedSpan>
-      <MutedSpan>Score: <b>{score.toString()}</b></MutedSpan>
+      {pluralizeText(comments_count.toNumber(), 'Comment')}</HashLink></MutedSpan>
+      <MutedSpan><Link to='#'>{pluralizeText(shares_count.toNumber(), 'Share')}</Link></MutedSpan>
+      <MutedSpan>{pluralizeText(score.toNumber(), 'Score', 'Score')}</MutedSpan>
     </div>
     {postVotersOpen && <PostVoters id={id} active={activeVoters} open={postVotersOpen} close={() => setPostVotersOpen(false)}/>}
     </>);

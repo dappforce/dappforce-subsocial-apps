@@ -18,7 +18,7 @@ import { UrlHasIdProps, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 import SimpleMDEReact from 'react-simplemde-editor';
-import 'easymde/dist/easymde.min.css';
+
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
 

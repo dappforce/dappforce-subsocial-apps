@@ -9,6 +9,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import Tabs, { TabItem } from '@polkadot/ui-app/Tabs';
 
 import './index.css';
+import 'easymde/dist/easymde.min.css';
 
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import translate from './translate';

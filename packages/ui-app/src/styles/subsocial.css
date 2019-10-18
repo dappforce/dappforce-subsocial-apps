@@ -44,6 +44,10 @@
   }
 }
 
+.ui.modal .scrolling.content {
+  text-align: left;
+}
+
 .ui--AddressMini {
   .ui--IdentityIcon {
     margin-left: 0;

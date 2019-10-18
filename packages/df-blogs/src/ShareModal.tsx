@@ -68,7 +68,7 @@ const InnerShareModal = (props: Props) => {
       style={{ marginTop: '3rem' }}
     >
       <Modal.Header>Share post</Modal.Header>
-      <Modal.Content scrolling>
+      <Modal.Content scrolling className='noCenter'>
         {renderShareView()}
       </Modal.Content>
     </Modal>
