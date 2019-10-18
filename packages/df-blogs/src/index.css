@@ -220,6 +220,7 @@ hr {
   }
   .DfInfo {
     margin-right: .5rem;
+    width: -webkit-fill-available;
   }
   .DfContent {
     display: flex;
