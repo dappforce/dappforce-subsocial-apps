@@ -156,7 +156,7 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  const title = struct ? `Edit blog` : `New my blog`;
+  const title = struct ? `Edit blog` : `New blog`;
 
   return (
     <Section className='EditEntityBox' title={title}>
