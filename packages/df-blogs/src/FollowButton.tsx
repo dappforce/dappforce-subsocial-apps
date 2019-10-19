@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 
 import { AccountId, Bool } from '@polkadot/types';
 
-import { BlogId } from './types';
+import { BlogId } from '@dappforce/types/blogs';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import TxButton from '@polkadot/df-utils/TxButton';
 import { api } from '@polkadot/ui-api';
-import _ from 'lodash';
 
 type FollowBlogButtonProps = {
-  blogId: BlogId
+  blogId: BlogId,
+  size?: string
 };
 
 export function FollowBlogButton (props: FollowBlogButtonProps) {
-  const { blogId } = props;
+  const { blogId, size = 'medium' } = props;
   const { state: { address: myAddress } } = useMyAccount();
 
   const dataForQuery = new Tuple([AccountId, BlogId], [new AccountId(myAddress), blogId]);
@@ -38,11 +38,12 @@ export function FollowBlogButton (props: FollowBlogButtonProps) {
   return <TxButton
     type='submit'
     compact
+    size = {size}
     isBasic={isFollow}
     isPrimary={!isFollow}
     label={isFollow
-      ? 'Unfollow blog'
-      : 'Follow blog'}
+      ? 'Unfollow'
+      : 'Follow'}
     params={buildTxParams()}
     tx={isFollow
       ? `blogs.unfollowBlog`
@@ -57,8 +58,21 @@ type FollowAccountButtonProps = {
 };
 
 export function FollowAccountButton (props: FollowAccountButtonProps) {
-  const { address, size = 'medium' } = props;
+  const { address } = props;
   const { state: { address: myAddress } } = useMyAccount();
+
+  // Account cannot follow itself
+  if (!myAddress || address === myAddress) return null;
+
+  return <InnerFollowAccountButton {...props} myAddress={myAddress}/>;
+}
+
+type InnerFollowAccountButtonProps = FollowAccountButtonProps & {
+  myAddress: string
+};
+
+function InnerFollowAccountButton (props: InnerFollowAccountButtonProps) {
+  const { myAddress, address, size = 'medium' } = props;
 
   const accountId = new AccountId(address);
   const dataForQuery = new Tuple([AccountId, AccountId], [new AccountId(myAddress), accountId]);

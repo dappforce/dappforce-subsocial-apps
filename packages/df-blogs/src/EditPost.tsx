@@ -11,11 +11,14 @@ import { addJsonToIpfs, getJsonFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';
-import { PostId, Post, PostData, PostUpdate, BlogId } from './types';
+import { PostId, Post, PostData, PostUpdate, BlogId, PostExtension, RegularPost } from '@dappforce/types/blogs';
 import Section from '@polkadot/df-utils/Section';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { UrlHasIdProps, getNewIdFromEvent } from './utils';
+
+import SimpleMDEReact from 'react-simplemde-editor';
+
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
   title: Yup.string()
@@ -44,13 +47,15 @@ type OuterProps = ValidationProps & {
   history?: History,
   blogId?: BlogId,
   id?: PostId,
+  extention?: PostExtension,
   struct?: Post
-  json?: PostData
+  json?: PostData,
+  preview?: React.ReactNode,
+  extButton?: React.ReactNode,
+  closeModal?: () => void
 };
 
-type FormValues = PostData & {
-  slug: string
-};
+type FormValues = PostData;
 
 type FormProps = OuterProps & FormikProps<FormValues>;
 
@@ -64,16 +69,33 @@ const InnerForm = (props: FormProps) => {
     id,
     blogId,
     struct,
+    extention = new PostExtension({ RegularPost: new RegularPost() }),
+    extButton,
     values,
+    preview,
     dirty,
     isValid,
+    errors,
+    setFieldValue,
     isSubmitting,
     setSubmitting,
-    resetForm
+    resetForm,
+    closeModal
   } = props;
 
+  const isRegularPost = extention.value instanceof RegularPost;
+
+  const renderResetButton = () => (
+    <Button
+      type='button'
+      size='large'
+      disabled={isSubmitting || (isRegularPost && !dirty)}
+      onClick={() => resetForm()}
+      content='Reset form'
+    />
+  );
+
   const {
-    slug,
     title,
     body,
     image,
@@ -86,13 +108,15 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  const [ ipfsCid, setIpfsCid ] = useState('');
+  const [ ipfsHash, setIpfsCid ] = useState('');
 
   const onSubmit = (sendTx: () => void) => {
-    if (isValid) {
+    if (isValid || !isRegularPost) {
+      console.log('here1');
       const json = { title, body, image, tags };
-      addJsonToIpfs(json).then(cid => {
-        setIpfsCid(cid);
+      console.log(json);
+      addJsonToIpfs(json).then(hash => {
+        setIpfsCid(hash);
         sendTx();
       }).catch(err => new Error(err));
     }
@@ -108,6 +132,8 @@ const InnerForm = (props: FormProps) => {
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
 
+    closeModal && closeModal();
+
     if (!history) return;
 
     const _id = id ? id : getNewIdFromEvent<PostId>(_txResult);
@@ -115,69 +141,75 @@ const InnerForm = (props: FormProps) => {
   };
 
   const buildTxParams = () => {
-    if (!isValid) return [];
+    if (isValid || !isRegularPost) {
 
-    if (!struct) {
-      return [ blogId, slug, ipfsCid ];
+      if (!struct) {
+        return [ blogId, ipfsHash, extention ];
+      } else {
+        // TODO update only dirty values.
+        const update = new PostUpdate({
+          // TODO setting new blog_id will move the post to another blog.
+          blog_id: new Option(BlogId, null),
+          ipfs_hash: new Option(Text, ipfsHash)
+        });
+        return [ struct.id, update ];
+      }
     } else {
-      // TODO update only dirty values.
-      const update = new PostUpdate({
-        // TODO setting new blog_id will move the post to another blog.
-        blog_id: new Option(BlogId, null),
-        slug: new Option(Text, slug),
-        ipfs_hash: new Option(Text, ipfsCid)
-      });
-      return [ struct.id, update ];
+      return [];
     }
   };
+
+  const renderButtons = () => (
+    <div className='DfTxButton'>
+      {extButton && extButton}
+      <TxButton
+        type='submit'
+        size='large'
+        label={!struct
+          ? `Create a post`
+          : `Update a post`
+        }
+        isDisabled={isSubmitting || (isRegularPost && !dirty)}
+        params={buildTxParams()}
+        tx={struct
+          ? 'blogs.updatePost'
+          : 'blogs.createPost'
+        }
+        onClick={onSubmit}
+        txCancelledCb={onTxCancelled}
+        txFailedCb={onTxFailed}
+        txSuccessCb={onTxSuccess}
+      />
+      {!extButton && renderResetButton()}
+    </div>
+  );
 
   const form =
     <Form className='ui form DfForm EditEntityForm'>
 
-      <LabelledText name='title' label='Post title' placeholder={`What is a title of you post?`} {...props} />
+      {isRegularPost
+        ? <>
+          <LabelledText name='title' label='Post title' placeholder={`What is a title of you post?`} {...props} />
 
-      <LabelledText name='slug' label='URL slug' placeholder={`You can use a-z, 0-9, dashes and underscores.`} style={{ maxWidth: '30rem' }} {...props} />
+          <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
 
-      <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image URL.`} {...props} />
+          {/* TODO ask a post summary or auto-generate and show under an "Advanced" tab. */}
 
-      {/* TODO ask a post summary or auto-generate and show under an "Advanced" tab. */}
-
-      <LabelledField name='body' label='Your post' {...props}>
-        <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={5} placeholder={`Write your post here. You can use Markdown.`} />
-      </LabelledField>
-
-      {/* TODO tags */}
-
+          <LabelledField name='body' label='Description' {...props}>
+            <Field component={SimpleMDEReact} name='body' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} />
+         </LabelledField>
+        </>
+        : <>
+          <SimpleMDEReact value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor`}/>
+        </>
+      }
+      {!isRegularPost && preview}
       <LabelledField {...props}>
-        <TxButton
-          type='submit'
-          size='large'
-          label={!struct
-            ? `Create a post`
-            : `Update a post`
-          }
-          isDisabled={!dirty || isSubmitting}
-          params={buildTxParams()}
-          tx={struct
-            ? 'blogs.updatePost'
-            : 'blogs.createPost'
-          }
-          onClick={onSubmit}
-          txCancelledCb={onTxCancelled}
-          txFailedCb={onTxFailed}
-          txSuccessCb={onTxSuccess}
-        />
-        <Button
-          type='button'
-          size='large'
-          disabled={!dirty || isSubmitting}
-          onClick={() => resetForm()}
-          content='Reset form'
-        />
+        {renderButtons()}
       </LabelledField>
     </Form>;
 
-  const sectionTitle = !struct ? `New post` : `Edit my post`;
+  const sectionTitle = isRegularPost ? (!struct ? `New post` : `Edit my post`) : '';
 
   return <>
     <Section className='EditEntityBox' title={sectionTitle}>
@@ -193,14 +225,11 @@ const EditForm = withFormik<OuterProps, FormValues>({
     const { struct, json } = props;
 
     if (struct && json) {
-      const slug = struct.slug.toString();
       return {
-        slug,
         ...json
       };
     } else {
       return {
-        slug: '',
         title: '',
         body: '',
         image: '',
@@ -217,8 +246,11 @@ const EditForm = withFormik<OuterProps, FormValues>({
 })(InnerForm);
 
 function withIdFromUrl (Component: React.ComponentType<OuterProps>) {
-  return function (props: UrlHasIdProps) {
-    const { match: { params: { id } } } = props;
+  return function (props: UrlHasIdProps & OuterProps) {
+    const { match: { params: { id } }, id: postId } = props;
+
+    if (postId) return <Component {...props}/>;
+
     try {
       return <Component id={new PostId(id)} {...props}/>;
     } catch (err) {
@@ -245,48 +277,62 @@ type LoadStructProps = OuterProps & {
 type StructJson = PostData | undefined;
 type Struct = Post | undefined;
 
-function LoadStruct (props: LoadStructProps) {
-  const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
-  const { structOpt } = props;
-  const [ json, setJson ] = useState(undefined as StructJson);
-  const [ struct, setStruct ] = useState(undefined as Struct);
-  const jsonIsNone = json === undefined;
+function LoadStruct (Component: React.ComponentType<LoadStructProps>) {
+  return function (props: LoadStructProps) {
+    const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
+    const { structOpt } = props;
+    const [ json, setJson ] = useState(undefined as StructJson);
+    const [ struct, setStruct ] = useState(undefined as Struct);
+    const [ trigger, setTrigger ] = useState(false);
+    const jsonIsNone = json === undefined;
 
-  useEffect(() => {
+    const toggleTrigger = () => {
+      json === undefined && setTrigger(!trigger);
+      return;
+    };
 
-    if (!myAddress || !structOpt || structOpt.isNone) return;
+    useEffect(() => {
 
-    setStruct(structOpt.unwrap());
+      if (!myAddress || !structOpt || structOpt.isNone) return toggleTrigger();
 
-    if (struct === undefined) return;
+      setStruct(structOpt.unwrap());
 
-    getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
-      setJson(json);
-    }).catch(err => console.log(err));
-  }); // TODO add guard for loading from ipfs
+      if (struct === undefined) return toggleTrigger();
 
-  if (!myAddress || !structOpt || jsonIsNone) {
-    return <em>Loading post...</em>;
-  }
+      console.log('Loading post JSON from IPFS');
 
-  if (structOpt.isNone) {
-    return <em>Post not found</em>;
-  }
+      getJsonFromIpfs<PostData>(struct.ipfs_hash).then(json => {
+        setJson(json);
+      }).catch(err => console.log(err));
+    }, [ trigger ]);
 
-  return <EditForm {...props} struct={struct} json={json}/>;// TODO
+    if (!myAddress || !structOpt || jsonIsNone) {
+      return <em>Loading post...</em>;
+    }
+
+    if (structOpt.isNone) {
+      return <em>Post not found</em>;
+    }
+
+    return <Component {...props} struct={struct} json={json}/>;
+  };
 }
 
 export const NewPost = withMulti(
   EditForm,
   withBlogIdFromUrl
-  // , withOnlyMembers
 );
 
-export const EditPost = withMulti(
-  LoadStruct,
+export const NewSharePost = withMulti(
+  EditForm
+);
+
+export const EditPost = withMulti<OuterProps>(
+  EditForm,
   withIdFromUrl,
   withCalls<OuterProps>(
     queryBlogsToProp('postById',
       { paramName: 'id', propName: 'structOpt' })
-  )
+  ),
+  LoadStruct
 );

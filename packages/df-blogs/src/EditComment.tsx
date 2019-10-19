@@ -13,7 +13,9 @@ import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { PostId, CommentId, Comment, CommentUpdate, CommentData } from './types';
+import { PostId, CommentId, Comment, CommentUpdate, CommentData } from '@dappforce/types/blogs';
+
+import SimpleMDEReact from 'react-simplemde-editor';
 
 const buildSchema = (p: ValidationProps) => Yup.object().shape({
 
@@ -52,8 +54,10 @@ const InnerForm = (props: FormProps) => {
     parentId,
     struct,
     values,
+    errors,
     dirty,
     isValid,
+    setFieldValue,
     isSubmitting,
     setSubmitting,
     resetForm,
@@ -127,7 +131,7 @@ const InnerForm = (props: FormProps) => {
   const form = () => (
     <Form className='ui form DfForm EditEntityForm'>
       <LabelledField name='body' {...props}>
-        <Field component='textarea' id='body' name='body' disabled={isSubmitting} rows={3} placeholder={`Write a comment...`} style={{ minWidth: '40rem', marginTop: '1rem' }} autoFocus={autoFocus}/>
+        <Field component={SimpleMDEReact} name='body' value={body} onChange={(data: string) => setFieldValue('body', data)} className={`DfMdEditor ${errors['body'] && 'error'}`} style={{ minWidth: '40rem', marginTop: '1rem' }} autoFocus={autoFocus}/>
       </LabelledField>
 
       <LabelledField {...props}>
@@ -198,21 +202,29 @@ function LoadStruct (props: LoadStructProps) {
   const { structOpt } = props;
   const [ json, setJson ] = useState(undefined as StructJson);
   const [ struct, setStruct ] = useState(undefined as Struct);
+  const [ trigger, setTrigger ] = useState(false);
   const jsonIsNone = json === undefined;
+
+  const toggleTrigger = () => {
+    json === undefined && setTrigger(!trigger);
+    return;
+  };
 
   useEffect(() => {
 
-    if (!myAddress || !structOpt || structOpt.isNone) return;
+    if (!myAddress || !structOpt || structOpt.isNone) return toggleTrigger();;
 
     setStruct(structOpt.unwrap());
 
-    if (struct === undefined) return;
+    if (struct === undefined) return toggleTrigger();;
+
+    console.log('Loading comment JSON from IPFS');
 
     getJsonFromIpfs<CommentData>(struct.ipfs_hash).then(json => {
       const content = json;
       setJson(content);
     }).catch(err => console.log(err));
-  });
+  }, [ trigger ]);
 
   if (!myAddress || !structOpt || jsonIsNone) {
     return <em>Loading comment...</em>;

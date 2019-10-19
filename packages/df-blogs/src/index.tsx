@@ -9,6 +9,7 @@ import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import Tabs, { TabItem } from '@polkadot/ui-app/Tabs';
 
 import './index.css';
+import 'easymde/dist/easymde.min.css';
 
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import translate from './translate';
@@ -55,15 +56,11 @@ class App extends PureComponent<Props> {
       },
       {
         name: 'feed',
-        text: t('News feed')
+        text: t('My feed')
       },
       {
         name: 'notifications',
         text: t('Notifications')
-      },
-      {
-        name: 'accounts/new',
-        text: t('New profile')
       },
       {
         name: `accounts/${myAddress}`,
@@ -85,7 +82,7 @@ class App extends PureComponent<Props> {
           <Route path={`${basePath}/followed`} component={ListFollowingBlogs} />
           <Route path={`${basePath}/new`} component={NewBlog} />
           <Route path={`${basePath}/accounts/new`} component={NewProfile} />
-          <Route path={`${basePath}/accounts/:address/edit`} component={EditProfile} />
+          <Route path={`${basePath}/accounts/edit`} component={EditProfile} />
           <Route path={`${basePath}/accounts/:address`} component={ViewProfile} />
           <Route path={`${basePath}/feed`} component={ViewNewsFeed} />
           <Route path={`${basePath}/notifications`} component={ViewNotifications} />
@@ -104,7 +101,6 @@ class App extends PureComponent<Props> {
 export default withMulti(
   App,
   translate,
-  // withMyAccount, // TODO on tabs 'My blogs'
   withCalls<Props>(
     queryBlogsToProp('nextBlogId')
   )

@@ -9,7 +9,7 @@ import Section from '@polkadot/df-utils/Section';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import translate from './translate';
 import ViewBlog from './ViewBlog';
-import { BlogId } from './types';
+import { BlogId } from '@dappforce/types/blogs';
 import { AccountId } from '@polkadot/types';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 
@@ -39,7 +39,7 @@ class Component extends React.PureComponent<Props> {
           ? <em>No blogs created yet.</em>
           : <div className='ui huge relaxed middle aligned divided list ProfilePreviews'>
               {ids.map((id, i) =>
-                <ViewBlog {...this.props} key={i} id={id} preview />
+                <ViewBlog {...this.props} key={i} id={id} previewDetails withFollowButton />
               )}
             </div>
       }</Section>
@@ -67,7 +67,7 @@ const InnerListMyBlogs = (props: MyBlogProps) => {
       ? <em>No blogs created yet.</em>
       : <div className='ui huge relaxed middle aligned divided list ProfilePreviews'>
           {myblogsIds && myblogsIds.map((id, i) =>
-            <ViewBlog {...props} key={i} id={id} preview />
+            <ViewBlog {...props} key={i} id={id} previewDetails withFollowButton />
           )}
         </div>
   }</Section>

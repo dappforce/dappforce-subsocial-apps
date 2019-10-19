@@ -44,12 +44,16 @@
   }
 }
 
+.ui.modal .scrolling.content {
+  text-align: left;
+}
+
 .ui--AddressMini {
   .ui--IdentityIcon {
     margin-left: 0;
   }
   .ui--AddressMini-info {
-    display: block;
+    display: inline-flex;
     .AddressMini.follow{
       float: right;
     }
@@ -154,11 +158,13 @@
 
 .ui.top.left.flowing.popup.transition.visible{
   .ui--AddressMini-address{
-    padding-top: .5rem;
     font-size: 1.2rem;
   }
   .DfPopup-username{
     font-size: .8rem;
+  }
+  .ui--AddressMini-details {
+    margin-right: .3rem;
   }
 }
 
@@ -181,7 +187,7 @@
 }
 
 .DfPopup-username{
-  font-size: 11.2px;
+  font-size: 0.8rem;
   color: #4e4e4e;
 }
 
@@ -192,4 +198,34 @@
 
 .DfPopup-about{
   margin-top: .5rem;
+}
+
+.DfMdEditor {
+  .CodeMirror-scroll {
+    min-height: 5rem !important;
+  }
+
+  .CodeMirror.cm-s-easymde.CodeMirror-wrap.CodeMirror-fullscreen{
+    z-index: 1000;
+  }
+  .editor-toolbar.fullscreen {
+    z-index: 1000;
+  }
+}
+
+
+.DfMdEditor.error {
+  .editor-statusbar {
+      float: right;
+  }
+
+  .CodeMirror.cm-s-easymde.CodeMirror-wrap {
+      background-color: #fff6f6;
+      border-color: #e0b4b4;
+  }
+
+  .editor-toolbar {
+    border-color: #e0b4b4;
+  }
+
 }

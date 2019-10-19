@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import { AccountId, Bool } from '@polkadot/types';
 
-import { BlogId, PostId, CommentId } from './types';
+import { BlogId, PostId, CommentId } from '@dappforce/types/blogs';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
 import TxButton from '@polkadot/df-utils/TxButton';
 import { api } from '@polkadot/ui-api';
-import _ from 'lodash';
 
 type PropsShareButtonPost = {
   postId: PostId

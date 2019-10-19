@@ -13,9 +13,11 @@ import { withCalls, withMulti } from '@polkadot/ui-api/index';
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from './types';
+import { BlogId, Blog, BlogData, BlogUpdate, VecAccountId } from '@dappforce/types/blogs';
 import { UrlHasIdProps, getNewIdFromEvent } from './utils';
 import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
+
+import SimpleMDEReact from 'react-simplemde-editor';
 
 // TODO get next settings from Substrate:
 const SLUG_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -84,8 +86,10 @@ const InnerForm = (props: FormProps) => {
     id,
     struct,
     values,
+    errors,
     dirty,
     isValid,
+    setFieldValue,
     isSubmitting,
     setSubmitting,
     resetForm
@@ -152,7 +156,7 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  const title = struct ? `Edit blog` : `New my blog`;
+  const title = struct ? `Edit blog` : `New blog`;
 
   return (
     <Section className='EditEntityBox' title={title}>
@@ -165,7 +169,7 @@ const InnerForm = (props: FormProps) => {
       <LabelledText name='image' label='Image URL' placeholder={`Should be a valid image Url.`} {...props} />
 
       <LabelledField name='desc' label='Description' {...props}>
-        <Field component='textarea' id='desc' name='desc' disabled={isSubmitting} rows={3} placeholder='Tell others what is your blog about. You can use Markdown.' />
+        <Field component={SimpleMDEReact} name='desc' value={desc} onChange={(data: string) => setFieldValue('desc', data)} className={`DfMdEditor ${errors['desc'] && 'error'}`} />
       </LabelledField>
 
       {/* TODO tags */}
@@ -252,24 +256,31 @@ type Struct = Blog | undefined;
 
 function LoadStruct (props: LoadStructProps) {
 
-  const { state: { address: myAddress } } = useMyAccount(); // TODO maybe remove, becose usles
+  const { state: { address: myAddress } } = useMyAccount();
   const { structOpt } = props;
   const [ json, setJson ] = useState(undefined as StructJson);
   const [ struct, setStruct ] = useState(undefined as Struct);
+  const [ trigger, setTrigger ] = useState(false);
   const jsonIsNone = json === undefined;
+
+  const toggleTrigger = () => {
+    json === undefined && setTrigger(!trigger);
+    return;
+  };
 
   useEffect(() => {
 
-    if (!myAddress || !structOpt || structOpt.isNone) return;
+    if (!myAddress || !structOpt || structOpt.isNone) return toggleTrigger();
 
     setStruct(structOpt.unwrap());
 
-    if (struct === undefined) return;
+    if (struct === undefined) return toggleTrigger();
 
+    console.log('Loading blog JSON from IPFS');
     getJsonFromIpfs<BlogData>(struct.ipfs_hash).then(json => {
       setJson(json);
     }).catch(err => console.log(err));
-  }); // TODO add guard for loading from ipfs
+  }, [ trigger ]);
 
   if (!myAddress || !structOpt || jsonIsNone) {
     return <em>Loading blog...</em>;

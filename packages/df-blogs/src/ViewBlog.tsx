@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { HashLink } from 'react-router-hash-link';
 import ReactMarkdown from 'react-markdown';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
@@ -8,20 +9,24 @@ import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr, queryBlogsToProp } from '@polkadot/df-utils/index';
-import { BlogId, Blog, PostId, BlogData } from './types';
+import { BlogId, Blog, PostId, BlogData } from '@dappforce/types/blogs';
 import { MyAccountProps, withMyAccount } from '@polkadot/df-utils/MyAccount';
 import Section from '@polkadot/df-utils/Section';
 import { ViewPost } from './ViewPost';
 import { CreatedBy } from './CreatedBy';
-import _ from 'lodash';
-import { BlogFollowersModal } from './AccountListModal';
+import { BlogFollowersModal } from './AccountsListModal';
 import { BlogHistoryModal } from './ListsEditHistory';
-import { Dropdown, Button } from 'semantic-ui-react';
+import { Dropdown } from 'semantic-ui-react';
 import { FollowBlogButton } from './FollowButton';
+import TxButton from '@polkadot/df-utils/TxButton';
+import { pluralizeText } from './utils';
+import { MutedSpan } from '@polkadot/df-utils/MutedText';
 
 type Props = MyAccountProps & {
   preview?: boolean,
   nameOnly?: boolean,
+  previewDetails?: boolean,
+  withFollowButton?: boolean,
   id: BlogId,
   blogById?: Option<Blog>,
   postIds?: PostId[],
@@ -37,6 +42,8 @@ function Component (props: Props) {
   const {
     preview = false,
     nameOnly = false,
+    previewDetails = false,
+    withFollowButton = false,
     myAddress,
     postIds = []
   } = props;
@@ -44,14 +51,16 @@ function Component (props: Props) {
   const blog = blogById.unwrap();
   const {
     id,
+    score,
     created: { account },
     ipfs_hash,
     followers_count
   } = blog;
   const followers = followers_count.toNumber();
-  const [ modalOpen, setModalOpen ] = useState(false);
   const [ content , setContent ] = useState({} as BlogData);
   const { desc, name, image } = content;
+
+  const [ followersOpen, setFollowersOpen ] = useState(false);
 
   useEffect(() => {
     if (!ipfs_hash) return;
@@ -97,9 +106,21 @@ function Component (props: Props) {
             {renderDropDownMenu()}
           </div>
           <div className='description'>
+            <MutedSpan>Score: {score.toNumber()}</MutedSpan>
             <ReactMarkdown className='DfMd' source={desc} linkTarget='_blank' />
           </div>
         </div>
+        {withFollowButton && <FollowBlogButton blogId={id} />}
+      </div>
+    </>;
+  };
+
+  const renderPreviewExtraDetails = () => {
+    return <>
+      <div className={`DfBlog-links ${isMyBlog && 'MyProfile'}`}>
+        <Link to='#' onClick={() => setFollowersOpen(true)} className={followers ? '' : 'disable'}>{pluralizeText(followers, 'Follower')}</Link>
+        {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'Follower')} />}
+        <HashLink to={`/blogs/${id}#posts`} className={postsCount ? '' : 'disable'}>{pluralizeText(postsCount, 'Post')}</HashLink>
       </div>
     </>;
   };
@@ -108,6 +129,11 @@ function Component (props: Props) {
     return renderNameOnly();
   } else if (preview) {
     return renderPreview();
+  } else if (previewDetails) {
+    return <>
+    {renderPreview()}
+    {renderPreviewExtraDetails()}
+    </>;
   }
 
   const renderPostPreviews = () => {
@@ -120,7 +146,7 @@ function Component (props: Props) {
 
   const postsSectionTitle = () => {
     return <>
-      <span style={{ marginRight: '.5rem' }}>Posts ({postsCount})</span>
+      <span style={{ marginRight: '.5rem' }}>{pluralizeText(postsCount, 'Post')}</span>
       <Link to={`/blogs/${id}/newPost`} className='ui tiny button'>
         <i className='plus icon' />
         Write post
@@ -134,9 +160,9 @@ function Component (props: Props) {
     </div>
     <CreatedBy created={blog.created} />
     <FollowBlogButton blogId={id} />
-    <Button basic onClick={() => setModalOpen(true)}>Followers ({followers})</Button>
-    {modalOpen && <BlogFollowersModal id={id} open={modalOpen} close={setModalOpen(false)} followersCount={followers} title='Followers' />}
-    <Section title={postsSectionTitle()}>
+    <TxButton isBasic={true} isPrimary={false} onClick={() => setFollowersOpen(true)} isDisabled={followers === 0}>{pluralizeText(followers, 'Follower')}</TxButton>
+    {followersOpen && <BlogFollowersModal id={id} accountsCount={blog.followers_count.toNumber()} open={followersOpen} close={() => setFollowersOpen(false)} title={pluralizeText(followers, 'Follower')} />}
+    <Section id='posts' title={postsSectionTitle()}>
       {renderPostPreviews()}
     </Section>
   </>;

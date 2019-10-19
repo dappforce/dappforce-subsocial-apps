@@ -11,11 +11,12 @@ import { api } from '@polkadot/ui-api';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { partition } from 'lodash';
-import { PostId, CommentId, Comment, OptionComment, Post, CommentData } from './types';
+import { PostId, CommentId, Comment, OptionComment, Post, CommentData } from '@dappforce/types/blogs';
 import { NewComment } from './EditComment';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
 import { Voter } from './Voter';
 import { CommentHistoryModal } from './ListsEditHistory';
+import ReactMarkdown from 'react-markdown';
 
 type Props = ApiProps & {
   postId: PostId,
@@ -38,7 +39,6 @@ function InnerCommentsByPost (props: Props) {
   const commentsCount = commentIds.length;// post.comments_count.toNumber();
   const [loaded, setLoaded] = useState(false);
   const [comments, setComments] = useState(new Array<Comment>());
-
   useEffect(() => {
     const loadComments = async () => {
       if (!commentsCount) return;
@@ -96,7 +96,7 @@ export function ViewComment (props: ViewCommentProps) {
   const { state: { address: myAddress } } = useMyAccount();
   const [parentComments, childrenComments] = partition(commentsWithParentId, (e) => e.parent_id.eq(comment.id));
 
-  const { id, created: { account, block, time } } = comment;
+  const { id, score, created: { account, block, time } } = comment;
   const [ struct , setStruct ] = useState(comment);
   const [ content , setContent ] = useState({} as CommentData);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -132,11 +132,12 @@ export function ViewComment (props: ViewCommentProps) {
 
   const renderDropDownMenu = () => {
     const [open, setOpen] = useState(false);
-
     const close = () => setOpen(false);
+
     return (<Dropdown icon='ellipsis horizontal'>
       <Dropdown.Menu>
         {(isMyStruct || showEditForm) && <Dropdown.Item text='Edit' onClick={() => setShowEditForm(true)} />}
+        <Dropdown.Item text='View edit history' onClick={() => setOpen(true)} />
         {open && <CommentHistoryModal id={id} open={open} close={close}/>}
       </Dropdown.Menu>
     </Dropdown>);
@@ -165,7 +166,7 @@ export function ViewComment (props: ViewCommentProps) {
               isShort={true}
               isPadded={false}
               size={28}
-              extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}`}
+              extraDetails={`${time.toLocaleString()} at block #${block.toNumber()}, comment score: ${score}` }
             />
             {renderDropDownMenu()}
           </SuiComment.Metadata>
@@ -179,7 +180,9 @@ export function ViewComment (props: ViewCommentProps) {
                 onSuccess={() => { setShowEditForm(false); setDoReloadComment(true); }}
               />
               : <>
-                <SuiComment.Text>{content.body}</SuiComment.Text>
+                <SuiComment.Text>
+                  <ReactMarkdown className='DfMd' source={content.body} linkTarget='_blank' />
+                </SuiComment.Text>
                 <SuiComment.Actions>
                   <SuiComment.Action>
                     {/* <ShareButtonComment commentId={id}/> */}

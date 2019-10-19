@@ -1,8 +1,8 @@
-import { Option, Struct, Enum } from '@polkadot/types/codec';
-import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32 } from '@polkadot/types';
+import { Option, Struct, Enum, EnumType } from '@polkadot/types/codec';
+import { getTypeRegistry, BlockNumber, Moment, AccountId, u16, u32, u64, Text, Vector, i32, Null } from '@polkadot/types';
 import moment from 'moment-timezone';
 
-export type IpfsData = CommentData | PostData | BlogData | ProfileData;
+export type IpfsData = CommentData | PostData | BlogData | ProfileData | SharedPostData;
 export type Activity = {
   id: number,
   account: string,
@@ -14,12 +14,37 @@ export type Activity = {
   date: Date,
   agg_count: number
 };
-export class IpfsHash extends Text {}
 export class BlogId extends u64 {}
-export class OptionIpfsHash extends Option.with(IpfsHash) {}
 export class PostId extends u64 {}
 export class CommentId extends u64 {}
 export class ReactionId extends u64 {}
+
+export class IpfsHash extends Text {}
+export class OptionIpfsHash extends Option.with(IpfsHash) {}
+
+export class RegularPost extends Null {}
+export class SharedPost extends PostId {}
+export class SharedComment extends CommentId {}
+
+export type PostExtensionEnum =
+  RegularPost |
+  SharedPost |
+  SharedComment;
+
+type PostExtensionEnumValue =
+  { RegularPost: RegularPost } |
+  { SharedPost: SharedPost } |
+  { SharedComment: SharedComment };
+
+export class PostExtension extends EnumType<PostExtensionEnumValue> {
+  constructor (value?: PostExtensionEnumValue, index?: number) {
+    super({
+      RegularPost,
+      SharedPost,
+      SharedComment
+    }, value, index);
+  }
+}
 
 export type ChangeType = {
   account: AccountId,
@@ -181,9 +206,12 @@ export class BlogUpdate extends Struct {
   }
 }
 
-export type PostData = {
+export type SharedPostData = {
+  body: string
+};
+
+export type PostData = SharedPostData & {
   title: string;
-  body: string;
   image: string;
   tags: string[];
 };
@@ -193,7 +221,7 @@ export type PostType = {
   blog_id: BlogId;
   created: ChangeType;
   updated: OptionChange;
-  slug: Text;
+  extension: PostExtension;
   ipfs_hash: IpfsHash;
   comments_count: u16;
   upvotes_count: u16;
@@ -211,7 +239,7 @@ export class Post extends Struct {
         blog_id: BlogId,
         created: Change,
         updated: OptionChange,
-        slug: Text,
+        extension: PostExtension,
         ipfs_hash: IpfsHash,
         comments_count: u16,
         upvotes_count: u16,
@@ -240,8 +268,8 @@ export class Post extends Struct {
     return this.get('updated') as OptionChange;
   }
 
-  get slug (): Text {
-    return this.get('slug') as Text;
+  get extension (): PostExtension {
+    return this.get('extension') as PostExtension;
   }
 
   get ipfs_hash (): string {
@@ -272,11 +300,22 @@ export class Post extends Struct {
   get score (): i32 {
     return this.get('score') as i32;
   }
+
+  get isRegularPost (): boolean {
+    return this.extension.value instanceof RegularPost;
+  }
+
+  get isSharedPost (): boolean {
+    return this.extension.value instanceof SharedPost;
+  }
+
+  get isSharedComment (): boolean {
+    return this.extension.value instanceof SharedComment;
+  }
 }
 
 export type PostUpdateType = {
   blog_id: OptionBlogId;
-  slug: OptionText;
   ipfs_hash: OptionIpfsHash;
 };
 
@@ -285,7 +324,6 @@ export class PostUpdate extends Struct {
     super(
       {
         blog_id: OptionBlogId,
-        slug: OptionText,
         ipfs_hash: OptionIpfsHash
       },
       value
@@ -294,10 +332,6 @@ export class PostUpdate extends Struct {
 
   get ipfs_hash (): OptionIpfsHash {
     return this.get('ipfs_hash') as OptionIpfsHash;
-  }
-
-  get slug (): OptionIpfsHash {
-    return this.get('slug') as OptionIpfsHash;
   }
 
   set ipfs_hash (value: OptionIpfsHash) {
@@ -514,6 +548,8 @@ export class SocialAccount extends Struct {
 export type ProfileData = {
   fullname: string;
   avatar: string;
+  email: string;
+  personal_site: string;
   about: string;
   facebook: string;
   twitter: string;
@@ -750,6 +786,7 @@ export function registerBlogsTypes () {
       Blog,
       BlogUpdate,
       BlogHistoryRecord,
+      PostExtension,
       Post,
       PostUpdate,
       PostHistoryRecord,

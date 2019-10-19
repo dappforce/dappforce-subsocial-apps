@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'semantic-ui-react';
 import { Form, Field, withFormik, FormikProps } from 'formik';
 import * as Yup from 'yup';
@@ -10,13 +10,14 @@ import TxButton from '@polkadot/df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
 import { withCalls, withMulti } from '@polkadot/ui-api/index';
 
-import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
+import { addJsonToIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '@polkadot/df-utils/forms';
-import { ProfileData, Profile, ProfileUpdate } from './types';
+import { ProfileData, Profile, ProfileUpdate, SocialAccount } from '@dappforce/types/blogs';
+import { withSocialAccount, withRequireProfile } from './utils';
 import { queryBlogsToProp } from '@polkadot/df-utils/index';
-import { withIdFromMyAddress, getNewIdFromEvent } from './utils';
-import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
-import { SocialAccount } from '@dappforce/types/blogs';
+import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
+
+import SimpleMDEReact from 'react-simplemde-editor';
 
 // TODO get next settings from Substrate:
 const USERNAME_REGEX = /^[A-Za-z0-9_-]+$/;
@@ -52,6 +53,11 @@ const buildSchema = (p: ValidationProps) => Yup.object().shape({
     .url('Avatar must be a valid URL.')
     .max(URL_MAX_LEN, `Avatar URL is too long. Maximum length is ${URL_MAX_LEN} chars.`),
 
+  email: Yup.string()
+    .email('Enter correct email address'),
+
+  personal_site: urlValidation('Personal site'),
+
   about: Yup.string()
     .max(ABOUT_MAX_LEN, `Text is too long. Maximum length is ${ABOUT_MAX_LEN} chars.`),
 
@@ -70,11 +76,13 @@ type ValidationProps = {
   // TODO get username validation params
 };
 
-export type OuterProps = ValidationProps & {
+export type OuterProps = MyAccountProps & ValidationProps & {
   history?: History,
-  id?: AccountId,
-  struct?: Profile,
-  json?: ProfileData
+  myAddress?: AccountId,
+  profile?: Profile,
+  profileData?: ProfileData,
+  socialAccount?: SocialAccount,
+  requireProfile?: boolean
 };
 
 type FormValues = ProfileData & {
@@ -89,12 +97,15 @@ const LabelledText = DfForms.LabelledText<FormValues>();
 
 const InnerForm = (props: FormProps) => {
   const {
-    id,
+    myAddress,
     history,
-    struct,
+    profile,
+    profileData,
     values,
+    errors,
     dirty,
     isValid,
+    setFieldValue,
     isSubmitting,
     setSubmitting,
     resetForm
@@ -104,6 +115,8 @@ const InnerForm = (props: FormProps) => {
     username,
     fullname,
     avatar,
+    email,
+    personal_site,
     about,
     facebook,
     twitter,
@@ -112,9 +125,12 @@ const InnerForm = (props: FormProps) => {
     instagram
   } = values;
 
-  const goToView = (id: AccountId) => {
-    if (history && id) {
-      history.push(`/blogs/accounts/${id.toString()}`);
+  console.log(profileData);
+  console.log(values);
+
+  const goToView = () => {
+    if (history && myAddress) {
+      history.push(`/blogs/accounts/${myAddress}`);
     }
   };
 
@@ -122,7 +138,7 @@ const InnerForm = (props: FormProps) => {
 
   const onSubmit = (sendTx: () => void) => {
     if (isValid) {
-      const json = { fullname, avatar, about, facebook, twitter, linkedIn, github, instagram };
+      const json = { fullname, avatar, email, personal_site, about, facebook, twitter, linkedIn, github, instagram };
       addJsonToIpfs(json).then(cid => {
         setIpfsCid(cid);
         sendTx();
@@ -142,17 +158,13 @@ const InnerForm = (props: FormProps) => {
 
   const onTxSuccess = (_txResult: SubmittableResult) => {
     setSubmitting(false);
-
-    if (!history) return;
-
-    const _id = id ? id : getNewIdFromEvent<AccountId>(_txResult);
-    _id && goToView(_id);
+    goToView();
   };
 
   const buildTxParams = () => {
     if (!isValid) return [];
 
-    if (!struct) {
+    if (!profile) {
       return [ username, ipfsCid ];
     } else {
       // TODO update only dirty values.
@@ -164,7 +176,7 @@ const InnerForm = (props: FormProps) => {
     }
   };
 
-  const title = struct ? `Edit profile` : `New profile`;
+  const title = profile ? `Edit profile` : `New profile`;
   const shouldBeValidUrlText = `Should be a valid URL.`;
 
   return (
@@ -190,6 +202,20 @@ const InnerForm = (props: FormProps) => {
         name='avatar'
         label='Avatar URL'
         placeholder={`Should be a valid image URL.`}
+        {...props}
+      />
+
+      <LabelledText
+        name='email'
+        label='Email'
+        placeholder='Enter your email'
+        {...props}
+      />
+
+      <LabelledText
+        name='personal_site'
+        label='Personal site'
+        placeholder='Address for personal site'
         {...props}
       />
 
@@ -229,20 +255,20 @@ const InnerForm = (props: FormProps) => {
       />
 
       <LabelledField name='about' label='About' {...props}>
-        <Field component='textarea' id='about' name='about' disabled={isSubmitting} rows={3} placeholder='Tell others something about yourself. You can use Markdown.' />
+        <Field component={SimpleMDEReact} name='about' value={about} onChange={(data: string) => setFieldValue('about', data)} className={`DfMdEditor ${errors['about'] && 'error'}`} />
       </LabelledField>
 
       <LabelledField {...props}>
         <TxButton
           type='submit'
           size='large'
-          label={struct
+          label={profile
             ? 'Update my profile'
             : 'Create my profile'
           }
           isDisabled={!dirty || isSubmitting}
           params={buildTxParams()}
-          tx={struct
+          tx={profile
             ? 'blogs.updateProfile'
             : 'blogs.createProfile'
           }
@@ -268,12 +294,12 @@ const EditForm = withFormik<OuterProps, FormValues>({
 
   // Transform outer props into form values
   mapPropsToValues: (props): FormValues => {
-    const { struct, json } = props;
-    if (struct && json) {
-      const username = struct.username.toString();
+    const { profile, profileData } = props;
+    if (profile && profileData) {
+      const username = profile.username.toString();
       return {
         username,
-        ...json
+        ...profileData
       };
     } else {
       return {
@@ -285,7 +311,9 @@ const EditForm = withFormik<OuterProps, FormValues>({
         twitter: '',
         linkedIn: '',
         github: '',
-        instagram: ''
+        instagram: '',
+        email: '',
+        personal_site: ''
       };
     }
   },
@@ -297,61 +325,18 @@ const EditForm = withFormik<OuterProps, FormValues>({
   }
 })(InnerForm);
 
-type LoadStructProps = OuterProps & {
-  socialAccountOpt: Option<SocialAccount>
-};
-
-type StructJson = ProfileData | undefined;
-
-type Struct = Profile | undefined;
-
-function LoadStruct (props: LoadStructProps) {
-
-  const { state: { address: myAddress } } = useMyAccount();
-  const { socialAccountOpt } = props;
-  const [ json, setJson ] = useState(undefined as StructJson);
-  const [ struct, setStruct ] = useState(undefined as Struct);
-  const jsonIsNone = json === undefined;
-
-  const loadingProfile = <em>Loading profile...</em>;
-  // const noProfile = <em>No profile for this account</em>;
-
-  useEffect(() => {
-    if (!myAddress || !socialAccountOpt || socialAccountOpt.isNone) return;
-
-    const socialAccount = socialAccountOpt.unwrap();
-    const profileOpt = socialAccount.profile;
-    if (profileOpt.isNone) return;
-
-    setStruct(profileOpt.unwrap() as Profile);
-
-    if (struct === undefined) return;
-
-    getJsonFromIpfs<ProfileData>(struct.ipfs_hash).then(json => {
-      setJson(json);
-    }).catch(err => console.log(err));
-  }); // TODO add guard for loading from ipfs
-
-  if (!myAddress || !socialAccountOpt || jsonIsNone) {
-    return loadingProfile;
-  }
-
-  if (socialAccountOpt.isNone) {
-    return <em>Profile not found...</em>;
-  }
-
-  return <EditForm {...props} struct={struct} json={json} />;
-}
-
 export const NewProfile = withMulti(
-  EditForm
+  EditForm,
+  withMyAccount
 );
 
 export const EditProfile = withMulti(
-  LoadStruct,
-  withIdFromMyAddress,
+  EditForm,
+  withMyAccount,
   withCalls<OuterProps>(
     queryBlogsToProp('socialAccountById',
-      { paramName: 'id', propName: 'socialAccountOpt' })
-  )
+      { paramName: 'myAddress', propName: 'socialAccountOpt' })
+  ),
+  withRequireProfile,
+  withSocialAccount
 );

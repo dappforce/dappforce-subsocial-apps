@@ -2,6 +2,7 @@ import React from 'react';
 import { BareProps } from '@polkadot/ui-app/types';
 
 type Props = BareProps & {
+  id?: string,
   className?: string,
   title?: JSX.Element | string,
   level?: number
@@ -10,11 +11,11 @@ type Props = BareProps & {
 export default class Section extends React.PureComponent<Props> {
 
   render () {
-    let { className, children } = this.props;
+    let { id, className, children } = this.props;
     className = (className || '') + ' DfSection';
 
     return (
-      <section className={className}>
+      <section id={id} className={className}>
         {this.renderTitle()}
         <div>{children}</div>
       </section>

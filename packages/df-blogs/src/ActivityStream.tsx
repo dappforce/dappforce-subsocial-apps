@@ -2,17 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import Section from '@polkadot/df-utils/Section';
 import { hexToNumber } from '@polkadot/util';
-import { PostId, CommentId, OptionComment, Comment, BlogId, Activity } from './types';
+import { PostId, CommentId, OptionComment, Comment, BlogId, Activity } from '@dappforce/types/blogs';
 import { ViewPost } from './ViewPost';
 import { Segment } from 'semantic-ui-react';
 import { api, withMulti } from '@polkadot/ui-api';
 import ViewBlog from './ViewBlog';
 import moment from 'moment-timezone';
 import { withMyAccount, MyAccountProps } from '@polkadot/df-utils/MyAccount';
-import ActivityStreamItem from './ActivityStreamItem';
 import { getNewsFeed, getNotifications, LIMIT } from './OffchainUtils';
 import { HashLink } from 'react-router-hash-link';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import AddressMiniDf from '@polkadot/ui-app/AddressMiniDf';
 
 type ActivityProps = {
   activity: Activity;
@@ -20,14 +20,16 @@ type ActivityProps = {
 
 const InnerViewNewsFeed = (props: MyAccountProps) => {
   const { myAddress } = props;
-  if (!myAddress) return <em>Opps...Incorect Account</em>;
+  if (!myAddress) return <em>Oops...Incorect Account</em>;
 
-  const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
+  const [ items, setItems ] = useState([] as Activity[]);
   const [ offset, setOffset ] = useState(0);
+  const [ hasMore, setHasMore ] = useState(true);
 
   const getNewsArray = async () => {
     const data = await getNewsFeed(myAddress, offset, LIMIT);
-    setMyFeeds(data);
+    if (data.length < LIMIT) setHasMore(false);
+    setItems(items.concat(data));
     setOffset(offset + LIMIT);
   };
 
@@ -37,25 +39,23 @@ const InnerViewNewsFeed = (props: MyAccountProps) => {
     getNewsArray().catch(err => new Error(err));
 
   },[false]);
-  const totalCount = myFeeds && myFeeds.length;
-  const NewsFeedArray = myFeeds.map((item, id) =>
+  const totalCount = items && items.length;
+  const NewsFeedArray = items.map((item, id) =>
     <ViewActivity key={id} activity={item}/>);
   return (
   <Section title={`News Feed (${totalCount})`}>{
-    <div id='newsFeedContainer' className='ui huge relaxed middle aligned divided list ProfilePreviews'>
-      {totalCount === 0
-      ? <em>News is not yet</em>
-      :
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={getNewsArray}
-        hasMore={true}
-        loader={<h4>Loading...</h4>}
-        scrollableTarget='newsFeedContainer'
-      >
-        {NewsFeedArray}
-      </InfiniteScroll>}
-    </div>
+    totalCount === 0
+    ? <em>News is not yet</em>
+    :
+    <InfiniteScroll
+      dataLength={totalCount}
+      next={getNewsArray}
+      hasMore={hasMore}
+      endMessage={<em>End</em>}
+      loader={<h4>Loading...</h4>}
+    >
+      {NewsFeedArray}
+    </InfiniteScroll>
   }</Section>
   );
 };
@@ -64,13 +64,14 @@ const InnerViewNotifications = (props: MyAccountProps) => {
   const { myAddress } = props;
   if (!myAddress) return <em>Opps...Incorect Account</em>;
 
-  const [ myFeeds, setMyFeeds ] = useState([] as Activity[]);
-
+  const [ items, setItems ] = useState([] as Activity[]);
+  const [ hasMore, setHasMore ] = useState(true);
   const [ offset, setOffset ] = useState(0);
 
   const getNotificationsArray = async () => {
     const data = await getNotifications(myAddress, offset, LIMIT);
-    setMyFeeds(data);
+    if (data.length < LIMIT) setHasMore(false);
+    setItems(items.concat(data));
     setOffset(offset + LIMIT);
   };
 
@@ -80,25 +81,23 @@ const InnerViewNotifications = (props: MyAccountProps) => {
     getNotificationsArray().catch(err => new Error(err));
   },[false]);
 
-  const totalCount = myFeeds && myFeeds.length;
-  const NotificationsArray = myFeeds.map((item, id) =>
+  const totalCount = items && items.length;
+  const NotificationsArray = items.map((item, id) =>
     <Notification key={id} activity={item}/>);
   return (
-  <Section title={`Notifications (${totalCount})`}>{
-    <div id='notificationsContainer' className='ui huge relaxed middle aligned divided list ProfilePreviews'>
-      {totalCount === 0
-      ? <em>News is not yet</em>
-      :
-      <InfiniteScroll
-        dataLength={totalCount}
-        next={getNotificationsArray}
-        hasMore={true}
-        loader={<h4>Loading...</h4>}
-        scrollableTarget='newsFeedContainer'
-      >
-        {NotificationsArray}
-      </InfiniteScroll>}
-    </div>
+  <Section title={`Notifications (${totalCount})`}>
+    {totalCount === 0
+    ? <em>News is not yet</em>
+    :
+    <InfiniteScroll
+      dataLength={totalCount}
+      next={getNotificationsArray}
+      hasMore={hasMore}
+      endMessage={<em>End</em>}
+      loader={<h4>Loading...</h4>}
+    >
+      {NotificationsArray}
+    </InfiniteScroll>
   }</Section>
   );
 };
@@ -106,7 +105,7 @@ const InnerViewNotifications = (props: MyAccountProps) => {
 function ViewActivity (props: ActivityProps) {
   const { activity } = props;
   const { post_id } = activity;
-  const postId = new PostId(hexToNumber('0x' + post_id));
+  const postId = new PostId(hexToNumber('0x' + post_id));// TODO create function
 
   return <ViewPost id={postId} preview/>;
 }
@@ -121,6 +120,7 @@ function Notification (props: ActivityProps) {
 
   enum Events {
     AccountFollowed = 'followed your account',
+    PostShared = 'shared yout post',
     BlogFollowed = 'followed your blog',
     BlogCreated = 'created blog',
     CommentCreated = 'commented your post',
@@ -167,6 +167,13 @@ function Notification (props: ActivityProps) {
           setSubject(<><HashLink to={`/blogs/posts/${postId.toString()}#comment-${comment_id}`}><ViewPost id={postId} withCreatedBy={false} nameOnly withLink={false}/></HashLink></>);
           break;
         }
+        case 'PostShared' : {
+          console.log('shared');
+          postId = new PostId(hexToNumber('0x' + post_id));
+          setMessage(Events.PostShared);
+          setSubject(<ViewPost id={postId} withCreatedBy={false} nameOnly/>);
+          break;
+        }
         case 'PostReactionCreated': {
           postId = new PostId(hexToNumber('0x' + post_id));
           setMessage(Events.PostReactionCreated);
@@ -190,7 +197,7 @@ function Notification (props: ActivityProps) {
   }, [ postId > new PostId(0) ]);
 
   return <Segment className='DfActivity'>
-    <ActivityStreamItem
+    <AddressMiniDf
       value={account}
       isShort={true}
       isPadded={false}
@@ -199,6 +206,7 @@ function Notification (props: ActivityProps) {
       event={message}
       subject={subject}
       count={agg_count}
+      asActivity
     />
   </Segment>;
 }
