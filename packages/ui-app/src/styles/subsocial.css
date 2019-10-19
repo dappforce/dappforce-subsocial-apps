@@ -200,7 +200,7 @@
   margin-top: .5rem;
 }
 
-#simplemde-editor-1-wrapper {
+.DfMdEditor {
   .CodeMirror-scroll {
     min-height: 5rem !important;
   }
