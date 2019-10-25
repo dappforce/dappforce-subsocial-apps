@@ -36,7 +36,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const pkgJson = require('../../package.json');
+const pkgJson = require('../../../package.json');
 
 class NodeInfo extends React.PureComponent<Props> {
   render () {

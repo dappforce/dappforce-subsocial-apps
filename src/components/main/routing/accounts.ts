@@ -4,7 +4,7 @@
 
 import { Routes } from '../types';
 
-import Accounts from '../../../components/app-accounts';
+import Accounts from '../../app-accounts';
 
 export default ([
   {

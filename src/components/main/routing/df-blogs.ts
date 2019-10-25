@@ -1,6 +1,6 @@
 import { Routes } from '../types';
 
-import Blogs from '../../../components/df-blogs/index';
+import Blogs from '../../df-blogs/index';
 
 export default ([
   {

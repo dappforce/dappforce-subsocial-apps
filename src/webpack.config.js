@@ -11,8 +11,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { WebpackPluginServe } = require('webpack-plugin-serve');
 
-const findPackages = require('../../scripts/findPackages'); // Do we need to add df- apps in that script?
-
 const DEFAULT_THEME = 'substrate';
 
 function createWebpack ({ alias = {}, context, name = 'index' }) {
@@ -28,7 +26,7 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
     context,
     devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
     entry: [
-      `./src/${name}.tsx`,
+      `./${name}.tsx`,
       isProd
         ? null
         : 'webpack-plugin-serve/client'
@@ -196,10 +194,5 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
 }
 
 module.exports = createWebpack({
-  context: __dirname,
-  alias: findPackages().reduce((alias, { dir, name }) => {
-    alias[name] = path.resolve(__dirname, `../${dir}/src`);
-
-    return alias;
-  }, {})
+  context: __dirname
 });

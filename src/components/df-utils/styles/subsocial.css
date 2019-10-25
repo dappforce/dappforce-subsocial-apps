@@ -61,12 +61,13 @@
   .ui--AddressMini-details {
     display: block;
     text-align: left;
+    float: left;
     color: #999999;
     font-size: .8rem!important
   }
   .ui--AddressSummary-name,
   .ui--AddressSummary-balance {
-    display: inline-block;
+    display: block;
     margin-top: 0;
     padding-top: 0;
     font-size: .80rem !important;
@@ -74,6 +75,7 @@
     font-weight: 100;
     opacity: .80;
     overflow: hidden;
+    float: left;
   }
 }
 

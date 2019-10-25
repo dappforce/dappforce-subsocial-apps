@@ -10,14 +10,14 @@ import store from 'store';
 import styled, { ThemeProvider } from 'styled-components';
 import { media } from '@polkadot/ui-app';
 import { classes } from '@polkadot/ui-app/util';
-import Signer from '../../components/ui-signer/';
+import Signer from '../ui-signer';
 
 import { hot } from 'react-hot-loader/root';
 
 import Connecting from './Connecting';
 import Content from './Content';
 import SideBar from './SideBar';
-import settings from '../../components/df-settings';
+import settings from '../df-settings';
 
 type Props = BareProps & {};
 
