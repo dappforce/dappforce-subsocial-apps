@@ -1,6 +1,6 @@
 import React from 'react';
-import { Bubble, InputAddress, Labelled } from '@polkadot/ui-app/index';
-import { AccountIndex, Balance, Nonce } from '@polkadot/ui-reactive/index';
+import { Bubble, InputAddress, Labelled } from '@polkadot/ui-app';
+import { AccountIndex, Balance, Nonce } from '@polkadot/ui-reactive';
 
 type Props = {
   label?: string,

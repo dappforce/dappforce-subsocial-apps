@@ -7,7 +7,7 @@ import yargs from 'yargs';
 import chalk from 'chalk';
 import { u8aToHex } from '@polkadot/util';
 
-import generator from '.';
+import generator from '../vanitygen';
 import matchRegex from './regex';
 
 type Best = {

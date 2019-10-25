@@ -11,13 +11,13 @@ import { ComponentProps } from './types';
 import React from 'react';
 import { AddressSummary, Button, Input, InputAddress, Labelled, Dropdown } from '@polkadot/ui-app';
 import keyring from '@polkadot/ui-keyring';
-import uiSettings from '../../df-settings/';
+import uiSettings from '../df-settings/';
 
 import Backup from './Backup';
 import ChangePass from './ChangePass';
 import Forgetting from './Forgetting';
 import translate from './translate';
-import { MyAccountContext, MyAccountContextProps } from '../../df-utils/MyAccountContext';
+import { MyAccountContext, MyAccountContextProps } from '../df-utils/MyAccountContext';
 
 type Props = ComponentProps & I18nProps & {
   allAccounts?: SubjectInfo

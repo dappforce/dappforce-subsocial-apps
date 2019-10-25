@@ -2,10 +2,10 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import settings from '../../df-settings';
+import settings from '../../components/df-settings';
 import '@polkadot/ui-app/i18n';
-import '../../df-utils/styles';
-import '../../df-blogs/subsocial.css';
+import '../../components/df-utils/styles';
+import '../../components/df-blogs/subsocial.css';
 
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
@@ -17,7 +17,7 @@ import { Api } from '@polkadot/ui-api';
 import { QueueConsumer } from '@polkadot/ui-app/Status/Context';
 import Queue from '@polkadot/ui-app/Status/Queue';
 import Apps from './Apps';
-import { registerDfTypes } from '../../df-types';
+import { registerDfTypes } from '../../components/df-types';
 
 const rootId = 'root';
 const rootElement = document.getElementById(rootId);

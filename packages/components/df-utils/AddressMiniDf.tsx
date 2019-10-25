@@ -1,10 +1,10 @@
 
-import { BareProps } from '../ui-app/types';
+import { BareProps } from '@polkadot/ui-app/types';
 
 import BN from 'bn.js';
 import React, { useState } from 'react';
 import { AccountId, AccountIndex, Address, Balance, Option } from '@polkadot/types';
-import { withCall, withMulti, withCalls } from '@polkadot/ui-api/index';
+import { withCall, withMulti, withCalls } from '@polkadot/ui-api';
 
 import classes from '@polkadot/ui-app/util/classes';
 import toShortAddress from '@polkadot/ui-app/util/toShortAddress';
