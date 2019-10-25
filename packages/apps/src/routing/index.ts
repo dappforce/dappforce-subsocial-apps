@@ -8,47 +8,17 @@ import appSettings from '@polkadot/df-settings/';
 
 import blogs from './df-blogs';
 
-import template from './123code';
 import accounts from './accounts';
-import addressbook from './addressbook';
-import explorer from './explorer';
-import extrinsics from './extrinsics';
-import js from './js';
-import settings from './settings';
-import staking from './staking';
-import storage from './storage';
-import toolbox from './toolbox';
-import transfer from './transfer';
 
 const routes: Routes = appSettings.isBasicMode
   ? ([] as Routes).concat(
-    explorer,
-    staking,
-    transfer,
     null,
     blogs,
-    accounts,
-    addressbook,
-    null,
-    settings,
-    template
+    accounts
   )
   : ([] as Routes).concat(
-    explorer,
-    staking,
-    transfer,
-    null,
     blogs,
     accounts,
-    addressbook,
-    null,
-    storage,
-    extrinsics,
-    null,
-    settings,
-    toolbox,
-    js,
-    template
   );
 
 export default ({
