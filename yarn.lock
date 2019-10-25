@@ -2140,7 +2140,7 @@
     "@polkadot/api" "^0.77.1"
     rxjs-compat "^6.3.2"
 
-"@polkadot/ui-app@0.32.0-beta.6", "@polkadot/ui-app@^0.32.0-beta.6":
+"@polkadot/ui-app@0.32.0-beta.6", "@polkadot/ui-app@^0.32.0-beta.6", "@polkadot/ui-app@^0.32.1":
   version "0.32.1"
   resolved "https://registry.yarnpkg.com/@polkadot/ui-app/-/ui-app-0.32.1.tgz#281fdf28b47721941d2cd94be34583acc884e665"
   integrity sha512-+bVH+NeRRsjcYGNOp28GSXnLi9q6NeAt19ExMjCWf05HDQ0/aa1y5ZX3lpsqHZY6Ccq65SbgBwzi1buL8qADGA==
@@ -2207,6 +2207,14 @@
     "@types/store" "^2.0.1"
     store "^2.0.12"
     styled-components "^4.2.0"
+
+"@polkadot/ui-params@^0.32.0-beta.6":
+  version "0.32.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/ui-params/-/ui-params-0.32.1.tgz#c7f0d830d91f1debe4cecc4ec46a55370b656820"
+  integrity sha512-D3ewoKerOwNwZtAkbikNMYAOvlKiWnN8jKkdC14ADFjspOdAK8XvMJmhDu0ApZIgQIDsxAZDfB2biznvwHg/NQ==
+  dependencies:
+    "@babel/runtime" "^7.4.3"
+    "@polkadot/ui-app" "^0.32.1"
 
 "@polkadot/ui-reactive@^0.32.1":
   version "0.32.1"
