@@ -7,7 +7,7 @@ import { Props as BareProps, RawParam } from '../types';
 
 import React from 'react';
 import { Static } from '@polkadot/ui-app';
-import translate from '@polkadot/ui-app/translate';
+import translate from '@polkadot/ui-app/src/translate';
 
 import Bare from './Bare';
 import BaseBytes from './BaseBytes';

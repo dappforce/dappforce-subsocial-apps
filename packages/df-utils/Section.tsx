@@ -1,5 +1,5 @@
 import React from 'react';
-import { BareProps } from '@polkadot/ui-app/types';
+import { BareProps } from '@polkadot/ui-app/src/types';
 
 type Props = BareProps & {
   id?: string,

@@ -6,7 +6,7 @@ import { BareProps, BitLength } from './types';
 
 import BN from 'bn.js';
 import React from 'react';
-import { BitLengthOption } from '@polkadot/ui-app/constants';
+import { BitLengthOption } from '@polkadot/ui-app/src/constants';
 import { InputNumber } from '@polkadot/ui-app';
 
 type Props = BareProps & {

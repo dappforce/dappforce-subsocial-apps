@@ -7,8 +7,8 @@ import { I18nProps } from './types';
 import BN from 'bn.js';
 import React from 'react';
 import { AccountId, AccountIndex, Address } from '@polkadot/types';
-import { Nonce } from '@polkadot/ui-reactive';
-import { withCalls } from '@polkadot/ui-api';
+import { Nonce } from '@polkadot/ui-reactive/src';
+import { withCalls } from '@polkadot/ui-api/src';
 import BaseIdentityIcon from '@polkadot/ui-identicon';
 
 import { classes, toShortAddress } from './util';

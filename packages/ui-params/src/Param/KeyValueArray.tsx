@@ -7,7 +7,7 @@ import { Props as BaseProps, RawParam } from '../types';
 
 import React from 'react';
 import { KeyValue as Pair, Vector } from '@polkadot/types';
-import translate from '@polkadot/ui-app/translate';
+import translate from '@polkadot/ui-app/src/translate';
 import { assert, isHex, u8aToHex, u8aToString } from '@polkadot/util';
 
 import Base from './Base';

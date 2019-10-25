@@ -3,14 +3,14 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
-import { QueueTx$ExtrinsicAdd, QueueTx$MessageSetStatus } from '@polkadot/ui-app/Status/types';
+import { QueueTx$ExtrinsicAdd, QueueTx$MessageSetStatus } from '@polkadot/ui-app/src/Status/types';
 import { ApiProps } from './types';
 
 import React from 'react';
 import ApiPromise from '@polkadot/api/promise';
 import defaults from '@polkadot/rpc-provider/defaults';
 import { WsProvider } from '@polkadot/rpc-provider';
-import { InputNumber } from '@polkadot/ui-app/InputNumber';
+import { InputNumber } from '@polkadot/ui-app/src/InputNumber';
 import keyring from '@polkadot/ui-keyring';
 import ApiSigner from '@polkadot/ui-signer/ApiSigner';
 import { ChainProperties } from '@polkadot/types';

@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { Option, AccountId } from '@polkadot/types';
-import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
+import IdentityIcon from '@polkadot/ui-app/src/IdentityIcon';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr, queryBlogsToProp } from '../df-utils/index';

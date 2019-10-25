@@ -2,22 +2,22 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/ui-app/types';
-import { ActionStatus } from '@polkadot/ui-app/Status/types';
+import { I18nProps } from '@polkadot/ui-app/src/types';
+import { ActionStatus } from '@polkadot/ui-app/src/Status/types';
 import { KeypairType } from '@polkadot/util-crypto/types';
 import { ComponentProps } from './types';
 
 import FileSaver from 'file-saver';
 import React from 'react';
-import { AddressSummary, Button, Dropdown, Input, Labelled, Modal, Password } from '@polkadot/ui-app';
-import { InputAddress } from '@polkadot/ui-app/InputAddress';
+import { AddressSummary, Button, Dropdown, Input, Labelled, Modal, Password } from '../../ui-app/src';
+import { InputAddress } from '@polkadot/ui-app/src/InputAddress';
 import keyring from '@polkadot/ui-keyring';
-import uiSettings from '../../df-settings/';
+import uiSettings from '../../df-settings';
 import { isHex, u8aToHex } from '@polkadot/util';
 import { keyExtractPath, mnemonicGenerate, mnemonicValidate, randomAsU8a } from '@polkadot/util-crypto';
 
 import translate from './translate';
-import { isEmptyStr } from '../../df-utils/';
+import { isEmptyStr } from '../../df-utils';
 
 type Props = ComponentProps & I18nProps & {
   match: {

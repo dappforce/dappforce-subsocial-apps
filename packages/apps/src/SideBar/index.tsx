@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/ui-app/types';
+import { I18nProps } from '@polkadot/ui-app/src/types';
 import { SIDEBAR_MENU_THRESHOLD } from '../constants';
 
 import './SideBar.css';
@@ -10,9 +10,9 @@ import './SideBar.css';
 import React from 'react';
 import styled from 'styled-components';
 import { Responsive } from 'semantic-ui-react';
-import { Button, Menu, media } from '@polkadot/ui-app';
-import { classes } from '@polkadot/ui-app/util';
-import { logoBackground, logoPadding } from '@polkadot/ui-app/styles/theme';
+import { Button, Menu, media } from '@polkadot/ui-app/src';
+import { classes } from '@polkadot/ui-app/src/util';
+import { logoBackground, logoPadding } from '@polkadot/ui-app/src/styles/theme';
 
 import routing from '../routing';
 import translate from '../translate';

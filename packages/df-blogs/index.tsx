@@ -3,10 +3,10 @@ import BN from 'bn.js';
 import React, { PureComponent } from 'react';
 import { Route, Switch } from 'react-router';
 
-import { AppProps, I18nProps } from '@polkadot/ui-app/types';
+import { AppProps, I18nProps } from '@polkadot/ui-app/src/types';
 import { ApiProps } from '@polkadot/ui-api/types';
 import { withCalls, withMulti } from '@polkadot/ui-api/with';
-import Tabs, { TabItem } from '@polkadot/ui-app/Tabs';
+import Tabs, { TabItem } from '@polkadot/ui-app/src/Tabs';
 
 import './index.css';
 import 'easymde/dist/easymde.min.css';

@@ -2,22 +2,22 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { BareProps } from '@polkadot/ui-app/types';
+import { BareProps } from '@polkadot/ui-app/src/types';
 import { SideBarTransition, SIDEBAR_TRANSITION_DURATION, SIDEBAR_MENU_THRESHOLD } from './constants';
 
 import React from 'react';
 import store from 'store';
 import styled, { ThemeProvider } from 'styled-components';
-import { media } from '@polkadot/ui-app';
-import { classes } from '@polkadot/ui-app/util';
-import Signer from '@polkadot/ui-signer';
+import { media } from '@polkadot/ui-app/src';
+import { classes } from '@polkadot/ui-app/src/util';
+import Signer from '@polkadot/ui-signer/src';
 
 import { hot } from 'react-hot-loader/root';
 
 import Connecting from './Connecting';
 import Content from './Content';
 import SideBar from './SideBar';
-import settings from '../../df-settings/';
+import settings from '../../df-settings';
 
 type Props = BareProps & {};
 

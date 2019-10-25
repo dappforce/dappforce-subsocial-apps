@@ -5,7 +5,7 @@
 import './Params.css';
 
 import React from 'react';
-import { classes } from '@polkadot/ui-app/util';
+import { classes } from '@polkadot/ui-app/src/util';
 import { isNull, isUndefined, u8aToHex } from '@polkadot/util';
 import { Option, U8a } from '@polkadot/types';
 

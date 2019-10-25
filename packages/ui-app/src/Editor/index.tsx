@@ -2,10 +2,10 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { BareProps } from '@polkadot/ui-app/types';
+import { BareProps } from '@polkadot/ui-app/src/types';
 
 import React from 'react';
-import { classes } from '@polkadot/ui-app/util';
+import { classes } from '@polkadot/ui-app/src/util';
 import CodeFlask from 'codeflask';
 
 import './style.css';

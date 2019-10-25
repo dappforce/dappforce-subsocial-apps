@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 import React from 'react';
-import { InputBalance, Bubble } from '@polkadot/ui-app/index';
+import { InputBalance, Bubble } from '@polkadot/ui-app/src/index';
 import { formatBalance } from '@polkadot/util';
 
 type Props = {

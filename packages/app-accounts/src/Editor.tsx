@@ -3,13 +3,13 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { KeyringPair } from '@polkadot/keyring/types';
-import { I18nProps } from '@polkadot/ui-app/types';
-import { ActionStatus } from '@polkadot/ui-app/Status/types';
+import { I18nProps } from '@polkadot/ui-app/src/types';
+import { ActionStatus } from '@polkadot/ui-app/src/Status/types';
 import { SubjectInfo } from '@polkadot/ui-keyring/observable/types';
 import { ComponentProps } from './types';
 
 import React from 'react';
-import { AddressSummary, Button, Input, InputAddress, Labelled, Dropdown } from '@polkadot/ui-app';
+import { AddressSummary, Button, Input, InputAddress, Labelled, Dropdown } from '../../ui-app/src';
 import keyring from '@polkadot/ui-keyring';
 import uiSettings from '../../df-settings/';
 

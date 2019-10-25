@@ -2,8 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/ui-app/types';
-import { QueueTx } from '@polkadot/ui-app/Status/types';
+import { I18nProps } from '@polkadot/ui-app/src/types';
+import { QueueTx } from '@polkadot/ui-app/src/Status/types';
 
 import React from 'react';
 import { Method } from '@polkadot/types';

@@ -2,13 +2,13 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { BareProps } from './types';
+import { BareProps } from '@polkadot/ui-app/src/types';
 
 import React from 'react';
 import SUIModal from 'semantic-ui-react/dist/commonjs/modules/Modal/Modal';
-import settings from '../../df-settings/index';
+import settings from '../df-settings';
 
-import { classes } from './util';
+import { classes } from '@polkadot/ui-app/src/util';
 
 type Props = BareProps & {
   children: React.ReactNode,

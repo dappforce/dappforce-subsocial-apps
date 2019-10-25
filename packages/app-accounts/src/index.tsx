@@ -2,9 +2,9 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import uiSettings from '../../df-settings/';
-import { AppProps, I18nProps } from '@polkadot/ui-app/types';
-import { TabItem } from '@polkadot/ui-app/Tabs';
+import uiSettings from '../../df-settings';
+import { AppProps, I18nProps } from '@polkadot/ui-app/src/types';
+import { TabItem } from '@polkadot/ui-app/src/Tabs';
 import { SubjectInfo } from '@polkadot/ui-keyring/observable/types';
 import { ComponentProps, LocationProps } from './types';
 
@@ -13,8 +13,8 @@ import './index.css';
 import React from 'react';
 import { Route, Switch } from 'react-router';
 import accountObservable from '@polkadot/ui-keyring/observable/accounts';
-import { Tabs } from '@polkadot/ui-app';
-import { withMulti, withObservable } from '@polkadot/ui-api';
+import { Tabs } from '@polkadot/ui-app/src';
+import { withMulti, withObservable } from '@polkadot/ui-api/src';
 
 import Creator from './Creator';
 import Editor from './Editor';

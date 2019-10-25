@@ -30,7 +30,7 @@ export { default as InputRpc } from './InputRpc';
 export { default as InputStorage } from './InputStorage';
 export { default as Labelled } from './Labelled';
 export { default as Menu } from './Menu';
-export { default as Modal } from './Modal';
+export { default as Modal } from '../../df-utils/Modal';
 export { default as Output } from './Output';
 export { default as Password } from './Password';
 export { default as Progress } from './Progress';

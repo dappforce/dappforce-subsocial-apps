@@ -8,7 +8,7 @@ import { Props as BareProps, RawParam } from '../types';
 
 import React from 'react';
 import { Button } from '@polkadot/ui-app';
-import translate from '@polkadot/ui-app/translate';
+import translate from '@polkadot/ui-app/src/translate';
 import { isUndefined } from '@polkadot/util';
 
 import getInitValue from '../initValue';

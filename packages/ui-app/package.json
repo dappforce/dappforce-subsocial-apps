@@ -15,7 +15,6 @@
     "@polkadot/ui-identicon": "^0.38.0-beta.2",
     "@polkadot/ui-keyring": "^0.38.0-beta.2",
     "@polkadot/ui-reactive": "^0.32.0-beta.6",
-    "../../df-settings": "^1.0.0",
     "@types/chart.js": "^2.7.45",
     "@types/classnames": "^2.2.7",
     "@types/i18next": "^12.1.0",
