@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { History } from 'history';
 import TxButton from '../df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
-import { withCalls, withMulti } from '@polkadot/ui-api/src/with';
+import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
 import { addJsonToIpfs, getJsonFromIpfs } from './OffchainUtils';
 import * as DfForms from '../df-utils/forms';

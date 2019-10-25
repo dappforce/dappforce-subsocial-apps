@@ -3,11 +3,11 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { KeyringPair } from '@polkadot/keyring/types';
-import { I18nProps } from '@polkadot/ui-app/src/types';
+import { I18nProps } from '@polkadot/ui-app/types';
 
 import React from 'react';
-import { AddressSummary, Button, Modal, Password } from '@polkadot/ui-app/src';
-import { ActionStatus } from '@polkadot/ui-app/src/Status/types';
+import { AddressSummary, Button, Modal, Password } from '@polkadot/ui-app';
+import { ActionStatus } from '@polkadot/ui-app/Status/types';
 import keyring from '@polkadot/ui-keyring';
 
 import translate from './translate';

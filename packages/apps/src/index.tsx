@@ -3,8 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import settings from '../../df-settings';
-import '@polkadot/ui-app/src/i18n';
-import '@polkadot/ui-app/src/styles';
+import '@polkadot/ui-app/i18n';
+import '@polkadot/ui-app/styles';
 import '../../df-blogs/subsocial.css';
 
 import React, { Suspense } from 'react';
@@ -12,10 +12,10 @@ import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import store from 'store';
 import { getTypeRegistry } from '@polkadot/types';
-import { Api } from '@polkadot/ui-api/src';
+import { Api } from '@polkadot/ui-api';
 
-import { QueueConsumer } from '@polkadot/ui-app/src/Status/Context';
-import Queue from '@polkadot/ui-app/src/Status/Queue';
+import { QueueConsumer } from '@polkadot/ui-app/Status/Context';
+import Queue from '@polkadot/ui-app/Status/Queue';
 import Apps from './Apps';
 import { registerDfTypes } from '../../df-types';
 

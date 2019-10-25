@@ -1,16 +1,16 @@
-// Copyright 2017-2019 @polkadot/ui-app/src authors & contributors
+// Copyright 2017-2019 @polkadot/ui-app authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { TypeDef } from '@polkadot/types';
-import { I18nProps } from '@polkadot/ui-app/src/types';
+import { I18nProps } from '@polkadot/ui-app/types';
 import { ComponentMap, RawParams, RawParam$OnChange, RawParam$OnChange$Value } from './types';
 
 import './Params.css';
 
 import React from 'react';
-import { classes } from '@polkadot/ui-app/src/util';
-import translate from '@polkadot/ui-app/src/translate';
+import { classes } from '@polkadot/ui-app/util';
+import translate from '@polkadot/ui-app/translate';
 
 import Param from './Param';
 import createValues from './values';

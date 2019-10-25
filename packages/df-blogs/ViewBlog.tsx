@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import ReactMarkdown from 'react-markdown';
 
-import { withCalls, withMulti } from '@polkadot/ui-api/src/with';
+import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { Option, AccountId } from '@polkadot/types';
-import IdentityIcon from '@polkadot/ui-app/src/IdentityIcon';
+import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { nonEmptyStr, queryBlogsToProp } from '../df-utils/index';

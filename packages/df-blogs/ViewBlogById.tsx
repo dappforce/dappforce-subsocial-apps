@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { I18nProps } from '@polkadot/ui-app/src/types';
+import { I18nProps } from '@polkadot/ui-app/types';
 
 import translate from './translate';
 import ViewBlog from './ViewBlog';

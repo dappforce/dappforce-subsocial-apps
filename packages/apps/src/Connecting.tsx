@@ -2,12 +2,12 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/ui-app/src/types';
-import { ApiProps } from '@polkadot/ui-api/src/types';
+import { I18nProps } from '@polkadot/ui-app/types';
+import { ApiProps } from '@polkadot/ui-api/types';
 
 import React from 'react';
 import styled from 'styled-components';
-import { withApi, withMulti } from '@polkadot/ui-api/src';
+import { withApi, withMulti } from '@polkadot/ui-api';
 import settings from '../../df-settings/';
 
 import translate from './translate';

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-import { withCalls, withMulti } from '@polkadot/ui-api/src/with';
+import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { queryBlogsToProp } from '../df-utils/index';
 import { Modal, Button, Tab } from 'semantic-ui-react';
 import { Option } from '@polkadot/types';
 import AddressMini from '../df-utils/AddressMiniDf';
 import { ReactionId, Reaction, CommentId, PostId } from '../df-types/blogs';
-import { api } from '@polkadot/ui-api/src/Api';
+import { api } from '@polkadot/ui-api/Api';
 
 type VotersProps = {
   id: CommentId | PostId,

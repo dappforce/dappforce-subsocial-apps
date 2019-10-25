@@ -1,4 +1,4 @@
-// Copyright 2017-2019 @polkadot/ui-app/src authors & contributors
+// Copyright 2017-2019 @polkadot/ui-app authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -7,8 +7,8 @@ import { TypeDef } from '@polkadot/types';
 import { Props as BareProps, RawParam } from '../types';
 
 import React from 'react';
-import { Button } from '@polkadot/ui-app/src';
-import translate from '@polkadot/ui-app/src/translate';
+import { Button } from '@polkadot/ui-app';
+import translate from '@polkadot/ui-app/translate';
 import { isUndefined } from '@polkadot/util';
 
 import getInitValue from '../initValue';

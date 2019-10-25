@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { withCalls, withMulti } from '@polkadot/ui-api/src/with';
+import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
 import { queryBlogsToProp } from '../df-utils/index';
 import { Modal, Button } from 'semantic-ui-react';

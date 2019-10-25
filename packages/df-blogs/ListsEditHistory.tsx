@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { withMulti, withCalls } from '@polkadot/ui-api/src/with';
+import { withMulti, withCalls } from '@polkadot/ui-api/with';
 import { Modal, Comment as SuiComment, Button } from 'semantic-ui-react';
 import AddressMini from '../df-utils/AddressMiniDf';
 import { Post, Blog, PostId, PostData, BlogData, BlogId, CommentId, CommentData, Comment, OptionComment, BlogHistoryRecord, CommentHistoryRecord, PostHistoryRecord, VecBlogHistoryRecord, VecPostHistoryRecord, ProfileHistoryRecord, ProfileData, Profile, VecProfileHistoryRecord, SocialAccount, OptionText } from '../df-types/blogs';

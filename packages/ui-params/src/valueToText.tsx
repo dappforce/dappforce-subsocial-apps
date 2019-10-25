@@ -1,11 +1,11 @@
-// Copyright 2017-2019 @polkadot/ui-app/src authors & contributors
+// Copyright 2017-2019 @polkadot/ui-app authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import './Params.css';
 
 import React from 'react';
-import { classes } from '@polkadot/ui-app/src/util';
+import { classes } from '@polkadot/ui-app/util';
 import { isNull, isUndefined, u8aToHex } from '@polkadot/util';
 import { Option, U8a } from '@polkadot/types';
 

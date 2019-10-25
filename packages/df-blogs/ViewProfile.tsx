@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
-import { withCalls, withMulti } from '@polkadot/ui-api/src/with';
+import { withCalls, withMulti } from '@polkadot/ui-api/with';
 import { AccountId } from '@polkadot/types';
-import IdentityIcon from '@polkadot/ui-app/src/IdentityIcon';
+import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 
 import { nonEmptyStr, queryBlogsToProp } from '../df-utils/index';
 import { SocialAccount, ProfileData, Profile } from '../df-types/blogs';

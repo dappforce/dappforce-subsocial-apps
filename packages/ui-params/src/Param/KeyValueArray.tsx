@@ -1,4 +1,4 @@
-// Copyright 2017-2019 @polkadot/ui-app/src authors & contributors
+// Copyright 2017-2019 @polkadot/ui-app authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -7,7 +7,7 @@ import { Props as BaseProps, RawParam } from '../types';
 
 import React from 'react';
 import { KeyValue as Pair, Vector } from '@polkadot/types';
-import translate from '@polkadot/ui-app/src/translate';
+import translate from '@polkadot/ui-app/translate';
 import { assert, isHex, u8aToHex, u8aToString } from '@polkadot/util';
 
 import Base from './Base';

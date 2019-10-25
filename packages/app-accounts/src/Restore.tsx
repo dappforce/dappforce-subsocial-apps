@@ -3,17 +3,17 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { KeyringPair$Json } from '@polkadot/keyring/types';
-import { I18nProps } from '@polkadot/ui-app/src/types';
+import { I18nProps } from '@polkadot/ui-app/types';
 import { ComponentProps } from './types';
 
 import React from 'react';
-import { AddressSummary, Button, InputFile, Password } from '@polkadot/ui-app/src';
-import { InputAddress } from '@polkadot/ui-app/src/InputAddress';
+import { AddressSummary, Button, InputFile, Password } from '@polkadot/ui-app';
+import { InputAddress } from '@polkadot/ui-app/InputAddress';
 import { isHex, isObject, u8aToString } from '@polkadot/util';
 import keyring from '@polkadot/ui-keyring';
 
 import translate from './translate';
-import { ActionStatus } from '@polkadot/ui-app/src/Status/types';
+import { ActionStatus } from '@polkadot/ui-app/Status/types';
 import { isEmptyStr } from '../../df-utils/';
 
 type Props = ComponentProps & I18nProps;

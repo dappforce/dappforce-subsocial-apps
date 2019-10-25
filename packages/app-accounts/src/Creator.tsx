@@ -2,15 +2,15 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/ui-app/src/types';
-import { ActionStatus } from '@polkadot/ui-app/src/Status/types';
+import { I18nProps } from '@polkadot/ui-app/types';
+import { ActionStatus } from '@polkadot/ui-app/Status/types';
 import { KeypairType } from '@polkadot/util-crypto/types';
 import { ComponentProps } from './types';
 
 import FileSaver from 'file-saver';
 import React from 'react';
 import { AddressSummary, Button, Dropdown, Input, Labelled, Modal, Password } from '../../ui-app/src';
-import { InputAddress } from '@polkadot/ui-app/src/InputAddress';
+import { InputAddress } from '@polkadot/ui-app/InputAddress';
 import keyring from '@polkadot/ui-keyring';
 import uiSettings from '../../df-settings';
 import { isHex, u8aToHex } from '@polkadot/util';

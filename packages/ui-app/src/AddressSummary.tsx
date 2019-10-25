@@ -1,4 +1,4 @@
-// Copyright 2017-2019 @polkadot/ui-app/src authors & contributors
+// Copyright 2017-2019 @polkadot/ui-app authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -7,8 +7,8 @@ import { I18nProps } from './types';
 import BN from 'bn.js';
 import React from 'react';
 import { AccountId, AccountIndex, Address } from '@polkadot/types';
-import { Nonce } from '@polkadot/ui-reactive/src';
-import { withCalls } from '@polkadot/ui-api/src';
+import { Nonce } from '@polkadot/ui-reactive';
+import { withCalls } from '@polkadot/ui-api';
 import BaseIdentityIcon from '@polkadot/ui-identicon';
 
 import { classes, toShortAddress } from './util';

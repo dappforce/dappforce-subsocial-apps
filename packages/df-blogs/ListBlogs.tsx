@@ -1,9 +1,9 @@
 import BN from 'bn.js';
 import React from 'react';
 
-import { ApiProps } from '@polkadot/ui-api/src/types';
-import { I18nProps } from '@polkadot/ui-app/src/types';
-import { withCalls, withMulti } from '@polkadot/ui-api/src/with';
+import { ApiProps } from '@polkadot/ui-api/types';
+import { I18nProps } from '@polkadot/ui-app/types';
+import { withCalls, withMulti } from '@polkadot/ui-api/with';
 
 import Section from '../df-utils/Section';
 import { queryBlogsToProp } from '../df-utils/index';

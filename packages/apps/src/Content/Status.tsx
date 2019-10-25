@@ -3,14 +3,14 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { KeyringOptions } from '@polkadot/ui-keyring/options/types';
-import { QueueStatus, QueueTx, QueueAction$Add } from '@polkadot/ui-app/src/Status/types';
-import { I18nProps } from '@polkadot/ui-app/src/types';
+import { QueueStatus, QueueTx, QueueAction$Add } from '@polkadot/ui-app/Status/types';
+import { I18nProps } from '@polkadot/ui-app/types';
 
 import React from 'react';
 import keyringOption from '@polkadot/ui-keyring/options';
 import { EventRecord } from '@polkadot/types';
-import { Status as StatusDisplay } from '@polkadot/ui-app/src';
-import { withCall, withMulti, withObservable } from '@polkadot/ui-api/src';
+import { Status as StatusDisplay } from '@polkadot/ui-app';
+import { withCall, withMulti, withObservable } from '@polkadot/ui-api';
 import { stringToU8a } from '@polkadot/util';
 import { xxhashAsHex } from '@polkadot/util-crypto';
 

@@ -1,18 +1,18 @@
-// Copyright 2017-2019 @polkadot/ui-app/src authors & contributors
+// Copyright 2017-2019 @polkadot/ui-app authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 // TODO: We have a lot shared between this and InputExtrinsic
 
 import { StorageFunction } from '@polkadot/types/primitive/StorageKey';
-import { ApiProps } from '@polkadot/ui-api/src/types';
+import { ApiProps } from '@polkadot/ui-api/types';
 import { DropdownOptions } from '../util/types';
 import { I18nProps } from '../types';
 
 import '../InputExtrinsic/InputExtrinsic.css';
 
 import React from 'react';
-import { withApi, withMulti } from '@polkadot/ui-api/src';
+import { withApi, withMulti } from '@polkadot/ui-api';
 
 import Labelled from '../Labelled';
 import translate from '../translate';

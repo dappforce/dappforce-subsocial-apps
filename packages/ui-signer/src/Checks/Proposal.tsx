@@ -3,14 +3,14 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { DerivedFees } from '@polkadot/api-derive/types';
-import { I18nProps } from '@polkadot/ui-app/src/types';
+import { I18nProps } from '@polkadot/ui-app/types';
 import { ExtraFees } from './types';
 
 import BN from 'bn.js';
 import React from 'react';
 import { Compact } from '@polkadot/types';
-import { withCall, withMulti } from '@polkadot/ui-api/src';
-import { Icon } from '@polkadot/ui-app/src';
+import { withCall, withMulti } from '@polkadot/ui-api';
+import { Icon } from '@polkadot/ui-app';
 import { formatBalance } from '@polkadot/util';
 
 import translate from '../translate';
