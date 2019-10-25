@@ -10,7 +10,7 @@ import store from 'store';
 import styled, { ThemeProvider } from 'styled-components';
 import { media } from '@polkadot/ui-app/src';
 import { classes } from '@polkadot/ui-app/src/util';
-import Signer from '@polkadot/ui-signer/src';
+import Signer from '@polkadot/ui-signer/src/';
 
 import { hot } from 'react-hot-loader/root';
 

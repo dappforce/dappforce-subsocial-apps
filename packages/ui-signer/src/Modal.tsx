@@ -4,7 +4,7 @@
 
 import { SubmittableResult } from '@polkadot/api/SubmittableExtrinsic';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { ApiProps } from '@polkadot/ui-api/types';
+import { ApiProps } from '@polkadot/ui-api/src/types';
 import { I18nProps, BareProps } from '@polkadot/ui-app/src/types';
 import { RpcMethod } from '@polkadot/jsonrpc/types';
 import { KeyringPair } from '@polkadot/keyring/types';
@@ -12,9 +12,9 @@ import { SubjectInfo } from '@polkadot/ui-keyring/observable/types';
 import { QueueTx, QueueTx$MessageSetStatus, QueueTx$Result, QueueTx$Status } from '@polkadot/ui-app/src/Status/types';
 
 import React from 'react';
-import { Button, Modal } from '@polkadot/ui-app';
+import { Button, Modal } from '@polkadot/ui-app/src';
 import keyring from '@polkadot/ui-keyring';
-import { withApi, withMulti, withObservable } from '@polkadot/ui-api';
+import { withApi, withMulti, withObservable } from '@polkadot/ui-api/src';
 import accountObservable from '@polkadot/ui-keyring/observable/accounts';
 import { assert, isFunction } from '@polkadot/util';
 import { format } from '@polkadot/util/logger';

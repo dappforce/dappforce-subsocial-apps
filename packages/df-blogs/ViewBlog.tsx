@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import ReactMarkdown from 'react-markdown';
 
-import { withCalls, withMulti } from '@polkadot/ui-api/with';
+import { withCalls, withMulti } from '@polkadot/ui-api/src/with';
 import { Option, AccountId } from '@polkadot/types';
 import IdentityIcon from '@polkadot/ui-app/src/IdentityIcon';
 

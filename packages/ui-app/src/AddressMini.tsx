@@ -8,7 +8,7 @@ import BN from 'bn.js';
 import React from 'react';
 import { AccountId, AccountIndex, Address } from '@polkadot/types';
 import { OfflineStatus } from '@polkadot/app-staking/types';
-import { RecentlyOffline } from '@polkadot/ui-app';
+import { RecentlyOffline } from '@polkadot/ui-app/src';
 
 import { classes, getAddrName, toShortAddress } from './util';
 import BalanceDisplay from './Balance';

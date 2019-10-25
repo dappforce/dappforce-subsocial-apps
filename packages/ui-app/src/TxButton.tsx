@@ -2,11 +2,11 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { ApiProps } from '@polkadot/ui-api/types';
+import { ApiProps } from '@polkadot/ui-api/src/types';
 import { QueueTx$ExtrinsicAdd, TxCallback } from './Status/types';
 
 import React from 'react';
-import { withApi } from '@polkadot/ui-api';
+import { withApi } from '@polkadot/ui-api/src';
 import { assert, isFunction, isUndefined } from '@polkadot/util';
 
 import { QueueConsumer } from './Status/Context';

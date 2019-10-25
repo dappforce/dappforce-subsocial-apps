@@ -8,7 +8,7 @@ import { Option, Text } from '@polkadot/types';
 import Section from '../df-utils/Section';
 import TxButton from '../df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
-import { withCalls, withMulti } from '@polkadot/ui-api/index';
+import { withCalls, withMulti } from '@polkadot/ui-api/src/index';
 
 import { addJsonToIpfs, getJsonFromIpfs, removeFromIpfs } from './OffchainUtils';
 import * as DfForms from '../df-utils/forms';

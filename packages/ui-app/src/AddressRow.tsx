@@ -1,9 +1,9 @@
-// Copyright 2017-2019 @polkadot/ui-app authors & contributors
+// Copyright 2017-2019 @polkadot/ui-app/src authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import React from 'react';
-import { withCalls } from '@polkadot/ui-api';
+import { withCalls } from '@polkadot/ui-api/src';
 
 import { classes } from './util';
 import { AddressSummary, Props } from './AddressSummary';

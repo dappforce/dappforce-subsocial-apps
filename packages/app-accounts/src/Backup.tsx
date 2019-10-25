@@ -7,7 +7,7 @@ import { I18nProps } from '@polkadot/ui-app/src/types';
 
 import FileSaver from 'file-saver';
 import React from 'react';
-import { AddressSummary, Button, Modal, Password } from '@polkadot/ui-app';
+import { AddressSummary, Button, Modal, Password } from '@polkadot/ui-app/src';
 import { ActionStatus } from '@polkadot/ui-app/src/Status/types';
 import keyring from '@polkadot/ui-keyring';
 

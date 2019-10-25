@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import TxButton from '../df-utils/TxButton';
 import { SubmittableResult } from '@polkadot/api';
-import { withCalls, withMulti } from '@polkadot/ui-api/with';
+import { withCalls, withMulti } from '@polkadot/ui-api/src/with';
 import * as DfForms from '../df-utils/forms';
 import { Text } from '@polkadot/types';
 import { Option } from '@polkadot/types/codec';

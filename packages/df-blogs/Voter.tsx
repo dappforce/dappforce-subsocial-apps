@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from 'semantic-ui-react';
 
 import TxButton from '../df-utils/TxButton';
-import { api } from '@polkadot/ui-api';
+import { api } from '@polkadot/ui-api/src';
 import { AccountId, Option } from '@polkadot/types';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '../df-utils/MyAccountContext';

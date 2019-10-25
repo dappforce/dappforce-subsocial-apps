@@ -1,16 +1,16 @@
-// Copyright 2017-2019 @polkadot/ui-app authors & contributors
+// Copyright 2017-2019 @polkadot/ui-app/src authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { MethodFunction } from '@polkadot/types/primitive/Method';
-import { ApiProps } from '@polkadot/ui-api/types';
+import { ApiProps } from '@polkadot/ui-api/src/types';
 import { I18nProps } from '../types';
 import { DropdownOptions } from '../util/types';
 
 import './InputExtrinsic.css';
 
 import React from 'react';
-import { withApi, withMulti } from '@polkadot/ui-api';
+import { withApi, withMulti } from '@polkadot/ui-api/src';
 
 import Labelled from '../Labelled';
 import translate from '../translate';

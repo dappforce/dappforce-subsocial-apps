@@ -1,10 +1,10 @@
-import { BareProps, ApiProps } from '@polkadot/ui-api/types';
+import { BareProps, ApiProps } from '@polkadot/ui-api/src/types';
 import { QueueTx$ExtrinsicAdd, PartialQueueTx$Extrinsic } from '@polkadot/ui-app/src/Status/types';
 
 import React from 'react';
 import { Button } from '@polkadot/ui-app/src/index';
 import { QueueConsumer } from '@polkadot/ui-app/src/Status/Context';
-import { withApi } from '@polkadot/ui-api/index';
+import { withApi } from '@polkadot/ui-api/src/index';
 import { assert } from '@polkadot/util';
 import { withMyAccount, MyAccountProps } from './MyAccount';
 

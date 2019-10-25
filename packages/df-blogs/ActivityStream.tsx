@@ -5,7 +5,7 @@ import { hexToNumber } from '@polkadot/util';
 import { PostId, CommentId, OptionComment, Comment, BlogId, Activity } from '../df-types/blogs';
 import { ViewPost } from './ViewPost';
 import { Segment } from 'semantic-ui-react';
-import { api, withMulti } from '@polkadot/ui-api';
+import { api, withMulti } from '@polkadot/ui-api/src';
 import ViewBlog from './ViewBlog';
 import moment from 'moment-timezone';
 import { withMyAccount, MyAccountProps } from '../df-utils/MyAccount';

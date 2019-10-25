@@ -6,7 +6,7 @@ import { BlogId, PostId, CommentId } from '../df-types/blogs';
 import { Tuple } from '@polkadot/types/codec';
 import { useMyAccount } from '../df-utils/MyAccountContext';
 import TxButton from '../df-utils/TxButton';
-import { api } from '@polkadot/ui-api';
+import { api } from '@polkadot/ui-api/src';
 
 type PropsShareButtonPost = {
   postId: PostId

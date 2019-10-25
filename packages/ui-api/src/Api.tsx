@@ -1,4 +1,4 @@
-// Copyright 2017-2019 @polkadot/ui-api authors & contributors
+// Copyright 2017-2019 @polkadot/ui-api/src authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -12,7 +12,7 @@ import defaults from '@polkadot/rpc-provider/defaults';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { InputNumber } from '@polkadot/ui-app/src/InputNumber';
 import keyring from '@polkadot/ui-keyring';
-import ApiSigner from '@polkadot/ui-signer/ApiSigner';
+import ApiSigner from '@polkadot/ui-signer/src/ApiSigner';
 import { ChainProperties } from '@polkadot/types';
 import { formatBalance, isTestChain } from '@polkadot/util';
 

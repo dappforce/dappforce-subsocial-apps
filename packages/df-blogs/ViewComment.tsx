@@ -1,13 +1,13 @@
 import { Comment as SuiComment, Button, Dropdown } from 'semantic-ui-react';
 import React, { useState, useEffect } from 'react';
 
-import { withCalls, withMulti, withApi } from '@polkadot/ui-api/with';
+import { withCalls, withMulti, withApi } from '@polkadot/ui-api/src/with';
 import Section from '../df-utils/Section';
 import AddressMini from '../df-utils/AddressMiniDf';
 import { useMyAccount } from '../df-utils/MyAccountContext';
-import { ApiProps } from '@polkadot/ui-api/types';
+import { ApiProps } from '@polkadot/ui-api/src/types';
 import { ApiPromise } from '@polkadot/api';
-import { api } from '@polkadot/ui-api';
+import { api } from '@polkadot/ui-api/src';
 
 import { getJsonFromIpfs } from './OffchainUtils';
 import { partition } from 'lodash';

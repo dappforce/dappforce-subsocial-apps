@@ -4,7 +4,7 @@ import { HashLink } from 'react-router-hash-link';
 import ReactMarkdown from 'react-markdown';
 import { Segment, Dropdown, Icon } from 'semantic-ui-react';
 
-import { withCalls, withMulti } from '@polkadot/ui-api/with';
+import { withCalls, withMulti } from '@polkadot/ui-api/src/with';
 import { Option } from '@polkadot/types';
 
 import { getJsonFromIpfs } from './OffchainUtils';
@@ -19,7 +19,7 @@ import { Voter } from './Voter';
 import { PostHistoryModal } from './ListsEditHistory';
 import { PostVoters, ActiveVoters } from './ListVoters';
 import AddressMiniDf from '../df-utils/AddressMiniDf';
-import { api } from '@polkadot/ui-api';
+import { api } from '@polkadot/ui-api/src';
 import { ShareModal } from './ShareModal';
 
 const LIMIT_SUMMARY = 150;
