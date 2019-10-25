@@ -9,7 +9,7 @@ import { ComponentProps } from './types';
 
 import FileSaver from 'file-saver';
 import React from 'react';
-import { AddressSummary, Button, Dropdown, Input, Labelled, Modal, Password } from '../../ui-app/src';
+import { AddressSummary, Button, Dropdown, Input, Labelled, Modal, Password } from '@polkadot/ui-app';
 import { InputAddress } from '@polkadot/ui-app/InputAddress';
 import keyring from '@polkadot/ui-keyring';
 import uiSettings from '../../df-settings';

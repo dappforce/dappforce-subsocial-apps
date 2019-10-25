@@ -1,15 +1,15 @@
 
-import { BareProps } from '../ui-app/src/types';
+import { BareProps } from '../ui-app/types';
 
 import BN from 'bn.js';
 import React, { useState } from 'react';
 import { AccountId, AccountIndex, Address, Balance, Option } from '@polkadot/types';
 import { withCall, withMulti, withCalls } from '@polkadot/ui-api/index';
 
-import classes from '../ui-app/src/util/classes';
-import toShortAddress from '../ui-app/src/util/toShortAddress';
-import BalanceDisplay from '../ui-app/src/Balance';
-import IdentityIcon from '../ui-app/src/IdentityIcon';
+import classes from '@polkadot/ui-app/util/classes';
+import toShortAddress from '@polkadot/ui-app/util/toShortAddress';
+import BalanceDisplay from '@polkadot/ui-app/Balance';
+import IdentityIcon from '@polkadot/ui-app/IdentityIcon';
 import { findNameByAddress, nonEmptyStr, queryBlogsToProp } from './index';
 import { FollowAccountButton } from '../df-blogs/FollowButton';
 import { Popup } from 'semantic-ui-react';

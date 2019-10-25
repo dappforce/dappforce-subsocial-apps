@@ -4,7 +4,7 @@
 
 import { WithTranslation } from 'react-i18next';
 import { RpcRxInterface } from '@polkadot/rpc-rx/types';
-import { ActionStatus } from '@polkadot/ui-app/src/Status/types';
+import { ActionStatus } from '@polkadot/ui-app/Status/types';
 
 export type BareProps = {
   className?: string,
