@@ -18,10 +18,10 @@ const routes: Routes = appSettings.isBasicMode
   )
   : ([] as Routes).concat(
     blogs,
-    accounts,
+    accounts
   );
 
 export default ({
-  default: 'explorer',
+  default: 'blogs',
   routes
 } as Routing);
