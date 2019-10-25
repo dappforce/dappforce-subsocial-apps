@@ -1,5 +1,5 @@
 {
-  "name": "@polkadot/df-utils",
+  "name": "../../df-utils",
   "version": "0.1.1",
   "description": "DappForce and Subsocial utils",
   "main": "index.js",

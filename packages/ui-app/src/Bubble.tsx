@@ -7,7 +7,7 @@ import { SemanticCOLORS, SemanticICONS } from 'semantic-ui-react/dist/commonjs/g
 
 import React from 'react';
 import SUILabel from 'semantic-ui-react/dist/commonjs/elements/Label/Label';
-import settings from '@polkadot/df-settings/index';
+import settings from '../../df-settings/index';
 
 import { classes } from './util';
 import Icon from './Icon';

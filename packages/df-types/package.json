@@ -1,5 +1,5 @@
 {
-  "name": "@dappforce/types",
+  "name": "df-types",
   "version": "0.1.3",
   "description": "Dappforce types for Substrate modules",
   "main": "lib/index.js",

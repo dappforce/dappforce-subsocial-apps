@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import settings from '@polkadot/df-settings/';
+import settings from '../../df-settings/';
 import '@polkadot/ui-app/i18n';
 import '@polkadot/ui-app/styles';
 
@@ -16,7 +16,7 @@ import { Api } from '@polkadot/ui-api';
 import { QueueConsumer } from '@polkadot/ui-app/Status/Context';
 import Queue from '@polkadot/ui-app/Status/Queue';
 import Apps from './Apps';
-import { registerDfTypes } from '@dappforce/types/';
+import { registerDfTypes } from '../../df-types/';
 
 const rootId = 'root';
 const rootElement = document.getElementById(rootId);

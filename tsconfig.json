@@ -9,12 +9,12 @@
     "paths": {
       "@dappforce/blogs/": [ "packages/df-blogs/src/" ],
       "@dappforce/blogs/*": [ "packages/df-blogs/src/*" ],
-      "@dappforce/types/*": [ "packages/df-types/src/*" ],
-      "@dappforce/types/": [ "packages/df-types/src/" ],
-      "@polkadot/df-utils/": [ "packages/df-utils/src" ],
-      "@polkadot/df-utils/*": [ "packages/df-utils/src/*" ],
-      "@polkadot/df-settings/": [ "packages/df-settings/src/" ],
-      "@polkadot/df-settings/*": [ "packages/df-settings/src/*" ],
+      "packages/df-types/*": [ "packages/df-types/src/*" ],
+      "packages/df-types/": [ "packages/df-types/src/" ],
+      "../../df-utils/": [ "packages/df-utils/src" ],
+      "../../df-utils/*": [ "packages/df-utils/src/*" ],
+      "../../df-settings/": [ "packages/df-settings/src/" ],
+      "../../df-settings/*": [ "packages/df-settings/src/*" ],
 
       "@polkadot/app-accounts": [ "packages/app-accounts/src" ],
       "@polkadot/app-accounts/*": [ "packages/app-accounts/src/*" ],

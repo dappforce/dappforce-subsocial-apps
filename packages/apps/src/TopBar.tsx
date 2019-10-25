@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { I18nProps } from '@polkadot/ui-app/types';
-import { useMyAccount } from '@polkadot/df-utils/MyAccountContext';
-import AddressMini from '@polkadot/ui-app/AddressMiniDf';
+import { useMyAccount } from '../../df-utils/MyAccountContext';
+import AddressMini from '../../df-utils/AddressMiniDf';
 import translate from './translate';
 import './TopBar.css';
 

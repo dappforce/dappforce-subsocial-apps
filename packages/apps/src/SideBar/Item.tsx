@@ -17,8 +17,8 @@ import { isFunction } from '@polkadot/util';
 import { Option } from '@polkadot/types';
 
 import ReactTooltip from 'react-tooltip';
-import { queryToProp } from '@polkadot/df-utils/index';
-import { ElectionStage } from '@dappforce/types/';
+import { queryToProp } from '../../../df-utils/index';
+import { ElectionStage } from '../../../df-types/';
 
 type Props = I18nProps & ApiProps & {
   isCollapsed: boolean,

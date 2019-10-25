@@ -4,7 +4,7 @@
 
 import { Routing, Routes } from '../types';
 
-import appSettings from '@polkadot/df-settings/';
+import appSettings from '../../../df-settings';
 
 import blogs from './df-blogs';
 

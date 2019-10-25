@@ -1,6 +1,6 @@
 import { Routes } from '../types';
 
-import Blogs from '@dappforce/blogs/index';
+import Blogs from '../../../df-blogs/index';
 
 export default ([
   {

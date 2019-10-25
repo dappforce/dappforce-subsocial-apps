@@ -17,7 +17,7 @@ import { withMulti, withObservable } from '@polkadot/ui-api';
 import Dropdown from '../Dropdown';
 import { classes, getAddrName } from '../util';
 import addressToAddress from '../util/toAddress';
-import { MyAccountContext } from '@polkadot/df-utils/MyAccountContext';
+import { MyAccountContext } from '../../../df-utils/MyAccountContext';
 
 type Props = BareProps & {
   defaultValue?: string | null,
