@@ -2131,14 +2131,26 @@
     "@polkadot/keyring" "^0.76.1"
     "@polkadot/util" "^0.76.1"
 
-"@polkadot/ui-app@^0.31.0-beta.18":
-  version "0.32.0-beta.6"
+"@polkadot/ui-api@^0.32.0-beta.6", "@polkadot/ui-api@^0.32.1":
+  version "0.32.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/ui-api/-/ui-api-0.32.1.tgz#ad89f65a2d8bcc2cd172e1126adfe7ed9b269eec"
+  integrity sha512-ugJNWqYbRCqPo8VErydFnLQIoGIGgqTbnZ1uuVojt/h74VsdPKDmp+56a/bjCdmFOlx3tZLYtE3NnHRL87bCjg==
   dependencies:
     "@babel/runtime" "^7.4.3"
-    "@polkadot/ui-api" "^0.32.0-beta.6"
+    "@polkadot/api" "^0.77.1"
+    rxjs-compat "^6.3.2"
+
+"@polkadot/ui-app@0.32.0-beta.6", "@polkadot/ui-app@^0.32.0-beta.6":
+  version "0.32.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/ui-app/-/ui-app-0.32.1.tgz#281fdf28b47721941d2cd94be34583acc884e665"
+  integrity sha512-+bVH+NeRRsjcYGNOp28GSXnLi9q6NeAt19ExMjCWf05HDQ0/aa1y5ZX3lpsqHZY6Ccq65SbgBwzi1buL8qADGA==
+  dependencies:
+    "@babel/runtime" "^7.4.3"
+    "@polkadot/ui-api" "^0.32.1"
     "@polkadot/ui-identicon" "^0.38.0-beta.2"
     "@polkadot/ui-keyring" "^0.38.0-beta.2"
-    "@polkadot/ui-reactive" "^0.32.0-beta.6"
+    "@polkadot/ui-reactive" "^0.32.1"
+    "@polkadot/ui-settings" "^0.38.0-beta.2"
     "@types/chart.js" "^2.7.45"
     "@types/classnames" "^2.2.7"
     "@types/i18next" "^12.1.0"
@@ -2196,7 +2208,15 @@
     store "^2.0.12"
     styled-components "^4.2.0"
 
-"@polkadot/ui-settings@^0.38.1":
+"@polkadot/ui-reactive@^0.32.1":
+  version "0.32.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/ui-reactive/-/ui-reactive-0.32.1.tgz#a5a18c409386f145acaecdcf153be33a2f431905"
+  integrity sha512-hey9qulM5/lVUvzqCLIdKMhlq/VIsF/gOek30SdAA5Hc8InWLyR8OncdcHDMUByhb0/ClK8ab0Q3qZswLwR6xA==
+  dependencies:
+    "@babel/runtime" "^7.4.3"
+    rxjs-compat "^6.3.2"
+
+"@polkadot/ui-settings@^0.38.0-beta.2", "@polkadot/ui-settings@^0.38.1":
   version "0.38.1"
   resolved "https://registry.yarnpkg.com/@polkadot/ui-settings/-/ui-settings-0.38.1.tgz#c52ede839a8b04b20b1177131087c96d64f1edb6"
   integrity sha512-ZpqCcusimDMrkqqcYS+49OuTcmO9RsjrUq6J2+B74vnABJaRQ702YUJJtHPvmehF30fRFIxm3yeBp97y+EPb4w==

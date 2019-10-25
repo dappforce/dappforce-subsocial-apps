@@ -4,7 +4,7 @@
 
 import settings from '../../df-settings';
 import '@polkadot/ui-app/i18n';
-import '@polkadot/ui-app/styles';
+import '../../df-utils/styles';
 import '../../df-blogs/subsocial.css';
 
 import React, { Suspense } from 'react';
