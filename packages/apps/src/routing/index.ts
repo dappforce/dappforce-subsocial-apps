@@ -6,8 +6,6 @@ import { Routing, Routes } from '../types';
 
 import appSettings from '@polkadot/df-settings/';
 
-import blogs from './df-blogs';
-
 import template from './123code';
 import accounts from './accounts';
 import addressbook from './addressbook';
@@ -26,7 +24,6 @@ const routes: Routes = appSettings.isBasicMode
     staking,
     transfer,
     null,
-    blogs,
     accounts,
     addressbook,
     null,
@@ -38,7 +35,6 @@ const routes: Routes = appSettings.isBasicMode
     staking,
     transfer,
     null,
-    blogs,
     accounts,
     addressbook,
     null,
