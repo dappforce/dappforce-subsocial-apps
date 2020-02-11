@@ -43,17 +43,17 @@ export default class AddressMini extends React.PureComponent<Props> {
         className={classes('ui--AddressMini', isPadded ? 'padded' : '', className)}
         style={style}
       >
-        <div className='ui--AddressMini-info'>
-          <IdentityIcon
+        <IdentityIcon
             size={24}
             value={address}
-          />
+        />
+        <div className='ui--AddressMini-info'>
           {this.renderAddressOrName(address)}
           {children}
           {this.renderOfflineStatus()}
+          {this.renderBalance()}
+          {this.renderBonded()}
         </div>
-        {this.renderBalance()}
-        {this.renderBonded()}
       </div>
     );
   }

@@ -17,7 +17,8 @@
   min-width: 48%;
 
   .ui--AddressMini {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
   }
 
   .ui--AddressSummary {

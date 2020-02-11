@@ -40,7 +40,8 @@ header .ui--Button-Group {
 }
 
 .ui--AddressMini {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: 0 0.25rem 0 0;
 }
 
