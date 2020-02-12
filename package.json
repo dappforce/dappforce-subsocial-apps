@@ -68,6 +68,7 @@
   "dependencies": {
     "@types/moment-timezone": "^0.5.12",
     "@types/react-router-hash-link": "^1.2.1",
+    "dotenv": "^8.2.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.26",
     "react-router-hash-link": "^1.2.2"

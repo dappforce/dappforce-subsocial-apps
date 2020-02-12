@@ -4,10 +4,13 @@
 
 import { Options } from './types';
 
-const WSS_LOCALHOST = 'ws://127.0.0.1:9944/';
+require('dotenv').config();
+
+const WS_LOCALHOST = process.env.SUBSTRATE_URL || 'ws://127.0.0.1:9944';
 
 const ENDPOINTS: Options = [
-  { text: 'Local Node (127.0.0.1:9944)', value: WSS_LOCALHOST }
+  { text: `Local Node`, value: WS_LOCALHOST },
+  { text: 'Subsocial Network', value: 'ws://subsocial.network:9944' }
 ];
 
 const LANGUAGE_DEFAULT = 'default';
@@ -30,7 +33,7 @@ const UITHEMES: Options = [
   { value: 'substrate', text: 'Substrate' }
 ];
 
-const ENDPOINT_DEFAULT = WSS_LOCALHOST;
+const ENDPOINT_DEFAULT = WS_LOCALHOST;
 
 const UITHEME_DEFAULT = 'substrate';
 
