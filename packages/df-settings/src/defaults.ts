@@ -9,8 +9,8 @@ require('dotenv').config();
 const WS_LOCALHOST = process.env.SUBSTRATE_URL || 'ws://127.0.0.1:9944';
 
 const ENDPOINTS: Options = [
-  { text: `Local Node (${WS_LOCALHOST.substring(5)})`, value: WS_LOCALHOST },
-  { text: 'Subsocial Network (subsocial.network:9944)', value: 'ws://subsocial.network:9944' }
+  { text: `Local Node)`, value: WS_LOCALHOST },
+  { text: 'Subsocial Network', value: 'ws://subsocial.network:9944' }
 ];
 
 const LANGUAGE_DEFAULT = 'default';
