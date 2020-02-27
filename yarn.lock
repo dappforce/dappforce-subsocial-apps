@@ -2515,6 +2515,13 @@
     prop-types "^15.7.2"
     react-is "^16.6.3"
 
+"@subsocial/types@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@subsocial/types/-/types-0.1.1.tgz#1cf58b2c5cedf3fdf44506c7bb38a6632824e54a"
+  integrity sha512-T9xBAFEzlu7HuDfe9K3YcxMmWDbbkuuFAhpiwWA3DrSufbbBDsqaPpGdke+GpJZoOpf0PISAAJ5J6QkyyEFx8Q==
+  dependencies:
+    "@babel/runtime" "^7.8.4"
+
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@szmarczak/http-timer/-/http-timer-1.1.2.tgz#b1665e2c461a2cd92f4c1bbf50d5454de0d4b421"
