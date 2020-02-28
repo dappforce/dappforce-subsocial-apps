@@ -26,6 +26,8 @@ if (!rootElement) {
   throw new Error(`Unable to find element with id '${rootId}'`);
 }
 
+registerSubsocialTypes();
+
 ReactDOM.render(
   <Suspense fallback='...'>
     <ThemeProvider theme={theme}>
