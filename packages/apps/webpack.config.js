@@ -1,4 +1,6 @@
-// Copyright 2017-2019 @polkadot/apps authors & contributors
+/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/no-var-requires */
+// Copyright 2017-2020 @polkadot/apps authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -9,49 +11,38 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { WebpackPluginServe } = require('webpack-plugin-serve');
 
-const packages = [
-  'app-accounts',
-  'app-addresses',
-  'app-democracy',
-  'app-explorer',
-  'app-extrinsics',
-  'app-js',
-  'app-settings',
-  'app-staking',
-  'app-storage',
-  'app-123code',
-  'app-toolbox',
-  'app-transfer',
-  'ui-api',
-  'ui-app',
-  'ui-params',
-  'ui-reactive',
-  'ui-signer'
-];
+const findPackages = require('../../scripts/findPackages');
 
-const DEFAULT_THEME = process.env.TRAVIS_BRANCH === 'next'
-  ? 'substrate'
-  : 'polkadot';
+const ENV = process.env.NODE_ENV || 'development';
 
 function createWebpack ({ alias = {}, context, name = 'index' }) {
   const pkgJson = require(path.join(context, 'package.json'));
-  const ENV = process.env.NODE_ENV || 'development';
   const isProd = ENV === 'production';
   const hasPublic = fs.existsSync(path.join(context, 'public'));
   const plugins = hasPublic
     ? [new CopyWebpackPlugin([{ from: 'public' }])]
     : [];
+  // disabled, smooths dev load, was -
+  // isProd ? 'source-map' : 'cheap-eval-source-map',
+  const devtool = false;
 
   return {
     context,
-    devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
-    entry: `./src/${name}.tsx`,
+    devtool,
+    entry: [
+      '@babel/polyfill',
+      `./src/${name}.tsx`,
+      isProd
+        ? null
+        : null // 'webpack-plugin-serve/client'
+    ].filter((entry) => entry),
     mode: ENV,
     output: {
-      chunkFilename: `[name].[chunkhash:8].js`,
-      filename: `[name].[hash:8].js`,
-      globalObject: `(typeof self !== 'undefined' ? self : this)`,
+      chunkFilename: '[name].[chunkhash:8].js',
+      filename: '[name].[hash:8].js',
+      globalObject: '(typeof self !== \'undefined\' ? self : this)',
       path: path.join(context, 'build')
     },
     resolve: {
@@ -71,21 +62,6 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
               loader: require.resolve('css-loader'),
               options: {
                 importLoaders: 1
-              }
-            },
-            {
-              loader: require.resolve('postcss-loader'),
-              options: {
-                ident: 'postcss',
-                plugins: () => [
-                  require('precss'),
-                  require('autoprefixer'),
-                  require('postcss-simple-vars'),
-                  require('postcss-nested'),
-                  require('postcss-import'),
-                  require('postcss-clean')(),
-                  require('postcss-flexbugs-fixes')
-                ]
               }
             }
           ]
@@ -107,8 +83,15 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
             require.resolve('thread-loader'),
             {
               loader: require.resolve('babel-loader'),
-              options: require('@polkadot/dev-react/config/babel')
+              options: require('@polkadot/dev/config/babel')
             }
+          ]
+        },
+        {
+          test: /\.md$/,
+          use: [
+            require.resolve('html-loader'),
+            require.resolve('markdown-loader')
           ]
         },
         {
@@ -118,7 +101,8 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
               loader: require.resolve('url-loader'),
               options: {
                 limit: 10000,
-                name: 'static/[name].[hash:8].[ext]'
+                name: 'static/[name].[hash:8].[ext]',
+                esModule: false
               }
             }
           ]
@@ -129,7 +113,8 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
             {
               loader: require.resolve('file-loader'),
               options: {
-                name: 'static/[name].[hash:8].[ext]'
+                name: 'static/[name].[hash:8].[ext]',
+                esModule: false
               }
             }
           ]
@@ -159,11 +144,11 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
             name: 'react',
             test: /node_modules\/(chart|i18next|react|semantic-ui)/
           },
-          vendorSodium: {
+          polkadotJs: {
             chunks: 'initial',
             enforce: true,
-            name: 'sodium',
-            test: /node_modules\/(libsodium)/
+            name: 'polkadotjs',
+            test: /node_modules\/(@polkadot\/wasm-(crypto|dalek-ed25519|schnorrkel))/
           }
         }
       }
@@ -177,30 +162,36 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
         'process.env': {
           NODE_ENV: JSON.stringify(ENV),
           VERSION: JSON.stringify(pkgJson.version),
-          UI_MODE: JSON.stringify(process.env.UI_MODE || 'full'),
-          UI_THEME: JSON.stringify(process.env.UI_THEME || DEFAULT_THEME),
           WS_URL: JSON.stringify(process.env.WS_URL)
         }
       }),
       new HtmlWebpackPlugin({
         inject: true,
         template: path.join(context, `${hasPublic ? 'public/' : ''}${name}.html`),
-        PAGE_TITLE: process.env.UI_THEME === 'substrate'
-          ? 'Substrate Apps Portal'
-          : 'Polkadot Apps Portal'
+        PAGE_TITLE: 'Polkadot/Substrate Portal'
       }),
       new webpack.optimize.SplitChunksPlugin(),
       new MiniCssExtractPlugin({
-        filename: `[name].[contenthash:8].css`
-      })
-    ])
+        filename: '[name].[contenthash:8].css'
+      }),
+      isProd
+        ? null
+        : new WebpackPluginServe({
+          hmr: false, // switch off, Chrome WASM memory leak
+          liveReload: false, // explict off, overrides hmr
+          progress: false, // since we have hmr off, disable
+          port: 3000,
+          static: path.join(process.cwd(), '/build')
+        })
+    ]).filter((plugin) => plugin),
+    watch: !isProd
   };
 }
 
 module.exports = createWebpack({
   context: __dirname,
-  alias: packages.reduce((alias, pkg) => {
-    alias[`@polkadot/${pkg}`] = path.resolve(__dirname, `../${pkg}/src`);
+  alias: findPackages().reduce((alias, { dir, name }) => {
+    alias[name] = path.resolve(__dirname, `../${dir}/src`);
 
     return alias;
   }, {})

@@ -1,0 +1,39 @@
+{
+  "name": "@polkadot/react-api",
+  "version": "0.40.0-beta.49",
+  "description": "A collection of RxJs React components the Polkadot JS API",
+  "main": "index.js",
+  "keywords": [
+    "Polkadot",
+    "React",
+    "RxJs"
+  ],
+  "author": "Jaco Greeff <jacogr@gmail.com>",
+  "maintainers": [
+    "Jaco Greeff <jacogr@gmail.com>"
+  ],
+  "contributors": [],
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=8.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polkadot-js/ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/polkadot-js/ui/issues"
+  },
+  "homepage": "https://github.com/polkadot-js/ui/tree/master/packages/ui-reactive#readme",
+  "dependencies": {
+    "@babel/runtime": "^7.8.4",
+    "@polkadot/api": "^1.4.0-beta.46",
+    "@polkadot/extension-dapp": "^0.22.0-beta.5",
+    "edgeware-node-types": "^1.1.0",
+    "rxjs-compat": "^6.5.3"
+  }
+}

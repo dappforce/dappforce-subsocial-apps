@@ -1,120 +1,85 @@
-// Copyright 2017-2019 @polkadot/app-staking authors & contributors
+// Copyright 2017-2020 @polkadot/app-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedBalances, DerivedBalancesMap } from '@polkadot/api-derive/types';
-import { I18nProps } from '@polkadot/ui-app/types';
+import { DerivedStakingOverview } from '@polkadot/api-derive/types';
 
-import BN from 'bn.js';
-import React from 'react';
+import React, { useContext } from 'react';
+import styled from 'styled-components';
 import SummarySession from '@polkadot/app-explorer/SummarySession';
-import { CardSummary } from '@polkadot/ui-app/index';
-import { formatBalance } from '@polkadot/ui-app/util';
-import { withCall, withMulti } from '@polkadot/ui-api/index';
+import { CardSummary, IdentityIcon, SummaryBox } from '@polkadot/react-components';
+import { BlockAuthorsContext } from '@polkadot/react-query';
 
-import translate from '../translate';
+import { useTranslation } from '../translate';
 
-type Props = I18nProps & {
-  balances: DerivedBalancesMap,
-  intentions: Array<string>,
-  lastLengthChange?: BN,
-  staking_validatorCount?: BN,
-  validators: Array<string>
-};
-
-class Summary extends React.PureComponent<Props> {
-  render () {
-    const { className, intentions, style, t, staking_validatorCount, validators } = this.props;
-
-    return (
-      <summary
-        className={className}
-        style={style}
-      >
-        <section>
-          <CardSummary label={t('validators')}>
-            {validators.length}/{staking_validatorCount ? staking_validatorCount.toString() : '-'}
-          </CardSummary>
-          <CardSummary label={t('intentions')}>
-            {intentions.length}
-          </CardSummary>
-        </section>
-        <section className='ui--media-medium'>
-          <SummarySession withBroken={false} />
-        </section>
-        <section className='ui--media-large'>
-          <CardSummary label={t('balances')}>
-            {this.renderBalances()}
-          </CardSummary>
-        </section>
-      </summary>
-    );
-  }
-
-  private renderBalances () {
-    const { t } = this.props;
-    const intentionHigh = this.calcIntentionsHigh();
-    const validatorLow = this.calcValidatorLow();
-    const nominatedLow = validatorLow && validatorLow.nominatedBalance.gtn(0)
-      ? `(+${formatBalance(validatorLow.nominatedBalance)})`
-      : '';
-    const nominatedHigh = intentionHigh && intentionHigh.nominatedBalance.gtn(0)
-      ? `(+${formatBalance(intentionHigh.nominatedBalance)})`
-      : '';
-
-    return (
-      <div className='staking--Summary-text'>
-        <div>{t('lowest validator {{validatorLow}}', {
-          replace: {
-            validatorLow: validatorLow && validatorLow.stakingBalance
-              ? `${formatBalance(validatorLow.stakingBalance)} ${nominatedLow}`
-              : '-'
-          }
-        })}</div>
-        <div>{t('highest intention {{intentionHigh}}', {
-          replace: {
-            intentionHigh: intentionHigh
-              ? `${formatBalance(intentionHigh.stakingBalance)} ${nominatedHigh}`
-              : '-'
-          }
-        })}</div>
-      </div>
-    );
-  }
-
-  private calcIntentionsHigh (): DerivedBalances | null {
-    const { balances, intentions, validators } = this.props;
-
-    return intentions.reduce((high: DerivedBalances | null, addr) => {
-      const balance = validators.includes(addr) || !balances[addr]
-        ? null
-        : balances[addr];
-
-      if (high === null || (balance && high.stakingBalance.lt(balance.stakingBalance))) {
-        return balance;
-      }
-
-      return high;
-    }, null);
-  }
-
-  private calcValidatorLow (): DerivedBalances | null {
-    const { balances, validators } = this.props;
-
-    return validators.reduce((low: DerivedBalances | null, addr) => {
-      const balance = balances[addr] || null;
-
-      if (low === null || (balance && low.stakingBalance.gt(balance.stakingBalance))) {
-        return balance;
-      }
-
-      return low;
-    }, null);
-  }
+interface Props {
+  className?: string;
+  isVisible: boolean;
+  next: string[];
+  nominators: string[];
+  stakingOverview?: DerivedStakingOverview;
+  style?: any;
 }
 
-export default withMulti(
-  Summary,
-  translate,
-  withCall('query.staking.validatorCount')
-);
+function Summary ({ className, isVisible, next, nominators, stakingOverview, style }: Props): React.ReactElement<Props> {
+  const { t } = useTranslation();
+  const { lastBlockAuthors, lastBlockNumber } = useContext(BlockAuthorsContext);
+
+  return (
+    <SummaryBox
+      className={`${className} ${!isVisible && 'staking--hidden'}`}
+      style={style}
+    >
+      <section>
+        {stakingOverview && (
+          <CardSummary label={t('validators')}>
+            {stakingOverview.validators.length}{`/${stakingOverview.validatorCount.toString()}`}
+          </CardSummary>
+        )}
+        {next && next.length !== 0 && (
+          <CardSummary label={t('waiting')}>
+            {next.length}
+          </CardSummary>
+        )}
+        {nominators.length !== 0 && (
+          <CardSummary label={t('nominators')}>
+            {nominators.length}
+          </CardSummary>
+        )}
+      </section>
+      <section>
+        <CardSummary
+          className='validator--Summary-authors'
+          label={t('last block')}
+        >
+          {lastBlockAuthors?.map((author): React.ReactNode => (
+            <IdentityIcon
+              className='validator--Account-block-icon'
+              key={author}
+              size={24}
+              value={author}
+            />
+          ))}
+          {lastBlockNumber}
+        </CardSummary>
+      </section>
+      <section>
+        <SummarySession />
+      </section>
+    </SummaryBox>
+  );
+}
+
+export default styled(Summary)`
+  .validator--Account-block-icon {
+    margin-right: 0.75rem;
+    margin-top: -0.25rem;
+    vertical-align: middle;
+  }
+
+  .validator--Summary-authors {
+    .validator--Account-block-icon+.validator--Account-block-icon {
+      margin-left: -1.5rem;
+    }
+  }
+`;

@@ -1,62 +1,63 @@
-// Copyright 2017-2019 @polkadot/app-storage authors & contributors
+// Copyright 2017-2020 @polkadot/app-storage authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AppProps, I18nProps } from '@polkadot/ui-app/types';
+import { AppProps as Props } from '@polkadot/react-components/types';
 import { QueryTypes } from './types';
 
-import './index.css';
-
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
 import Queries from './Queries';
-import Selection from './Selection/index';
-import translate from './translate';
+import Selection from './Selection';
 
-type Props = AppProps & I18nProps;
+function StorageApp ({ basePath, className }: Props): React.ReactElement<Props> {
+  const [queue, setQueue] = useState<QueryTypes[]>([]);
 
-type State = {
-  queue: Array<QueryTypes>
-};
+  const _onAdd = (query: QueryTypes): void => setQueue([query, ...queue]);
+  const _onRemove = (id: number): void => setQueue(queue.filter((item): boolean => item.id !== id));
 
-class StorageApp extends React.PureComponent<Props, State> {
-  state: State = {
-    queue: []
-  };
-
-  render () {
-    const { basePath } = this.props;
-    const { queue } = this.state;
-
-    return (
-      <main className='storage--App'>
-        <Selection
-          basePath={basePath}
-          onAdd={this.onAdd}
-        />
-        <Queries
-          onRemove={this.onRemove}
-          value={queue}
-        />
-      </main>
-    );
-  }
-
-  private onAdd = (query: QueryTypes): void => {
-    this.setState(
-      (prevState: State): State => ({
-        queue: [query].concat(prevState.queue)
-      })
-    );
-  }
-
-  private onRemove = (id: number): void => {
-    this.setState(
-      (prevState: State): State => ({
-        queue: prevState.queue.filter((item) => item.id !== id)
-      })
-    );
-  }
+  return (
+    <main className={`storage--App ${className}`}>
+      <Selection
+        basePath={basePath}
+        onAdd={_onAdd}
+      />
+      <Queries
+        onRemove={_onRemove}
+        value={queue}
+      />
+    </main>
+  );
 }
 
-export default translate(StorageApp);
+export default styled(StorageApp)`
+  .storage--actionrow {
+    align-items: center;
+    display: flex;
+
+    .button {
+      margin: 0.25rem;
+    }
+
+    &.head {
+      flex: 1 1 100%;
+      margin: 0 auto;
+      max-width: 620px;
+    }
+  }
+
+  .storage--actionrow-value {
+    flex: 1;
+    min-width: 0;
+
+    .ui--output {
+      word-break: break-all;
+    }
+  }
+
+  .storage--actionrow-buttons {
+    flex: 0;
+    padding: 0 0.25rem;
+  }
+`;

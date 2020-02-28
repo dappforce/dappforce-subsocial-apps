@@ -1,33 +1,30 @@
-// Copyright 2017-2019 @polkadot/ui-reactive authors & contributors
+// Copyright 2017-2020 @polkadot/react-query authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { BareProps, CallProps } from '@polkadot/ui-api/types';
+import { BareProps } from '@polkadot/react-api/types';
 
 import React from 'react';
-import { Balance } from '@polkadot/types';
-import { withCall } from '@polkadot/ui-api/index';
-import { InputBalance } from '@polkadot/ui-app/index';
+import { DerivedBalancesAll } from '@polkadot/api-derive/types';
+import { InputBalance } from '@polkadot/react-components';
+import { useApi, useCall } from '@polkadot/react-hooks';
 
-type Props = BareProps & CallProps & {
-  balances_freeBalance?: Balance,
-  label?: React.ReactNode
-};
-
-class BalanceDisplay extends React.PureComponent<Props> {
-  render () {
-    const { className, label, style, balances_freeBalance } = this.props;
-
-    return (
-      <InputBalance
-        className={className}
-        isDisabled
-        label={label}
-        style={style}
-        defaultValue={balances_freeBalance}
-      />
-    );
-  }
+interface Props extends BareProps {
+  label?: React.ReactNode;
+  params?: any;
 }
 
-export default withCall('query.balances.freeBalance')(BalanceDisplay);
+export default function BalanceDisplay ({ className, label, params, style }: Props): React.ReactElement<Props> {
+  const { api } = useApi();
+  const allBalances = useCall<DerivedBalancesAll>(api.derive.balances.all as any, [params]);
+
+  return (
+    <InputBalance
+      className={className}
+      isDisabled
+      label={label}
+      style={style}
+      defaultValue={allBalances?.freeBalance}
+    />
+  );
+}

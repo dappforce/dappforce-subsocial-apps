@@ -1,46 +1,34 @@
-// Copyright 2017-2019 @polkadot/app-extrinsics authors & contributors
+// Copyright 2017-2020 @polkadot/app-extrinsics authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { QueueProps } from '@polkadot/ui-app/Status/types';
-import { AppProps, I18nProps } from '@polkadot/ui-app/types';
+import { AppProps as Props } from '@polkadot/react-components/types';
 
-import './index.css';
-
-import React from 'react';
-import { QueueConsumer } from '@polkadot/ui-app/Status/Context';
-import { Tabs } from '@polkadot/ui-app/index';
+import React, { useMemo } from 'react';
+import { Tabs } from '@polkadot/react-components';
 
 import Selection from './Selection';
-import translate from './translate';
+import { useTranslation } from './translate';
 
-type Props = AppProps & I18nProps;
+export default function ExtrinsicsApp ({ basePath }: Props): React.ReactElement<Props> {
+  const { t } = useTranslation();
+  const items = useMemo(() => [{
+    isRoot: true,
+    name: 'create',
+    text: t('Extrinsic submission')
+  }], [t]);
 
-class ExtrinsicsApp extends React.PureComponent<Props> {
-  render () {
-    const { basePath, t } = this.props;
-
-    return (
-      <main className='extrinsics--App'>
-        <header>
-          <Tabs
-            basePath={basePath}
-            items={[{
-              name: 'create',
-              text: t('Extrinsic submission')
-            }]}
-          />
-        </header>
-        <QueueConsumer>
-          {({ queueExtrinsic }: QueueProps) => (
-            <Selection queueExtrinsic={queueExtrinsic} />
-          )}
-        </QueueConsumer>
-      </main>
-    );
-  }
+  return (
+    <main className='extrinsics--App'>
+      <header>
+        <Tabs
+          basePath={basePath}
+          items={items}
+        />
+      </header>
+      <Selection />
+    </main>
+  );
 }
 
 export { ExtrinsicsApp };
-
-export default translate(ExtrinsicsApp);

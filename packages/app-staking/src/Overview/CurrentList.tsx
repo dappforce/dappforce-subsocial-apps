@@ -1,146 +1,180 @@
-// Copyright 2017-2019 @polkadot/app-staking authors & contributors
+// Copyright 2017-2020 @polkadot/app-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedBalancesMap } from '@polkadot/api-derive/types';
-import { I18nProps } from '@polkadot/ui-app/types';
+import { DerivedHeartbeats, DerivedStakingOverview } from '@polkadot/api-derive/types';
+import { AccountId } from '@polkadot/types/interfaces';
+import { ValidatorFilter } from '../types';
+import { AddressDetails } from './types';
 
-import React from 'react';
-import { AccountId, Balance, HeaderExtended } from '@polkadot/types';
-import { withCall, withMulti } from '@polkadot/ui-api/with';
-import { AddressMini, AddressRow } from '@polkadot/ui-app/index';
-import { formatNumber } from '@polkadot/ui-app/util';
-import keyring from '@polkadot/ui-keyring';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
+import { Dropdown, FilterOverlay, Input, Table } from '@polkadot/react-components';
+import { useAccounts, useFavorites } from '@polkadot/react-hooks';
 
-import translate from '../translate';
+import { STORE_FAVS_BASE } from '../constants';
+import { useTranslation } from '../translate';
+import Address from './Address';
 
-type Props = I18nProps & {
-  balances: DerivedBalancesMap,
-  balanceArray: (_address: AccountId | string) => Array<Balance> | undefined,
-  chain_subscribeNewHead?: HeaderExtended,
-  current: Array<string>,
-  next: Array<string>
-};
-
-class CurrentList extends React.PureComponent<Props> {
-  render () {
-    return (
-      <div className='validator--ValidatorsList ui--flex-medium'>
-        <div className='validator--current'>
-          {this.renderCurrent()}
-        </div>
-        <div className='validator--next'>
-          {this.renderNext()}
-        </div>
-      </div>
-    );
-  }
-
-  private renderCurrent () {
-    const { current, t } = this.props;
-
-    return (
-      <>
-        <h1>
-          {t('validators', {
-            replace: {
-              count: current.length
-            }
-          })}
-        </h1>
-        {this.renderColumn(current, t('validator'))}
-      </>
-    );
-  }
-
-  private renderNext () {
-    const { next, t } = this.props;
-
-    return (
-      <>
-        <h1>{t('next up')}</h1>
-        {this.renderColumn(next, t('intention'))}
-      </>
-    );
-  }
-
-  private getDisplayName (address: string, defaultName: string) {
-    const pair = keyring.getAccount(address).isValid()
-      ? keyring.getAccount(address)
-      : keyring.getAddress(address);
-
-    return pair.isValid()
-      ? pair.getMeta().name
-      : defaultName;
-  }
-
-  private renderColumn (addresses: Array<string>, defaultName: string) {
-    const { balances, balanceArray, chain_subscribeNewHead, t } = this.props;
-
-    if (addresses.length === 0) {
-      return (
-        <div>{t('no addresses found')}</div>
-      );
-    }
-
-    let lastBlock: string = '';
-    let lastAuthor: string;
-
-    if (chain_subscribeNewHead) {
-      lastBlock = `#${formatNumber(chain_subscribeNewHead.blockNumber)}`;
-      lastAuthor = (chain_subscribeNewHead.author || '').toString();
-    }
-
-    return (
-      <div>
-        {addresses.map((address) => {
-          const nominators = (balances[address] || {}).nominators || [];
-          const children = nominators.length
-            ? (
-            <details>
-              <summary>{t('Nominators ({{count}})', {
-                replace: {
-                  count: nominators.length
-                }
-              })}</summary>
-              {nominators.map(({ accountId }) =>
-                <AddressMini
-                  key={accountId.toString()}
-                  value={accountId}
-                  withBalance
-                />
-              )}
-            </details>
-          )
-          : undefined;
-
-          return (
-            <article key={address}>
-              <AddressRow
-                balance={balanceArray(address)}
-                name={this.getDisplayName(address, defaultName)}
-                value={address}
-                withCopy={false}
-                withNonce={false}
-              >
-                {children}
-              </AddressRow>
-              <div
-                className={['blockNumber', lastAuthor === address ? 'latest' : ''].join(' ')}
-                key='lastBlock'
-              >
-                {lastAuthor === address ? lastBlock : ''}
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    );
-  }
+interface Props {
+  authorsMap: Record<string, string>;
+  hasQueries: boolean;
+  isIntentions: boolean;
+  isVisible: boolean;
+  lastAuthors?: string[];
+  next: string[];
+  recentlyOnline?: DerivedHeartbeats;
+  setNominators: (nominators: string[]) => void;
+  stakingOverview?: DerivedStakingOverview;
 }
 
-export default withMulti(
-  CurrentList,
-  translate,
-  withCall('derive.chain.subscribeNewHead')
-);
+type AccountExtend = [string, boolean, boolean];
+
+function sortByFav ([,, isFavA]: AccountExtend, [,, isFavB]: AccountExtend): number {
+  return isFavA === isFavB
+    ? 0
+    : (isFavA ? -1 : 1);
+}
+
+function filterAccounts (accounts: string[] = [], elected: string[], favorites: string[], without: string[]): AccountExtend[] {
+  return accounts
+    .filter((accountId): boolean => !without.includes(accountId as any))
+    .map((accountId): AccountExtend => [
+      accountId,
+      elected.includes(accountId),
+      favorites.includes(accountId)
+    ])
+    .sort(sortByFav);
+}
+
+function accountsToString (accounts: AccountId[]): string[] {
+  return accounts.map((accountId): string => accountId.toString());
+}
+
+function reduceDetails (state: Record<string, AddressDetails>, _details: AddressDetails | AddressDetails[]): Record<string, AddressDetails> {
+  const details = Array.isArray(_details)
+    ? _details
+    : [_details];
+
+  return details.reduce((result, details): Record<string, AddressDetails> => {
+    result[details.address] = {
+      ...(state[details.address] || {}),
+      ...details
+    };
+
+    return result;
+  }, { ...state });
+}
+
+export default function CurrentList ({ authorsMap, hasQueries, isIntentions, isVisible, lastAuthors, next, recentlyOnline, setNominators, stakingOverview }: Props): React.ReactElement<Props> | null {
+  const { t } = useTranslation();
+  const { allAccounts } = useAccounts();
+  const [favorites, toggleFavorite] = useFavorites(STORE_FAVS_BASE);
+  const [filter, setFilter] = useState<ValidatorFilter>('all');
+  const [{ allElected, elected, validators, waiting }, setFiltered] = useState<{ allElected: string[]; elected: AccountExtend[]; validators: AccountExtend[]; waiting: AccountExtend[] }>({ allElected: [], elected: [], validators: [], waiting: [] });
+  const [nameFilter, setNameFilter] = useState<string>('');
+  const [addressDetails, dispatchDetails] = useReducer(reduceDetails, {});
+  const filterOpts = useMemo(() => [
+    { text: t('Show all validators and intentions'), value: 'all' },
+    { text: t('Show only my nominations'), value: 'iNominated' },
+    { text: t('Show only with nominators'), value: 'hasNominators' },
+    { text: t('Show only without nominators'), value: 'noNominators' },
+    { text: t('Show only with warnings'), value: 'hasWarnings' },
+    { text: t('Show only without warnings'), value: 'noWarnings' },
+    { text: t('Show only elected for next session'), value: 'nextSet' }
+  ], [t]);
+
+  useEffect((): void => {
+    if (isVisible && stakingOverview) {
+      const allElected = accountsToString(stakingOverview.nextElected);
+      const _validators = accountsToString(stakingOverview.validators);
+      const validators = filterAccounts(_validators, allElected, favorites, []);
+      const elected = filterAccounts(allElected, allElected, favorites, _validators);
+
+      setFiltered({
+        allElected,
+        elected,
+        validators,
+        waiting: filterAccounts(next, [], favorites, allElected)
+      });
+    }
+  }, [favorites, isVisible, next, stakingOverview?.nextElected, stakingOverview?.validators]);
+
+  useEffect((): void => {
+    if (stakingOverview?.eraPoints) {
+      const allPoints = stakingOverview.eraPoints
+        ? [...stakingOverview.eraPoints.individual.entries()]
+        : [];
+
+      dispatchDetails(validators.map(([address]): AddressDetails => {
+        const points = allPoints.find(([accountId]): boolean => accountId.eq(address));
+
+        return {
+          address,
+          points: points
+            ? points[1]
+            : undefined
+        };
+      }));
+    }
+  }, [stakingOverview?.eraPoints, allElected, validators]);
+
+  const _renderRows = (addresses: AccountExtend[], defaultName: string, isMain: boolean): React.ReactNode =>
+    addresses.map(([address, isElected, isFavorite]): React.ReactNode => (
+      <Address
+        address={address}
+        defaultName={defaultName}
+        filter={filter}
+        filterName={nameFilter}
+        hasQueries={hasQueries}
+        heartbeat={
+          isMain && recentlyOnline
+            ? recentlyOnline[address]
+            : undefined
+        }
+        isAuthor={lastAuthors && lastAuthors.includes(address)}
+        isElected={isElected}
+        isFavorite={isFavorite}
+        key={address}
+        lastBlock={authorsMap[address]}
+        myAccounts={allAccounts}
+        points={
+          isMain
+            ? addressDetails[address] && addressDetails[address].points
+            : undefined
+        }
+        setNominators={isIntentions ? undefined : setNominators}
+        toggleFavorite={toggleFavorite}
+      />
+    ));
+
+  return (
+    <div className={`${!isVisible && 'staking--hidden'}`}>
+      <FilterOverlay>
+        <Dropdown
+          onChange={setFilter}
+          options={filterOpts}
+          value={filter}
+          withLabel={false}
+        />
+      </FilterOverlay>
+      <Input
+        autoFocus
+        isFull
+        label={t('filter by name, address or index')}
+        onChange={setNameFilter}
+        value={nameFilter}
+      />
+      <Table className={isIntentions ? 'staking--hidden' : ''}>
+        <Table.Body>
+          {_renderRows(validators, t('validators'), true)}
+        </Table.Body>
+      </Table>
+      <Table className={isIntentions ? '' : 'staking--hidden'}>
+        <Table.Body>
+          {_renderRows(elected, t('intention'), false)}
+          {_renderRows(waiting, t('intention'), false)}
+        </Table.Body>
+      </Table>
+    </div>
+  );
+}

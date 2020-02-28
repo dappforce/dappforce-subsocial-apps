@@ -1,202 +1,231 @@
-// Copyright 2017-2019 @polkadot/app-storage authors & contributors
+// Copyright 2017-2020 @polkadot/app-storage authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { StorageFunction } from '@polkadot/types/StorageKey';
-import { I18nProps } from '@polkadot/ui-app/types';
-import { QueryTypes, StorageModuleQuery } from './types';
+import { RenderFn, DefaultProps, ComponentRenderer } from '@polkadot/react-api/hoc/types';
+import { ConstValue } from '@polkadot/react-components/InputConsts/types';
+import { QueryTypes, StorageEntryPromise, StorageModuleQuery } from './types';
 
-import React from 'react';
-import { Compact } from '@polkadot/types';
-import { Button, Labelled } from '@polkadot/ui-app/index';
-import valueToText from '@polkadot/ui-params/valueToText';
-import { withCallDiv } from '@polkadot/ui-api/index';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { unwrapStorageType } from '@polkadot/types/primitive/StorageKey';
+import { Button, Labelled } from '@polkadot/react-components';
+import { withCallDiv } from '@polkadot/react-api/hoc';
+import valueToText from '@polkadot/react-params/valueToText';
+import { Compact, Option, Raw } from '@polkadot/types';
 import { isU8a, u8aToHex, u8aToString } from '@polkadot/util';
 
-import translate from './translate';
-import { RenderFn, DefaultProps, ComponentRenderer } from '@polkadot/ui-api/with/types';
+interface Props {
+  className?: string;
+  onRemove: (id: number) => void;
+  value: QueryTypes;
+}
 
-type Props = I18nProps & {
-  onRemove: (id: number) => void,
-  value: QueryTypes
-};
+interface CacheInstance {
+  Component: React.ComponentType<any>;
+  render: RenderFn;
+  refresh: (swallowErrors: boolean, contentShorten: boolean) => React.ComponentType<any>;
+}
 
-type ComponentProps = {};
+const cache: CacheInstance[] = [];
 
-type State = {
-  inputs: Array<React.ReactNode>,
-  Component: React.ComponentType<ComponentProps>,
-  spread: { [index: number]: boolean }
-};
+function keyToName (isConst: boolean, _key: Uint8Array | StorageEntryPromise | ConstValue): string {
+  if (isConst) {
+    const key = _key as ConstValue;
 
-type CacheInstance = {
-  Component: React.ComponentType<any>,
-  render: RenderFn,
-  refresh: (swallowErrors: boolean, contentShorten: boolean) => React.ComponentType<any>
-};
+    return `const ${key.section}.${key.method}`;
+  }
 
-const cache: Array<CacheInstance> = [];
+  const key = _key as Uint8Array | StorageEntryPromise;
 
-class Query extends React.PureComponent<Props, State> {
-  state: State = { spread: {} } as State;
+  if (isU8a(key)) {
+    const u8a = Compact.stripLengthPrefix(key);
 
-  static getCachedComponent (query: QueryTypes): CacheInstance {
-    const { id, key, params = [] } = query as StorageModuleQuery;
+    // If the string starts with `:`, handle it as a pure string
+    return u8a[0] === 0x3a
+      ? u8aToString(u8a)
+      : u8aToHex(u8a);
+  }
 
-    if (!cache[id]) {
-      const values: Array<any> = params.map(({ value }) => value);
-      const type = key.meta
-        ? key.meta.type.toString()
-        : 'Data';
-      const defaultProps = { className: 'ui--output' };
+  return `${key.creator.section}.${key.creator.method}`;
+}
 
-      // render function to create an element for the query results which is plugged to the api
-      const renderHelper = withCallDiv('subscribe', { params: [key, ...values] });
-      const Component = renderHelper(
-        // By default we render a simple div node component with the query results in it
-        (value: any) => valueToText(type, value, true, true),
+function typeToString ({ creator: { meta: { modifier, type } } }: StorageEntryPromise): string {
+  const _type = unwrapStorageType(type);
+
+  return modifier.isOptional
+    ? `Option<${_type}>`
+    : _type;
+}
+
+function createComponent (type: string, Component: React.ComponentType<any>, defaultProps: DefaultProps, renderHelper: ComponentRenderer): { Component: React.ComponentType<any>; render: (createComponent: RenderFn) => React.ComponentType<any>; refresh: (swallowErrors: boolean, contentShorten: boolean) => React.ComponentType<any> } {
+  return {
+    Component,
+    // In order to replace the default component during runtime we can provide a RenderFn to create a new 'plugged' component
+    render: (createComponent: RenderFn): React.ComponentType<any> =>
+      renderHelper(createComponent, defaultProps),
+    // In order to modify the parameters which are used to render the default component, we can use this method
+    refresh: (swallowErrors: boolean, contentShorten: boolean): React.ComponentType<any> =>
+      renderHelper(
+        (value: any): React.ReactNode => valueToText(type, value, swallowErrors, contentShorten),
         defaultProps
-      );
-      cache[query.id] = Query.createComponent(type, Component, defaultProps, renderHelper);
-    }
+      )
+  };
+}
 
-    return cache[id];
-  }
+function getCachedComponent (query: QueryTypes): CacheInstance {
+  const { id, isConst, key, params = [] } = query as StorageModuleQuery;
 
-  static createComponent (type: string, Component: React.ComponentType<any>, defaultProps: DefaultProps, renderHelper: ComponentRenderer) {
-    return {
-      Component,
-      // In order to replace the default component during runtime we can provide a RenderFn to create a new 'plugged' component
-      render: (createComponent: RenderFn) => {
-        return renderHelper(createComponent, defaultProps);
-      },
-      // In order to modify the parameters which are used to render the default component, we can use this method
-      refresh: (swallowErrors: boolean, contentShorten: boolean) => {
-        return renderHelper(
-          (value: any) => valueToText(type, value, swallowErrors, contentShorten),
-          defaultProps
-        );
+  if (!cache[id]) {
+    let renderHelper;
+    let type: string;
+
+    if (isConst) {
+      const { meta, method, section } = key as unknown as ConstValue;
+
+      renderHelper = withCallDiv(`consts.${section}.${method}`, { withIndicator: true });
+      type = meta.type.toString();
+    } else {
+      const values: any[] = params.map(({ value }): any => value);
+
+      if (isU8a(key)) {
+        // subscribe to the raw key here
+        renderHelper = withCallDiv('rpc.state.subscribeStorage', {
+          paramName: 'params',
+          paramValid: true,
+          params: [[key]],
+          transform: ([data]: Option<Raw>[]): Option<Raw> => data,
+          withIndicator: true
+        });
+      } else {
+        // render function to create an element for the query results which is plugged to the api
+        renderHelper = withCallDiv('subscribe', {
+          paramName: 'params',
+          paramValid: true,
+          params: [key, ...values],
+          withIndicator: true
+        });
       }
-    };
-  }
 
-  static getDerivedStateFromProps ({ value }: Props, prevState: State): State | null {
-    const Component = Query.getCachedComponent(value).Component;
-    const inputs: Array<React.ReactNode> = isU8a(value.key)
-      ? []
-      // FIXME We need to render the actual key params
-      // const { key, params } = value;
-      // const inputs = key.params.map(({ name, type }, index) => (
-      //   <span key={`param_${name}_${index}`}>
-      //     {name}={valueToText(type, params[index].value)}
-      //   </span>
-      // ));
-      : [];
+      type = key.creator && key.creator.meta
+        ? typeToString(key)
+        : 'Raw';
+    }
 
-    return {
-      Component,
-      inputs
-    } as State;
-  }
-
-  render () {
-    const { value } = this.props;
-    const { Component } = this.state;
-    const { key } = value;
-
-    return (
-      <div className='storage--Query storage--actionrow'>
-        <div className='storage--actionrow-value'>
-          <Labelled
-            label={
-              <div className='ui--Param-text'>
-                {this.keyToName(key)}: {
-                  isU8a(key)
-                    ? 'Data'
-                    : key.meta.type.toString()
-                }
-              </div>
-            }
-          >
-            <Component />
-          </Labelled>
-        </div>
-        <div className='storage--actionrow-buttons'>
-          <div className='container'>
-            {this.renderButtons()}
-          </div>
-        </div>
-      </div>
+    const defaultProps = { className: 'ui--output' };
+    const Component = renderHelper(
+      // By default we render a simple div node component with the query results in it
+      (value: any): React.ReactNode => valueToText(type, value, true, true),
+      defaultProps
     );
+
+    cache[query.id] = createComponent(type, Component, defaultProps, renderHelper);
   }
 
-  private renderButtons () {
-    const { id, key } = this.props.value as StorageModuleQuery;
+  return cache[id];
+}
 
-    const buttons = [
-      <Button
-        icon='close'
-        isNegative
-        key='close'
-        onClick={this.onRemove}
-      />
-    ];
+function Query ({ className, onRemove, value }: Props): React.ReactElement<Props> | null {
+  // const [inputs, setInputs] = useState<React.ReactNode[]>([]);
+  const [{ Component }, setComponent] = useState<Partial<CacheInstance>>({});
+  const [isSpreadable, setIsSpreadable] = useState(false);
+  const [spread, setSpread] = useState<Record<number, boolean>>({});
 
-    if (key.meta && ['Bytes', 'Data'].includes(key.meta.type.toString())) {
-      // TODO We are currently not performing a copy
-      // buttons.unshift(
-      //   <Button
-      //     icon='copy'
-      //     onClick={this.copyHandler(id)}
-      //   />
-      // );
-      buttons.unshift(
-        <Button
-          icon='ellipsis horizontal'
-          key='spread'
-          onClick={this.spreadHandler(id)}
-        />
-      );
-    }
+  useEffect((): void => {
+    setComponent(getCachedComponent(value));
+    // setInputs(
+    //   isU8a(value.key)
+    //     ? []
+    //     // FIXME We need to render the actual key params
+    //     // const { key, params } = value;
+    //     // const inputs = key.params.map(({ name, type }, index) => (
+    //     //   <span key={`param_${name}_${index}`}>
+    //     //     {name}={valueToText(type, params[index].value)}
+    //     //   </span>
+    //     // ));
+    //     : []
+    // );
+    setIsSpreadable(
+      (value.key as StorageEntryPromise).creator &&
+      (value.key as StorageEntryPromise).creator.meta &&
+      ['Bytes', 'Raw'].includes((value.key as StorageEntryPromise).creator.meta.type.toString())
+    );
+  }, [value]);
 
-    return buttons;
+  const { id, isConst, key } = value;
+  const type = isConst
+    ? (key as unknown as ConstValue).meta.type.toString()
+    : isU8a(key)
+      ? 'Raw'
+      : typeToString(key as StorageEntryPromise);
+
+  if (!Component) {
+    return null;
   }
 
-  private keyToName (key: Uint8Array | StorageFunction): string {
-    if (isU8a(key)) {
-      const u8a = Compact.stripLengthPrefix(key);
-
-      // If the string starts with `:`, handle it as a pure string
-      return u8a[0] === 0x3a
-        ? u8aToString(u8a)
-        : u8aToHex(u8a);
-    }
-
-    return `${key.section}.${key.method}`;
-  }
-
-  private spreadHandler (id: number) {
-    return () => {
-      const { spread } = this.state;
-
+  const _spreadHandler = (id: number): () => void => {
+    return (): void => {
       cache[id].Component = cache[id].refresh(true, !!spread[id]);
       spread[id] = !spread[id];
 
-      this.setState({
-        ...this.state,
-        ...spread,
-        Component: cache[id].Component
-      });
+      setComponent(cache[id]);
+      setSpread({ ...spread });
     };
-  }
+  };
+  const _onRemove = (): void => {
+    delete cache[value.id];
 
-  private onRemove = (): void => {
-    const { onRemove, value: { id } } = this.props;
+    onRemove(value.id);
+  };
 
-    delete cache[id];
-
-    onRemove(id);
-  }
+  return (
+    <div className={`storage--Query storage--actionrow ${className}`}>
+      <div className='storage--actionrow-value'>
+        <Labelled
+          label={
+            <div className='ui--Param-text'>
+              {keyToName(isConst, key)}: {type}
+            </div>
+          }
+        >
+          <Component />
+        </Labelled>
+      </div>
+      <div className='storage--actionrow-buttons'>
+        <div className='container'>
+          {isSpreadable && (
+            <Button
+              icon='ellipsis horizontal'
+              key='spread'
+              onClick={_spreadHandler(id)}
+            />
+          )}
+          <Button
+            icon='close'
+            isNegative
+            key='close'
+            onClick={_onRemove}
+          />
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default translate(Query);
+export default styled(Query)`
+  margin-bottom: 0.25em;
+
+  label {
+    text-transform: none !important;
+  }
+
+  .ui.disabled.dropdown.selection {
+    color: #aaa;
+    opacity: 1;
+  }
+
+  .ui--IdentityIcon {
+    margin: -10px 0;
+    vertical-align: middle;
+  }
+`;

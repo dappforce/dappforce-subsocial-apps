@@ -1,4 +1,4 @@
-// Copyright 2017-2019 @polkadot/app-js authors & contributors
+// Copyright 2017-2020 @polkadot/app-js authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -9,15 +9,16 @@ export const storageGetInfo: Snippet = {
   text: 'Get chain state information',
   label: { color: 'blue', children: 'Storage', size: 'tiny' },
   code: `// Get chain state information
-// Make our basic chain state/storage queries, all in one go
-const [blockPeriod, validators, transferFee] = await Promise.all([
-  api.query.timestamp.blockPeriod(),
-  api.query.session.validators(),
-  api.query.balances.transferFee()
+// Make our basic chain state / storage queries, all in one go
+
+const [now, minimumValidatorCount, validators] = await Promise.all([
+  api.query.timestamp.now(),
+  api.query.staking.minimumValidatorCount(),
+  api.query.session.validators()
 ]);
 
-console.log('blockPeriod in seconds: ' + blockPeriod.toNumber());
-console.log('transferFee: ', transferFee);
+console.log('The current date is: ' + now);
+console.log('The minimum validator count: ' + minimumValidatorCount);
 
 if (validators && validators.length > 0) {
   // Retrieve the balances for all validators
@@ -64,11 +65,12 @@ export const storageListenToBalanceChange: Snippet = {
   label: { color: 'blue', children: 'Storage', size: 'tiny' },
   code: `// You may leave this example running and make a transfer
 // of any value from or to Alice address in the 'Transfer' App
-const ALICE = '5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDtZ';
+const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 
 // Retrieve the initial balance.
 let previous = await api.query.balances.freeBalance(ALICE);
-console.log('ALICE has a balance of' + previous);
+
+console.log('ALICE has a balance of ' + previous);
 
 // Subscribe and listen to balance changes
 api.query.balances.freeBalance(ALICE, (balance) => {
@@ -83,12 +85,29 @@ api.query.balances.freeBalance(ALICE, (balance) => {
 });`
 };
 
+export const storageListenToMultipleBalancesChange: Snippet = {
+  value: 'storageListenToMultipleBalancesChange',
+  text: 'Listen to multiple balances changes',
+  label: { color: 'blue', children: 'Storage', size: 'tiny' },
+  code: `// You may leave this example running and make a transfer
+// of any value from or to Alice/Bob address in the 'Transfer' App
+const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+const BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
+
+console.log('Tracking balances for:', [ALICE, BOB])
+
+// Subscribe and listen to several balance changes
+api.query.balances.freeBalance.multi([ALICE, BOB], (balances) => {
+  console.log('Change detected, new balances: ', balances)
+});`
+};
+
 export const storageRetrieveInfoOnQueryKeys: Snippet = {
   value: 'storageRetrieveInfoOnQueryKeys',
   text: 'Retrieve Info on query keys',
   label: { color: 'blue', children: 'Storage', size: 'tiny' },
   code: `// This example set shows how to make queries and retrieve info on query keys
-const ALICE = '5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDtZ';
+const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 
 // retrieve the balance, once-off at the latest block
 const currBalance = await api.query.balances.freeBalance(ALICE);

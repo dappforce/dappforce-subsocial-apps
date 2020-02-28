@@ -1,4 +1,4 @@
-// Copyright 2017-2019 @polkadot/app-js authors & contributors
+// Copyright 2017-2020 @polkadot/app-js authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -7,14 +7,15 @@ import { LabelProps } from 'semantic-ui-react/dist/commonjs/elements/Label';
 
 export type LogType = 'error' | 'log';
 
-export type Log = {
-  args: Array<any>,
-  type: LogType
-};
+export interface Log {
+  args: any[];
+  type: LogType;
+}
 
-export type Snippet = {
+export interface Snippet {
   text: string;
   value: string;
   code: string;
-  label?: SemanticShorthandItem<LabelProps>
-};
+  label?: SemanticShorthandItem<LabelProps>;
+  type?: 'custom' | 'shared';
+}

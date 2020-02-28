@@ -1,142 +1,143 @@
-// Copyright 2017-2019 @polkadot/app-staking authors & contributors
+// Copyright 2017-2020 @polkadot/app-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedBalancesMap } from '@polkadot/api-derive/types';
-import { AppProps, I18nProps } from '@polkadot/ui-app/types';
-import { ApiProps } from '@polkadot/ui-api/types';
-import { SubjectInfo } from '@polkadot/ui-keyring/observable/types';
-import { ComponentProps } from './types';
+import { DerivedHeartbeats, DerivedStakingOverview } from '@polkadot/api-derive/types';
+import { AppProps as Props } from '@polkadot/react-components/types';
+import { AccountId } from '@polkadot/types/interfaces';
 
-import React from 'react';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import { Route, Switch } from 'react-router';
-import { AccountId, Balance } from '@polkadot/types';
-import Tabs, { TabItem } from '@polkadot/ui-app/Tabs';
-import accountObservable from '@polkadot/ui-keyring/observable/accounts';
-import { withCalls, withMulti, withObservable } from '@polkadot/ui-api/index';
+import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
+import { HelpOverlay } from '@polkadot/react-components';
+import Tabs from '@polkadot/react-components/Tabs';
+import { useCall, useAccounts, useApi } from '@polkadot/react-hooks';
 
-import './index.css';
-
-import StakeList from './StakeList';
+import basicMd from './md/basic.md';
+import Actions from './Actions';
 import Overview from './Overview';
-import translate from './translate';
+import Summary from './Overview/Summary';
+import Query from './Query';
+import Targets from './Targets';
+import { MAX_SESSIONS } from './constants';
+import { useTranslation } from './translate';
+import useSessionRewards from './useSessionRewards';
 
-type Props = AppProps & ApiProps & I18nProps & {
-  allAccounts?: SubjectInfo,
-  balances?: DerivedBalancesMap,
-  intentions?: Array<AccountId>,
-  session_validators?: Array<AccountId>
-};
-
-type State = {
-  intentions: Array<string>,
-  tabs: Array<TabItem>,
-  validators: Array<string>
-};
-
-class App extends React.PureComponent<Props, State> {
-  state: State;
-
-  constructor (props: Props) {
-    super(props);
-
-    const { t } = props;
-
-    this.state = {
-      intentions: [],
-      tabs: [
-        {
-          name: 'overview',
-          text: t('Staking Overview')
-        },
-        {
-          name: 'actions',
-          text: t('Account Actions')
-        }
-      ],
-      validators: []
-    };
-  }
-
-  static getDerivedStateFromProps ({ session_validators, intentions }: Props): State {
-    return {
-      intentions: (intentions || []).map((accountId) =>
-        accountId.toString()
-      ),
-      validators: (session_validators || []).map((authorityId) =>
-        authorityId.toString()
-      )
-    } as State;
-  }
-
-  render () {
-    const { allAccounts } = this.props;
-    const { tabs } = this.state;
-    const { basePath } = this.props;
-    const hasAccounts = allAccounts && Object.keys(allAccounts).length !== 0;
-    const filteredTabs = hasAccounts
-      ? tabs
-      : tabs.filter(({ name }) =>
-        !['actions'].includes(name)
-      );
-
-    return (
-      <main className='staking--App'>
-        <header>
-          <Tabs
-            basePath={basePath}
-            items={filteredTabs}
-          />
-        </header>
-        <Switch>
-          <Route path={`${basePath}/actions`} render={this.renderComponent(StakeList)} />
-          <Route render={this.renderComponent(Overview)} />
-        </Switch>
-      </main>
-    );
-  }
-
-  private renderComponent (Component: React.ComponentType<ComponentProps>) {
-    return (): React.ReactNode => {
-      const { intentions, validators } = this.state;
-      const { balances = {} } = this.props;
-
-      return (
-        <Component
-          balances={balances}
-          balanceArray={this.balanceArray}
-          intentions={intentions}
-          validators={validators}
-        />
-      );
-    };
-  }
-
-  private balanceArray = (_address: AccountId | string): Array<Balance> | undefined => {
-    const { balances = {} } = this.props;
-
-    if (!_address) {
-      return undefined;
-    }
-
-    const address = _address.toString();
-
-    return balances[address]
-      ? [
-        balances[address].stakingBalance,
-        balances[address].nominatedBalance
-      ]
-      : undefined;
-  }
+function reduceNominators (nominators: string[], additional: string[]): string[] {
+  return nominators.concat(...additional.filter((nominator): boolean => !nominators.includes(nominator)));
 }
 
-export default withMulti(
-  App,
-  translate,
-  withObservable(accountObservable.subject, { propName: 'allAccounts' }),
-  withCalls<Props>(
-    'query.session.validators',
-    ['query.staking.intentions', { propName: 'intentions' }],
-    ['derive.staking.intentionsBalances', { propName: 'balances' }]
-  )
-);
+function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> {
+  const { t } = useTranslation();
+  const { api } = useApi();
+  const { hasAccounts } = useAccounts();
+  const { pathname } = useLocation();
+  const [next, setNext] = useState<string[]>([]);
+  const allStashes = useCall<string[]>(api.derive.staking.controllers, [], {
+    defaultValue: [],
+    transform: ([stashes]: [AccountId[]]): string[] =>
+      stashes.map((accountId): string => accountId.toString())
+  }) as string[];
+  const recentlyOnline = useCall<DerivedHeartbeats>(api.derive.imOnline.receivedHeartbeats, []);
+  const stakingOverview = useCall<DerivedStakingOverview>(api.derive.staking.overview, []);
+  const sessionRewards = useSessionRewards(MAX_SESSIONS);
+  const hasQueries = hasAccounts && !!(api.query.imOnline?.authoredBlocks);
+  const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
+  const items = useMemo(() => [
+    {
+      isRoot: true,
+      name: 'overview',
+      text: t('Staking overview')
+    },
+    {
+      name: 'waiting',
+      text: t('Waiting')
+    },
+    {
+      name: 'returns',
+      text: t('Returns')
+    },
+    {
+      name: 'actions',
+      text: t('Account actions')
+    },
+    {
+      hasParams: true,
+      name: 'query',
+      text: t('Validator stats')
+    }
+  ], [t]);
+
+  useEffect((): void => {
+    stakingOverview && setNext(
+      allStashes.filter((address): boolean => !stakingOverview.validators.includes(address as any))
+    );
+  }, [allStashes, stakingOverview?.validators]);
+
+  return (
+    <main className={`staking--App ${className}`}>
+      <HelpOverlay md={basicMd} />
+      <header>
+        <Tabs
+          basePath={basePath}
+          hidden={
+            hasAccounts
+              ? hasQueries
+                ? []
+                : ['query']
+              : ['actions', 'query']
+          }
+          items={items}
+        />
+      </header>
+      <Summary
+        isVisible={pathname === basePath}
+        next={next}
+        nominators={nominators}
+        stakingOverview={stakingOverview}
+      />
+      <Switch>
+        <Route path={[`${basePath}/query/:value`, `${basePath}/query`]}>
+          <Query sessionRewards={sessionRewards} />
+        </Route>
+        <Route path={`${basePath}/returns`}>
+          <Targets sessionRewards={sessionRewards} />
+        </Route>
+      </Switch>
+      <Actions
+        allStashes={allStashes}
+        isVisible={pathname === `${basePath}/actions`}
+        recentlyOnline={recentlyOnline}
+        next={next}
+        stakingOverview={stakingOverview}
+      />
+      <Overview
+        hasQueries={hasQueries}
+        isVisible={[basePath, `${basePath}/waiting`].includes(pathname)}
+        recentlyOnline={recentlyOnline}
+        next={next}
+        setNominators={dispatchNominators}
+        stakingOverview={stakingOverview}
+      />
+    </main>
+  );
+}
+
+export default styled(StakingApp)`
+  .staking--hidden {
+    display: none;
+  }
+
+  .staking--queryInput {
+    margin-bottom: 1.5rem;
+  }
+
+  .staking--Chart h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .staking--Chart+.staking--Chart {
+    margin-top: 1.5rem;
+  }
+`;

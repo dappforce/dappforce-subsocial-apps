@@ -1,42 +1,49 @@
-// Copyright 2017-2019 @polkadot/app-democracy authors & contributors
+// Copyright 2017-2020 @polkadot/app-democracy authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AppProps, BareProps, I18nProps } from '@polkadot/ui-app/types';
+import { AppProps, BareProps } from '@polkadot/react-components/types';
 
-import './index.css';
+import React, { useMemo } from 'react';
+import { Route, Switch } from 'react-router';
+import { HelpOverlay, Tabs } from '@polkadot/react-components';
+import uiSettings from '@polkadot/ui-settings';
 
-import React from 'react';
-import { Tabs } from '@polkadot/ui-app/index';
+import basicMd from './md/basic.md';
+import Overview from './Overview';
+import { useTranslation } from './translate';
 
-import Proposals from './Proposals';
-import Referendums from './Referendums';
-import Summary from './Summary';
-import translate from './translate';
+export { default as useCounter } from './useCounter';
 
-type Props = AppProps & BareProps & I18nProps;
+interface Props extends AppProps, BareProps {}
 
-class App extends React.PureComponent<Props> {
-  render () {
-    const { basePath, t } = this.props;
+const hidden = uiSettings.uiMode === 'full'
+  ? []
+  : ['propose'];
 
-    return (
-      <main className='democracy--App'>
-        <header>
-          <Tabs
-            basePath={basePath}
-            items={[{
-              name: 'overview',
-              text: t('Democracy overview')
-            }]}
-          />
-        </header>
-        <Summary />
-        <Referendums />
-        <Proposals />
-      </main>
-    );
-  }
+export default function DemocracyApp ({ basePath }: Props): React.ReactElement<Props> {
+  const { t } = useTranslation();
+  const items = useMemo(() => [
+    {
+      isRoot: true,
+      name: 'overview',
+      text: t('Democracy overview')
+    }
+  ], [t]);
+
+  return (
+    <main className='democracy--App'>
+      <HelpOverlay md={basicMd} />
+      <header>
+        <Tabs
+          basePath={basePath}
+          hidden={hidden}
+          items={items}
+        />
+      </header>
+      <Switch>
+        <Route component={Overview} />
+      </Switch>
+    </main>
+  );
 }
-
-export default translate(App);

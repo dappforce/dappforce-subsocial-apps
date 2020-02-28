@@ -1,97 +1,65 @@
-// Copyright 2017-2019 @polkadot/app-toolbox authors & contributors
+// Copyright 2017-2020 @polkadot/app-toolbox authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/ui-app/types';
-
 import BN from 'bn.js';
-import React from 'react';
-import { InputAddress, Labelled } from '@polkadot/ui-app/index';
-import { Nonce } from '@polkadot/ui-reactive/index';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { InputAddress, Labelled } from '@polkadot/react-components';
+import { Nonce } from '@polkadot/react-query';
 
-import translate from './translate';
+import { useTranslation } from '../translate';
 
-type Props = I18nProps & {
-  defaultValue?: string | null,
-  isError?: boolean,
-  onChange: (accountId: string | undefined | null, accountNonce: BN) => void
-};
-
-type State = {
-  accountNonce: BN,
-  accountId?: string | null
-};
-
-class Account extends React.PureComponent<Props, State> {
-  state: State;
-
-  constructor (props: Props) {
-    super(props);
-
-    this.state = {
-      accountId: props.defaultValue,
-      accountNonce: new BN(0)
-    };
-  }
-
-  render () {
-    const { defaultValue, isError, t } = this.props;
-
-    return (
-      <div className='rpc--Account ui--row'>
-        <div className='large'>
-          <InputAddress
-            defaultValue={defaultValue}
-            isError={isError}
-            label={t('sign data from account')}
-            onChange={this.onChangeAccount}
-            placeholder='0x...'
-            type='account'
-          />
-        </div>
-        {this.renderNonce()}
-      </div>
-    );
-  }
-
-  renderNonce () {
-    const { t } = this.props;
-    const { accountId } = this.state;
-
-    if (!accountId) {
-      return null;
-    }
-
-    return (
-      <Labelled
-        className='small'
-        label={t('with an index of')}
-      >
-        <Nonce
-          className='ui disabled dropdown selection'
-          callOnResult={this.onChangeNonce}
-          params={accountId}
-        />
-      </Labelled>
-    );
-  }
-
-  onChangeAccount = (accountId: string): void => {
-    const { onChange } = this.props;
-
-    this.setState({ accountId }, () =>
-      onChange(accountId, this.state.accountNonce)
-    );
-  }
-
-  onChangeNonce = (_accountNonce: BN): void => {
-    const { onChange } = this.props;
-    const accountNonce = _accountNonce || new BN(0);
-
-    this.setState({ accountNonce }, () =>
-      onChange(this.state.accountId, accountNonce)
-    );
-  }
+interface Props {
+  className?: string;
+  defaultValue?: string | null;
+  isError?: boolean;
+  onChange: (accountId: string | undefined | null, accountNonce: BN) => void;
 }
 
-export default translate(Account);
+function Account ({ className, defaultValue, isError, onChange }: Props): React.ReactElement<Props> {
+  const { t } = useTranslation();
+  const [accountId, setAccountId] = useState<string | null | undefined>(defaultValue);
+  const [accountNonce, setAccountNonce] = useState(new BN(0));
+
+  const _onChangeAccountId = (accountId: string | null): void => {
+    setAccountId(accountId);
+    onChange(accountId, accountNonce);
+  };
+  const _onChangeAccountNonce = (accountNonce: BN): void => {
+    setAccountNonce(accountNonce);
+    onChange(accountId, accountNonce);
+  };
+
+  return (
+    <div className={`ui--row ${className}`}>
+      <div className='large'>
+        <InputAddress
+          defaultValue={defaultValue}
+          isError={isError}
+          label={t('sign data from account')}
+          onChange={_onChangeAccountId}
+          placeholder='0x...'
+          type='account'
+        />
+      </div>
+      {accountId && (
+        <Labelled
+          className='small'
+          label={t('with an index of')}
+        >
+          <Nonce
+            className='ui disabled dropdown selection'
+            callOnResult={_onChangeAccountNonce}
+            params={accountId}
+          />
+        </Labelled>
+      )}
+    </div>
+  );
+}
+
+export default styled(Account)`
+  box-sizing: border-box;
+  padding-left: 2em;
+`;

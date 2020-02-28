@@ -1,16 +1,23 @@
-// Copyright 2017-2019 @polkadot/app-accounts authors & contributors
+// Copyright 2017-2020 @polkadot/app-accounts authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { mnemonicGenerate, mnemonicToSeed, naclKeypairFromSeed } from '@polkadot/util-crypto';
+import { cryptoWaitReady, mnemonicGenerate, mnemonicToMiniSecret, naclKeypairFromSeed, schnorrkelKeypairFromSeed } from '@polkadot/util-crypto';
 
-const ctx: Worker = self as any;
+const ctx: Worker = self as unknown as Worker;
 
-ctx.onmessage = () => {
+cryptoWaitReady().catch((): void => {
+  // ignore
+});
+
+ctx.onmessage = async ({ data: { pairType } }): Promise<void> => {
+  await cryptoWaitReady();
+
   const seed = mnemonicGenerate();
-  const { publicKey } = naclKeypairFromSeed(
-    mnemonicToSeed(seed)
-  );
+  const miniSecret = mnemonicToMiniSecret(seed);
+  const { publicKey } = pairType === 'sr25519'
+    ? schnorrkelKeypairFromSeed(miniSecret)
+    : naclKeypairFromSeed(miniSecret);
 
   ctx.postMessage({
     publicKey,
