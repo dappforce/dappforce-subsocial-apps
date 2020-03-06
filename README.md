@@ -1,4 +1,4 @@
-# SubSocial Web UI by [DappForce](https://github.com/dappforce)
+# Subsocial Blockchain Explorer by [DappForce](https://github.com/dappforce)
 
 SubSocial is a set of Substrate runtime modules (SRML) with UI that would allow anyone to launch their own decentralized censorship-resistant social network aka community. We are planning to follow a topology of Polkadot Network where every community will be running on its own Substrate chain and all these decentralized communities will be connected to our own Polkadot relay. This social networking relay could be connected to the official Polkadot Network.
 
