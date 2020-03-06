@@ -43,3 +43,7 @@ To get started -
 4. Install the dependencies by running `yarn`
 5. Ready! Now you can launch the UI (assuming you have a local Polkadot Node running), via `yarn run start`
 6. Access the UI via [http://localhost:3000](http://localhost:3000)
+
+## License
+
+Subsocial is [GPL 3.0](./LICENSE) licensed.
