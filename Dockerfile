@@ -1,8 +1,8 @@
 FROM node:10.13-slim as builder
 
-WORKDIR /subsocial-ui
+WORKDIR /apps
 
-COPY package.json package-lock.json* ./
+COPY package.json yarn.lock* ./
 RUN yarn install --no-optional
 
 COPY . .
@@ -13,8 +13,8 @@ FROM node:10.13-slim
 
 RUN apt-get update && apt-get -y install nginx
 
-COPY --from=builder /subsocial-ui/packages/apps/build /var/www/html
+COPY --from=builder /apps/packages/apps/build /var/www/html
 
-EXPOSE 80
+EXPOSE 3002
 
 CMD ["nginx", "-g", "daemon off;"]
