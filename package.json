@@ -64,7 +64,8 @@
     "webpack-plugin-serve": "^0.12.1"
   },
   "dependencies": {
-    "@subsocial/types": "0.1.20beta11",
-    "@subsocial/utils": "^0.1.17"
+    "@subsocial/types": "0.1.29",
+    "@subsocial/utils": "^0.1.17",
+    "dotenv": "^8.2.0"
   }
 }
