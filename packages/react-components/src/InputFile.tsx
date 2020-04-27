@@ -4,7 +4,7 @@
 
 import { BareProps } from './types';
 
-import React, { useState, createRef } from 'react';
+import React, { useCallback, useState, createRef } from 'react';
 import Dropzone, { DropzoneRef } from 'react-dropzone';
 import styled from 'styled-components';
 import { formatNumber, isHex, u8aToString, hexToU8a } from '@polkadot/util';
@@ -13,7 +13,7 @@ import { classes } from './util';
 import Labelled from './Labelled';
 import { useTranslation } from './translate';
 
-interface Props extends BareProps {
+export interface InputFileProps extends BareProps {
   // Reference Example Usage: https://github.com/react-dropzone/react-dropzone/tree/master/examples/Accept
   // i.e. MIME types: 'application/json, text/plain', or '.json, .txt'
   accept?: string;
@@ -53,44 +53,47 @@ function convertResult (result: ArrayBuffer, convertHex?: boolean): Uint8Array {
   return data;
 }
 
-function InputFile ({ accept, className, clearContent, convertHex, help, isDisabled, isError = false, label, onChange, placeholder, withEllipsis, withLabel }: Props): React.ReactElement<Props> {
+function InputFile ({ accept, className, clearContent, convertHex, help, isDisabled, isError = false, label, onChange, placeholder, withEllipsis, withLabel }: InputFileProps): React.ReactElement<InputFileProps> {
   const { t } = useTranslation();
   const dropRef = createRef<DropzoneRef>();
   const [file, setFile] = useState<FileState | undefined>();
 
-  const _onDrop = (files: File[]): void => {
-    files.forEach((file): void => {
-      const reader = new FileReader();
+  const _onDrop = useCallback(
+    (files: File[]): void => {
+      files.forEach((file): void => {
+        const reader = new FileReader();
 
-      reader.onabort = NOOP;
-      reader.onerror = NOOP;
+        reader.onabort = NOOP;
+        reader.onerror = NOOP;
 
-      reader.onload = ({ target }: ProgressEvent<FileReader>): void => {
-        if (target && target.result) {
-          const name = file.name;
-          const data = convertResult(target.result as ArrayBuffer, convertHex);
+        reader.onload = ({ target }: ProgressEvent<FileReader>): void => {
+          if (target && target.result) {
+            const name = file.name;
+            const data = convertResult(target.result as ArrayBuffer, convertHex);
 
-          onChange && onChange(data, name);
-          dropRef && setFile({
-            name,
-            size: data.length
-          });
-        }
-      };
+            onChange && onChange(data, name);
+            dropRef && setFile({
+              name,
+              size: data.length
+            });
+          }
+        };
 
-      reader.readAsArrayBuffer(file);
-    });
-  };
+        reader.readAsArrayBuffer(file);
+      });
+    },
+    [convertHex, dropRef, onChange]
+  );
 
   const dropZone = (
     <Dropzone
       accept={accept}
       disabled={isDisabled}
       multiple={false}
-      ref={dropRef}
       onDrop={_onDrop}
+      ref={dropRef}
     >
-      {({ getRootProps, getInputProps }): JSX.Element => (
+      {({ getInputProps, getRootProps }): JSX.Element => (
         <div {...getRootProps({ className: classes('ui--InputFile', isError ? 'error' : '', className) })} >
           <input {...getInputProps()} />
           <em className='label' >
@@ -124,7 +127,7 @@ function InputFile ({ accept, className, clearContent, convertHex, help, isDisab
     : dropZone;
 }
 
-export default styled(InputFile)`
+export default React.memo(styled(InputFile)`
   background: #fff;
   border: 1px solid rgba(34, 36, 38, 0.15);
   border-radius: 0.28571429rem;
@@ -146,4 +149,4 @@ export default styled(InputFile)`
   .label {
     color: rgba(0, 0, 0, .6);
   }
-`;
+`);

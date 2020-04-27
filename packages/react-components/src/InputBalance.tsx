@@ -42,15 +42,15 @@ function InputBalance ({ autoFocus, className, defaultValue: inDefault, help, is
   return (
     <InputNumber
       autoFocus={autoFocus}
-      className={`ui--InputBalance ${className}`}
       bitLength={DEFAULT_BITLENGTH}
+      className={`ui--InputBalance ${className}`}
       defaultValue={defaultValue}
       help={help}
       isDisabled={isDisabled}
       isError={isError}
       isFull={isFull}
-      isZeroable={isZeroable}
       isSi
+      isZeroable={isZeroable}
       label={label}
       labelExtra={labelExtra}
       maxValue={maxValue}
@@ -67,7 +67,7 @@ function InputBalance ({ autoFocus, className, defaultValue: inDefault, help, is
   );
 }
 
-export default styled(InputBalance)`
+export default React.memo(styled(InputBalance)`
   &&:not(.label-small) .labelExtra {
     right: 6.5rem;
   }
@@ -76,4 +76,4 @@ export default styled(InputBalance)`
     border-style: solid;
     opacity: 1 !important;
   }
-`;
+`);

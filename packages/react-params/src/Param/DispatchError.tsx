@@ -18,19 +18,18 @@ interface Details {
   type?: string;
 }
 
-export default function ErrorDisplay (props: Props): React.ReactElement<Props> {
+function ErrorDisplay (props: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const [{ details, type }, setDetails] = useState<Details>({});
 
   useEffect((): void => {
     if (details !== null && props.defaultValue?.value?.isModule) {
       try {
-        const mod = (props.defaultValue.value as DispatchError).asModule;
-        const error = registry.findMetaError(new Uint8Array([mod.index.toNumber(), mod.error.toNumber()]));
+        const { documentation, name, section } = registry.findMetaError((props.defaultValue.value as DispatchError).asModule);
 
         setDetails({
-          details: error.documentation.join(', '),
-          type: `${error.section}.${error.name}`
+          details: documentation.join(', '),
+          type: `${section}.${name}`
         });
       } catch (error) {
         // Errors may not actually be exposed, in this case, just return the default representation
@@ -39,7 +38,7 @@ export default function ErrorDisplay (props: Props): React.ReactElement<Props> {
         setDetails({ details: null });
       }
     }
-  }, [props.defaultValue]);
+  }, [details, props.defaultValue]);
 
   if (!props.isDisabled || !details) {
     return <Unknown {...props} />;
@@ -64,3 +63,5 @@ export default function ErrorDisplay (props: Props): React.ReactElement<Props> {
     </Static>
   );
 }
+
+export default React.memo(ErrorDisplay);

@@ -50,6 +50,7 @@ function Editor ({ className, code, isValid, onEdit }: Props): React.ReactElemen
     });
 
     editorRef.current = editor;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect((): void => {
@@ -64,7 +65,7 @@ function Editor ({ className, code, isValid, onEdit }: Props): React.ReactElemen
   );
 }
 
-export default styled(Editor)`
+export default React.memo(styled(Editor)`
   .codeflask {
     border: 1px solid rgba(34,36,38,.15);
     background: transparent;
@@ -76,4 +77,4 @@ export default styled(Editor)`
       border-color: #e0b4b4;
     }
   }
-`;
+`);

@@ -12,18 +12,19 @@ import { formatNumber } from '@polkadot/util';
 interface Props extends BareProps {
   children?: React.ReactNode;
   label?: React.ReactNode;
+  withPound?: boolean;
 }
 
-export default function BestNumber ({ children, className, label, style }: Props): React.ReactElement<Props> {
+function BestNumber ({ children, className, label, style, withPound }: Props): React.ReactElement<Props> {
   const { api, isApiReady } = useApi();
-  const bestNumber = useCall<BlockNumber>(isApiReady ? api.derive.chain.bestNumber as any : undefined, []);
+  const bestNumber = useCall<BlockNumber>(isApiReady && api.derive.chain.bestNumber, []);
 
   return (
     <div
       className={className}
       style={style}
     >
-      {label || ''}{
+      {label || ''}{withPound && '#'}{
         bestNumber
           ? formatNumber(bestNumber)
           : '-'
@@ -31,3 +32,5 @@ export default function BestNumber ({ children, className, label, style }: Props
     </div>
   );
 }
+
+export default React.memo(BestNumber);

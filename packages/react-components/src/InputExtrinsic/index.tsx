@@ -5,7 +5,7 @@
 import { SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { DropdownOptions } from '../util/types';
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useApi } from '@polkadot/react-hooks';
 
 import LinkedWrapper from './LinkedWrapper';
@@ -27,31 +27,38 @@ interface Props {
   withLabel?: boolean;
 }
 
-export default function InputExtrinsic ({ className, defaultValue, help, label, onChange, style, withLabel }: Props): React.ReactElement<Props> {
+function InputExtrinsic ({ className, defaultValue, help, label, onChange, style, withLabel }: Props): React.ReactElement<Props> {
   const { api } = useApi();
   const [optionsMethod, setOptionsMethod] = useState<DropdownOptions>(methodOptions(api, defaultValue.section));
   const [optionsSection] = useState<DropdownOptions>(sectionOptions(api));
   const [value, setValue] = useState<SubmittableExtrinsicFunction<'promise'>>((): SubmittableExtrinsicFunction<'promise'> => defaultValue);
 
-  const _onKeyChange = (newValue: SubmittableExtrinsicFunction<'promise'>): void => {
-    if (value.section === newValue.section && value.method === newValue.method) {
-      return;
-    }
+  const _onKeyChange = useCallback(
+    (newValue: SubmittableExtrinsicFunction<'promise'>): void => {
+      if (value.section === newValue.section && value.method === newValue.method) {
+        return;
+      }
 
-    // set this via callback, since the we are setting a function (aletrnatively... we have issues)
-    setValue((): SubmittableExtrinsicFunction<'promise'> => newValue);
-    onChange(newValue);
-  };
-  const _onSectionChange = (section: string): void => {
-    if (section === value.section) {
-      return;
-    }
+      // set this via callback, since the we are setting a function (alternatively... we have issues)
+      setValue((): SubmittableExtrinsicFunction<'promise'> => newValue);
+      onChange(newValue);
+    },
+    [onChange, value]
+  );
 
-    const optionsMethod = methodOptions(api, section);
+  const _onSectionChange = useCallback(
+    (section: string): void => {
+      if (section === value.section) {
+        return;
+      }
 
-    setOptionsMethod(optionsMethod);
-    _onKeyChange(api.tx[section][optionsMethod[0].value]);
-  };
+      const optionsMethod = methodOptions(api, section);
+
+      setOptionsMethod(optionsMethod);
+      _onKeyChange(api.tx[section][optionsMethod[0].value]);
+    },
+    [_onKeyChange, api, value]
+  );
 
   return (
     <LinkedWrapper
@@ -77,3 +84,5 @@ export default function InputExtrinsic ({ className, defaultValue, help, label, 
     </LinkedWrapper>
   );
 }
+
+export default React.memo(InputExtrinsic);

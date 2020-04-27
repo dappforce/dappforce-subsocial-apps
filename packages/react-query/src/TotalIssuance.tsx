@@ -13,9 +13,9 @@ interface Props extends BareProps {
   label?: React.ReactNode;
 }
 
-export default function TotalIssuance ({ children, className, label, style }: Props): React.ReactElement<Props> {
+function TotalIssuance ({ children, className, label, style }: Props): React.ReactElement<Props> {
   const { api } = useApi();
-  const totalIssuance = useCall<string>(api.query.balances.totalIssuance, []);
+  const totalIssuance = useCall<string>(api.query.balances?.totalIssuance, []);
 
   return (
     <div
@@ -31,3 +31,5 @@ export default function TotalIssuance ({ children, className, label, style }: Pr
     </div>
   );
 }
+
+export default React.memo(TotalIssuance);
