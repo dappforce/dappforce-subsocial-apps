@@ -4,13 +4,14 @@
 
 import { QueueStatus, QueueTx, QueueTxStatus } from './types';
 
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { registry } from '@polkadot/react-api';
 
 import AddressMini from '../AddressMini';
 import Button from '../Button';
 import Icon from '../Icon';
+import Spinner from '../Spinner';
 import { useTranslation } from '../translate';
 import { classes } from '../util';
 import StatusContext from './Context';
@@ -52,7 +53,6 @@ function signerIconName (status: QueueTxStatus): any {
       return 'check';
 
     case 'dropped':
-    case 'retracted':
     case 'invalid':
     case 'usurped':
       return 'arrow down';
@@ -62,6 +62,7 @@ function signerIconName (status: QueueTxStatus): any {
       return 'warning sign';
 
     case 'queued':
+    // case 'retracted':
       return 'random';
 
     default:
@@ -101,7 +102,7 @@ function renderStatus ({ account, action, id, message, removeItem, status }: Que
   );
 }
 
-function renderItem ({ id, extrinsic, error, removeItem, rpc, status }: QueueTx): React.ReactNode {
+function renderItem ({ error, extrinsic, id, removeItem, rpc, status }: QueueTx): React.ReactNode {
   let { method, section } = rpc;
 
   if (extrinsic) {
@@ -129,10 +130,10 @@ function renderItem ({ id, extrinsic, error, removeItem, rpc, status }: QueueTx)
             />
           )}
           <div className='short'>
-            <Icon
-              loading={icon === 'spinner'}
-              name={icon}
-            />
+            {icon === 'spinner'
+              ? <Spinner variant='push' />
+              : <Icon name={icon} />
+            }
           </div>
           <div className='desc'>
             <div className='header'>
@@ -148,43 +149,58 @@ function renderItem ({ id, extrinsic, error, removeItem, rpc, status }: QueueTx)
   );
 }
 
-function Status ({ className, stqueue = [], txqueue = [] }: Props): React.ReactElement<Props> | null {
-  const { t } = useTranslation();
-  const allst: QueueStatus[] = stqueue.filter(({ isCompleted }): boolean => !isCompleted);
-  const alltx: QueueTx[] = txqueue.filter(({ status }): boolean =>
-    !['completed', 'incomplete'].includes(status)
-  );
-  const completedTx = alltx.filter(({ status }): boolean => STATUS_COMPLETE.includes(status));
+function filterSt (stqueue?: QueueStatus[]): QueueStatus[] {
+  return (stqueue || []).filter(({ isCompleted }): boolean => !isCompleted);
+}
 
-  if (!allst.length && !alltx.length) {
+function filterTx (txqueue?: QueueTx[]): [QueueTx[], QueueTx[]] {
+  const allTx = (txqueue || []).filter(({ status }): boolean => !['completed', 'incomplete'].includes(status));
+
+  return [allTx, allTx.filter(({ status }): boolean => STATUS_COMPLETE.includes(status))];
+}
+
+function Status ({ className, stqueue, txqueue }: Props): React.ReactElement<Props> | null {
+  const { t } = useTranslation();
+  const allSt = useMemo(
+    (): QueueStatus[] => filterSt(stqueue),
+    [stqueue]
+  );
+  const [allTx, completedTx] = useMemo(
+    (): [QueueTx[], QueueTx[]] => filterTx(txqueue),
+    [txqueue]
+  );
+  const _onDismiss = useCallback(
+    (): void => {
+      allSt.map((s): void => s.removeItem());
+      completedTx.map((t): void => t.removeItem());
+    },
+    [allSt, completedTx]
+  );
+
+  if (!allSt.length && !allTx.length) {
     return null;
   }
 
-  const _onDismiss = (): void => {
-    allst.map((s): void => s.removeItem());
-    completedTx.map((t): void => t.removeItem());
-  };
-
   return (
     <div className={`ui--Status ${className}`}>
-      {(allst.length + completedTx.length) > 1 && (
+      {(allSt.length + completedTx.length) > 1 && (
         <div className='dismiss'>
           <Button
-            isFluid
-            isNegative
-            onClick={_onDismiss}
-            label={t('Dismiss all notifications')}
             icon='cancel'
+            isFluid
+            isPrimary
+            label={t('Dismiss all notifications')}
+            onClick={_onDismiss}
           />
         </div>
       )}
-      {alltx.map(renderItem)}
-      {allst.map(renderStatus)}
+      {allTx.map(renderItem)}
+      {allSt.map(renderStatus)}
     </div>
   );
 }
 
-export default styled(Status)`
+export default React.memo(styled(Status)`
   display: inline-block;
   position: fixed;
   right: 0.25rem;
@@ -211,6 +227,13 @@ export default styled(Status)`
       opacity: 0.95;
       vertical-align: middle;
       position: relative;
+
+      .ui--highlight--spinner {
+        &:after {
+          border-color: #fff transparent transparent !important;
+          font-size: 1rem;
+        }
+      }
 
       .desc {
         flex: 1;
@@ -277,11 +300,10 @@ export default styled(Status)`
     &.error,
     &.finalitytimeout,
     &.invalid,
-    &.retracted,
     &.usurped {
       & > .wrapper > .container {
         background: red;
       }
     }
   }
-`;
+`);

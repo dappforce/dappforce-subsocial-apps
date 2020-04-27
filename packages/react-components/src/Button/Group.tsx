@@ -18,10 +18,9 @@ function ButtonGroup ({ children, className, isBasic = false, isCentered = false
       style={style}
     >
       <SUIButton.Group basic={isBasic}>
-        {
-          isBasic
-            ? null
-            : <Divider style={{ padding: '0em' }} />
+        {isBasic
+          ? null
+          : <Divider style={{ padding: '0em' }} />
         }
         {children}
       </SUIButton.Group>
@@ -29,17 +28,27 @@ function ButtonGroup ({ children, className, isBasic = false, isCentered = false
   );
 }
 
-(ButtonGroup as GroupType).Divider = Divider;
-
-export default styled(ButtonGroup)`
+const Memo = React.memo(styled(ButtonGroup)`
   text-align: right;
 
   :not(:first-child) {
     margin-top: 0.75rem;
   }
 
+  > .ui.buttons {
+    vertical-align: middle;
+  }
+
   &.centered {
     margin-bottom: 0.5rem;
     text-align: center;
   }
-` as unknown as GroupType;
+
+  &+.ui--Table {
+    margin-top: 1.5rem;
+  }
+`) as unknown as GroupType;
+
+Memo.Divider = Divider;
+
+export default Memo;

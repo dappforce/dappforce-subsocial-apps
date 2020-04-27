@@ -7,7 +7,7 @@
 import { DropdownOptions } from '../util/types';
 import { StorageEntryPromise } from './types';
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useApi } from '@polkadot/react-hooks';
 
 import LinkedWrapper from '../InputExtrinsic/LinkedWrapper';
@@ -27,31 +27,38 @@ interface Props {
   withLabel?: boolean;
 }
 
-export default function InputStorage ({ className, defaultValue, help, label, onChange, style, withLabel }: Props): React.ReactElement<Props> {
+function InputStorage ({ className, defaultValue, help, label, onChange, style, withLabel }: Props): React.ReactElement<Props> {
   const { api } = useApi();
   const [optionsMethod, setOptionsMethod] = useState<DropdownOptions>(keyOptions(api, defaultValue.creator.section));
   const [optionsSection] = useState<DropdownOptions>(sectionOptions(api));
   const [value, setValue] = useState<StorageEntryPromise>((): StorageEntryPromise => defaultValue);
 
-  const _onKeyChange = (newValue: StorageEntryPromise): void => {
-    if (value.creator.section === newValue.creator.section && value.creator.method === newValue.creator.method) {
-      return;
-    }
+  const _onKeyChange = useCallback(
+    (newValue: StorageEntryPromise): void => {
+      if (value.creator.section === newValue.creator.section && value.creator.method === newValue.creator.method) {
+        return;
+      }
 
-    // set via callback
-    setValue((): StorageEntryPromise => newValue);
-    onChange && onChange(newValue);
-  };
-  const _onSectionChange = (section: string): void => {
-    if (section === value.creator.section) {
-      return;
-    }
+      // set via callback
+      setValue((): StorageEntryPromise => newValue);
+      onChange && onChange(newValue);
+    },
+    [onChange, value]
+  );
 
-    const optionsMethod = keyOptions(api, section);
+  const _onSectionChange = useCallback(
+    (section: string): void => {
+      if (section === value.creator.section) {
+        return;
+      }
 
-    setOptionsMethod(optionsMethod);
-    _onKeyChange(api.query[section][optionsMethod[0].value]);
-  };
+      const optionsMethod = keyOptions(api, section);
+
+      setOptionsMethod(optionsMethod);
+      _onKeyChange(api.query[section][optionsMethod[0].value]);
+    },
+    [_onKeyChange, api, value]
+  );
 
   return (
     <LinkedWrapper
@@ -76,3 +83,5 @@ export default function InputStorage ({ className, defaultValue, help, label, on
     </LinkedWrapper>
   );
 }
+
+export default React.memo(InputStorage);
