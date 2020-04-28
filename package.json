@@ -65,7 +65,6 @@
   },
   "dependencies": {
     "@subsocial/types": "0.1.29",
-    "@subsocial/utils": "^0.1.17",
-    "dotenv": "^8.2.0"
+    "@subsocial/utils": "^0.1.17"
   }
 }
