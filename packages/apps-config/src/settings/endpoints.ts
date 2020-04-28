@@ -4,14 +4,11 @@
 
 import { Option } from './types';
 
-const localNetworkWS = 'ws://127.0.0.1:9944/';
-const currentNetworkWS = 'ws://testnet2.subsocial.network:9944/' || localNetworkWS;
-
 const DEV: Option[] = [
   {
     info: 'local',
     text: 'Local Node (Own, 127.0.0.1:9944)',
-    value: localNetworkWS
+    value: 'ws://127.0.0.1:9944/'
   }
 ];
 
@@ -27,9 +24,52 @@ if (process.env.WS_URL) {
 
 const LIVE: Option[] = [
   {
+    info: 'kusama',
+    text: 'Kusama (Polkadot Canary, hosted by Parity)',
+    value: 'wss://kusama-rpc.polkadot.io/'
+  },
+  {
+    info: 'kusama',
+    text: 'Kusama (Polkadot Canary, hosted by Web3 Foundation)',
+    value: 'wss://cc3-5.kusama.network/'
+  },
+  {
+    info: 'kusama',
+    text: 'Kusama (Load balanced between user-run public nodes; see https://status.cloud.ava.do/)',
+    value: 'wss://kusama.polkadot.cloud.ava.do/'
+  },
+  {
+    info: 'edgeware',
+    text: 'Edgeware (Edgeware Mainnet, hosted by Commonwealth Labs)',
+    value: 'wss://mainnet1.edgewa.re'
+  },
+  {
     info: 'substrate',
-    text: 'Subsocial (Subsocial Testnet, hosted by Subsocial)',
-    value: currentNetworkWS
+    text: 'Kulupu (Kulupu Mainnet, hosted by Kulupu)',
+    value: 'wss://rpc.kulupu.network/ws'
+  }
+];
+
+const TEST: Option[] = [
+  {
+    info: 'substrate',
+    text: 'Barracuda (Subsocial Testnet, hosted by Subsocial)',
+    value: 'ws://testnet2.subsocial.network:9944/'
+  },
+  {
+    info: 'westend',
+    text: 'Westend (Polkadot Testnet, hosted by Parity)',
+    value: 'wss://westend-rpc.polkadot.io'
+  },
+  {
+    info: 'edgeware',
+    text: 'Berlin (Edgeware Testnet, hosted by Commonwealth Labs)',
+    value: 'wss://berlin1.edgewa.re'
+  },
+  {
+    info: 'substrate',
+    text: 'Flaming Fir (Substrate Testnet, hosted by Parity)',
+    value: 'wss://substrate-rpc.parity.io/'
   }
 ];
 
@@ -40,6 +80,12 @@ let endpoints = [
     value: ''
   },
   ...LIVE,
+  {
+    isHeader: true,
+    text: 'Test networks',
+    value: ''
+  },
+  ...TEST,
   {
     isHeader: true,
     text: 'Development',
