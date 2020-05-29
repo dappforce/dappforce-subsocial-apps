@@ -64,7 +64,7 @@
     "webpack-plugin-serve": "^0.12.1"
   },
   "dependencies": {
-    "@subsocial/types": "0.1.29",
+    "@subsocial/types": "0.3.1",
     "@subsocial/utils": "^0.1.17"
   }
 }
