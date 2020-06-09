@@ -1,15 +1,12 @@
-FROM node:10.13-slim as builder
+FROM node:10-slim as builder
 
 WORKDIR /apps
-
-COPY package.json yarn.lock* ./
-RUN yarn install --no-optional
-
 COPY . .
-RUN yarn && yarn cache clean --force
+
+RUN yarn
 RUN NODE_ENV=production yarn build:www
 
-FROM node:10.13-slim
+FROM node:10-slim
 
 RUN apt-get update && apt-get -y install nginx
 
