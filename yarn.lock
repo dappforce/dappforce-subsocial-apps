@@ -3648,30 +3648,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@subsocial/types@npm:0.1.29":
-  version: 0.1.29
-  resolution: "@subsocial/types@npm:0.1.29"
+"@subsocial/types@npm:0.3.2-beta2":
+  version: 0.3.2-beta2
+  resolution: "@subsocial/types@npm:0.3.2-beta2"
   dependencies:
     "@babel/runtime": ^7.8.4
-    "@subsocial/utils": ">=0.1.20"
+    "@subsocial/utils": ^0.1.23
     cids: ^0.7.1
-  checksum: 2/2c6fdbe8f4557f65c6f8b8e09fd1ccb9dcb0687c6a74330f6e7ff5b499c01e877e1602fa4edb4923e74b503c3bd14f7d66b0f9791d799ef8452228d284a68593
+  checksum: 2/561df434449af41d26529aeee678cf2c21593504c1232582b9bad75d8add0612c3f9dff11fc86a5aee6c04c54ba3818bda8bcd14f7dfe37e58dde9bfeab491ab
   languageName: node
   linkType: hard
 
-"@subsocial/utils@npm:>=0.1.20, @subsocial/utils@npm:^0.1.17":
-  version: 0.1.21
-  resolution: "@subsocial/utils@npm:0.1.21"
+"@subsocial/utils@npm:0.1.23, @subsocial/utils@npm:^0.1.23":
+  version: 0.1.23
+  resolution: "@subsocial/utils@npm:0.1.23"
   dependencies:
     "@babel/runtime": ^7.8.4
+    "@types/circular-json": ^0.4.0
     "@types/lodash.truncate": ^4.4.6
     "@types/winston": ^2.4.4
     bn.js: ^5.1.1
     chalk: ^3.0.0
+    circular-json: ^0.5.9
+    dotenv: ^8.0.0
     lodash.truncate: ^4.4.2
-    markdown-to-txt: ^1.0.1
     winston: ^3.2.0
-  checksum: 2/04367e76da176471fe5d3728a0049990fa94481d40ba66a1c4de19b07644d5222ce4bf3452829d3e9aaa0e312920e4ee880698f061092f3bb1bae50ef97068a9
+  checksum: 2/497ecb7bf89a9289de77245dceba4f596b1013e56269ae766e0fc57e58faaa8d447cea006abc49b6820622a92cd4ce61dfbde18e15885c141fda1e18808df2de
   languageName: node
   linkType: hard
 
@@ -3757,6 +3759,13 @@ __metadata:
     "@types/filesystem": "*"
     "@types/har-format": "*"
   checksum: 2/9deebc57c65f5e5023aa417b94ad6345a06aee1a0cf35d610f1f5b43aefe834a86acd81255231001c254675215ebced533eb1002db203d3989551b04fafd8869
+  languageName: node
+  linkType: hard
+
+"@types/circular-json@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@types/circular-json@npm:0.4.0"
+  checksum: 2/68470e292e4d8e92c0477595dd4b59eda5885b85d05837fc4272ce983fbb0ee5ea1ecb51a73d87b33d8d0ba6d2fd9b47212d2e28fc2d6e9d89db8a97d19b3271
   languageName: node
   linkType: hard
 
@@ -6642,6 +6651,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"circular-json@npm:^0.5.9":
+  version: 0.5.9
+  resolution: "circular-json@npm:0.5.9"
+  checksum: 2/ee5178367d06bb5ffe221d4e7f2ddd8a72eaf8e92fd6f2df1d2652251b63a6c63f6ea8b979619f213fbf53dba039b3859b402f13c19fed0e7f2a6c593c238d8a
+  languageName: node
+  linkType: hard
+
 "class-is@npm:^1.1.0":
   version: 1.1.0
   resolution: "class-is@npm:1.1.0"
@@ -8713,6 +8729,13 @@ __metadata:
   dependencies:
     is-obj: ^2.0.0
   checksum: 2/d2f62e0b5ec467edb8e278ab6070955f0a4aec973ec1fa837ff6152f3cdd96cd2a04c7e2626cb3eac4f639b8f6786b5b87d3c01df7ba729693c636cb78b7ae93
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^8.0.0":
+  version: 8.2.0
+  resolution: "dotenv@npm:8.2.0"
+  checksum: 2/16cb89cbd7b98b053899b8aba8c5044c8fb61a2db8a81fe70360b75035fce5fed53bd7a34d772be717d0880c0321122a4c09423f518025e1b52d96791521b1a7
   languageName: node
   linkType: hard
 
@@ -14505,30 +14528,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-to-txt@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "markdown-to-txt@npm:1.0.1"
-  dependencies:
-    marked: ^0.6.2
-  checksum: 2/b473010fd38201447869cdde2bf85ac8ddd72d760e57b236b0d770151c1debcae8d9fcc412c60d35985bce1b903e4355cf40ad92051e08e77b749cfe5ab760e5
-  languageName: node
-  linkType: hard
-
 "marked@npm:1.0.0":
   version: 1.0.0
   resolution: "marked@npm:1.0.0"
   bin:
     marked: bin/marked
   checksum: 2/4121f2f5cb7130e57571780181cddac9e3a8692486045f760baad14c6d896c9481180ad8ab8a36fb9476375ddaa860dbc7d29ecf386b2bfa47d4450a9f866cd4
-  languageName: node
-  linkType: hard
-
-"marked@npm:^0.6.2":
-  version: 0.6.3
-  resolution: "marked@npm:0.6.3"
-  bin:
-    marked: ./bin/marked
-  checksum: 2/ef83b5db8c17e899d25b2daa1d628bf378d7061d1f6f72b8db2918e153a474c7b248d1a2c3280a42d5ccc72f042f86aa41163a89ac9fbfdfeb3937e7ee3f0909
   languageName: node
   linkType: hard
 
@@ -19045,8 +19050,8 @@ __metadata:
     "@babel/runtime": ^7.9.2
     "@polkadot/dev": ^0.52.11
     "@polkadot/ts": ^0.3.18
-    "@subsocial/types": 0.1.29
-    "@subsocial/utils": ^0.1.17
+    "@subsocial/types": 0.3.2-beta2
+    "@subsocial/utils": 0.1.23
     "@types/bn.js": ^4.11.6
     "@types/chart.js": ^2.9.19
     "@types/file-saver": ^2.0.1
