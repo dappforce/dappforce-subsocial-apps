@@ -3648,14 +3648,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@subsocial/types@npm:0.3.2-beta2":
-  version: 0.3.2-beta2
-  resolution: "@subsocial/types@npm:0.3.2-beta2"
+"@subsocial/types@npm:0.3.2":
+  version: 0.3.2
+  resolution: "@subsocial/types@npm:0.3.2"
   dependencies:
     "@babel/runtime": ^7.8.4
     "@subsocial/utils": ^0.1.23
     cids: ^0.7.1
-  checksum: 2/561df434449af41d26529aeee678cf2c21593504c1232582b9bad75d8add0612c3f9dff11fc86a5aee6c04c54ba3818bda8bcd14f7dfe37e58dde9bfeab491ab
+  checksum: 2/9300f5f1d6b5a054afcf61a5d1d28c2f080745f7fd5e54bc35f78218d504e5c1ae9a73f7cbce11c339d41cd59db9084c545879e2ef2123c92afc84c4c3f3f809
   languageName: node
   linkType: hard
 
@@ -19050,7 +19050,7 @@ __metadata:
     "@babel/runtime": ^7.9.2
     "@polkadot/dev": ^0.52.11
     "@polkadot/ts": ^0.3.18
-    "@subsocial/types": 0.3.2-beta2
+    "@subsocial/types": 0.3.2
     "@subsocial/utils": 0.1.23
     "@types/bn.js": ^4.11.6
     "@types/chart.js": ^2.9.19
